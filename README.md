@@ -10,7 +10,7 @@ Bring the same simple capture experience to Windows:
 - **Drag Snip** captures a selected region.
 - Captures are saved automatically to `Downloads\RightSnip`.
 - Captures are copied through the native Windows clipboard.
-- RightSnip can be launched from the Windows desktop and folder-background context menus.
+- Right Snip can be launched from the Windows desktop and folder-background context menus.
 
 This application is maintained separately from the Chrome extension because its platform APIs, packaging, distribution, and release lifecycle are different.
 
@@ -34,4 +34,6 @@ dotnet build
 dotnet run
 ```
 
-No installer or system integration should run automatically during development. Context-menu registration must always be an explicit user action.
+No installer or system integration runs automatically. Context-menu registration is an explicit action in the application.
+
+The current context-menu build adds only **Right Snip**. Drag Snip will be considered in a later build.

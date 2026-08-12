@@ -1,7 +1,7 @@
 <Window x:Class="RightSnip.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="RightSnip" Height="390" Width="430"
+        Title="RightSnip" Height="510" Width="430"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="#F4F8FD">
@@ -12,6 +12,10 @@
             <RowDefinition Height="34" />
             <RowDefinition Height="72" />
             <RowDefinition Height="24" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="28" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -45,5 +49,24 @@
                    FontSize="14"
                    LineHeight="21"
                    Foreground="#526274" />
+
+        <Button Grid.Row="7"
+                Click="InstallContextMenuButton_Click"
+                Content="Add Right Snip to Windows right-click menu"
+                Height="42"
+                FontWeight="SemiBold"
+                Foreground="#1269D3"
+                Background="White"
+                BorderBrush="#B8D5F6"
+                Cursor="Hand" />
+
+        <Button Grid.Row="9"
+                Click="RemoveContextMenuButton_Click"
+                Content="Remove Windows right-click menu entry"
+                Height="34"
+                Foreground="#526274"
+                Background="Transparent"
+                BorderBrush="#CCD8E5"
+                Cursor="Hand" />
     </Grid>
 </Window>
