@@ -2,6 +2,8 @@
 
 RightSnip is a one-click native Windows screenshot prototype.
 
+Current build: **0.2.0**
+
 ## Prototype behavior
 
 Launching RightSnip immediately:
@@ -32,7 +34,32 @@ dotnet build
 dotnet run
 ```
 
-For the intended experience, build or publish the executable, create a shortcut to it, and pin that shortcut to the Windows taskbar.
+## Publish and install for taskbar use
+
+```powershell
+.\scripts\Publish.ps1
+.\scripts\Install.ps1
+```
+
+The publish is a self-contained Windows x64 executable. Installation copies it to:
+
+```text
+%LOCALAPPDATA%\Programs\RightSnip\RightSnip.exe
+```
+
+It also creates a RightSnip shortcut in the current user's Start Menu. Open Start, search for **RightSnip**, right-click it, and choose **Pin to taskbar**.
+
+To uninstall this prototype:
+
+```powershell
+.\scripts\Uninstall.ps1
+```
+
+## Why the installed build is separate
+
+Development output under `bin\` can move or be replaced during compilation. The installer copies the tested self-contained executable to a stable per-user path so a pinned taskbar shortcut continues to work across source builds.
+
+Build history and the reasons behind changes are recorded in `CHANGELOG.md`.
 
 ## Current scope
 

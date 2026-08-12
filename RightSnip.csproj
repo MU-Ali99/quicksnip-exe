@@ -7,6 +7,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Assets\RightSnip.ico</ApplicationIcon>
+    <AssemblyTitle>RightSnip</AssemblyTitle>
+    <Product>RightSnip for Windows</Product>
+    <Description>One-click Windows screenshot capture.</Description>
+    <Company>MU-Ali99</Company>
+    <Copyright>Copyright © 2026 MU-Ali99</Copyright>
+    <Version>0.2.0</Version>
+    <FileVersion>0.2.0.0</FileVersion>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
   </PropertyGroup>
 
 </Project>

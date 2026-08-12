@@ -1,5 +1,9 @@
 # Development
 
+## Versioning rule
+
+Every tested build that adds a user-facing feature receives a new semantic build version before it is committed, tagged, and pushed. Documentation and the changelog must explain what changed and why.
+
 ## Immediate goal
 
 Prove this exact native Windows flow:
@@ -38,3 +42,13 @@ Do not add until the one-click prototype is tested:
 - Hotkeys
 - Multiple capture modes
 - Windows context-menu integration
+
+## Taskbar packaging
+
+- `scripts/New-AppIcon.ps1` generates a multi-size Windows icon from the established RightSnip artwork.
+- `scripts/Publish.ps1` produces a self-contained single-file Windows x64 executable.
+- `scripts/Install.ps1` installs it per-user and creates a Start Menu shortcut.
+- `scripts/Uninstall.ps1` removes only that installed executable and shortcut.
+- Pinning to the taskbar remains an explicit Windows user action.
+
+The installed location is intentionally stable because taskbar shortcuts must not target replaceable Debug or publish output directories.
