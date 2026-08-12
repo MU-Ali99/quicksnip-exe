@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Publish artifacts
+publish/
+artifacts/
+
+# Local packages and installer output
+packages/
+installer/output/
