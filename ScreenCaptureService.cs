@@ -3,7 +3,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Forms = System.Windows.Forms;
 
 namespace RightSnip;
 
@@ -15,28 +14,20 @@ internal static class ScreenCaptureService
 
     public static async Task<string> CaptureCurrentDisplayAsync()
     {
-        var pointerPosition = Forms.Cursor.Position;
-        var displayBounds =
-            Forms.Screen.FromPoint(pointerPosition).Bounds;
+        using var captureGate = CaptureGate.TryEnter();
 
-        using var bitmap = new Bitmap(
-            displayBounds.Width,
-            displayBounds.Height,
-            PixelFormat.Format32bppArgb);
-
-        using (var graphics = Graphics.FromImage(bitmap))
+        if (captureGate is null)
         {
-            graphics.CopyFromScreen(
-                displayBounds.Location,
-                System.Drawing.Point.Empty,
-                displayBounds.Size,
-                CopyPixelOperation.SourceCopy);
+            throw new CaptureAlreadyRunningException();
         }
+
+        using var bitmap =
+            NativeScreenCapture.CaptureDisplayContainingPointer();
 
         SnipFolderService.EnsureExists();
 
         var filename =
-            $"rightsnip-{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.png";
+            $"rightsnip-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.png";
 
         var savedPath =
             Path.Combine(SnipFolderService.Path, filename);
@@ -91,5 +82,13 @@ internal static class ScreenCaptureService
         throw new InvalidOperationException(
             "The screenshot was saved, but the Windows clipboard was busy.",
             lastError);
+    }
+}
+
+internal sealed class CaptureAlreadyRunningException : Exception
+{
+    public CaptureAlreadyRunningException()
+        : base("A RightSnip capture is already running.")
+    {
     }
 }

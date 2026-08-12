@@ -2,7 +2,7 @@
 
 RightSnip is a one-click native Windows screenshot prototype.
 
-Current build: **0.3.0**
+Current build: **0.4.0**
 
 ## Prototype behavior
 
@@ -55,6 +55,18 @@ Taskbar behavior:
 - Right-click RightSnip to open its Windows Jump List.
 - **Open Snips Folder** opens `Pictures\RightSnip`.
 - **RightSnip Options** opens a small window with Right Snip, Open Snips Folder, and Close.
+
+## First launch
+
+After each fresh installation, the first normal launch opens a short guide instead of taking a screenshot. It explains left-click capture, taskbar right-click actions, pinning, saving, and clipboard paste behavior. After selecting **I understand how RightSnip works**, Continue opens the main Options window.
+
+Later left-clicks return to immediate capture. The guide can be reopened with the information button in RightSnip Options.
+
+RightSnip prevents overlapping captures, uses collision-resistant millisecond filenames, follows the display containing the mouse pointer, and writes silent failure details to:
+
+```text
+%LOCALAPPDATA%\RightSnip\Logs\rightsnip.log
+```
 
 To uninstall this prototype:
 

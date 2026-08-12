@@ -61,3 +61,14 @@ The installed location is intentionally stable because taskbar shortcuts must no
 - `--register-jump-list`: register taskbar commands and exit without capturing.
 
 Windows owns the Jump List surface and system commands such as **Unpin from taskbar**. RightSnip adds tasks but does not replace or restyle the Windows panel.
+
+## Build 0.4.0 state and reliability
+
+- The onboarding marker is `%LOCALAPPDATA%\RightSnip\onboarding-complete`.
+- A fresh installation removes that marker so the next normal launch shows the guide.
+- Opening the guide from Options does not reset or rewrite normal capture behavior.
+- A named Windows semaphore allows only one capture at a time across RightSnip processes.
+- A repeated click during capture exits silently.
+- Capture failures append diagnostics to `%LOCALAPPDATA%\RightSnip\Logs\rightsnip.log`.
+- Filenames include milliseconds.
+- `PerMonitorV2` DPI awareness plus Win32 `GetMonitorInfo` and `BitBlt` keeps monitor bounds and copied pixels in the same physical coordinate space, including monitors positioned left of the primary display.

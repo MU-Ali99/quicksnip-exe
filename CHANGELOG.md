@@ -2,6 +2,24 @@
 
 RightSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.4.0 - 2026-08-12
+
+### Onboarding and reliability
+
+- Added a first-install guide explaining taskbar pinning, left-click capture, right-click commands, save location, and clipboard paste behavior.
+- Added an **I understand how RightSnip works** confirmation before continuing to the main Options page.
+- Added an information button in Options to reopen the guide.
+- Redesigned Options using the established RightSnip blue and layered-wave visual direction.
+- Added the current build number and exact save location to Options.
+- Prevented overlapping captures from rapid repeated launches.
+- Added millisecond filename precision to prevent same-second collisions.
+- Added silent diagnostic failure logging under `%LOCALAPPDATA%\RightSnip\Logs`.
+- Replaced DPI-virtualized screen copying with native Win32 monitor bounds and `BitBlt` for accurate physical display capture on mixed-scaling desktops.
+
+### Why
+
+RightSnip's normal behavior is intentionally silent, so a first-run guide is necessary to explain that the taskbar icon behaves differently on left-click and right-click. The reliability changes protect this direct workflow from repeated clicks, filename collisions, clipboard failures, and multi-monitor coordinate scaling without adding notifications or interrupting successful captures.
+
 ## 0.3.0 - 2026-08-12
 
 ### Taskbar commands

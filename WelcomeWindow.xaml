@@ -1,0 +1,66 @@
+<Window x:Class="RightSnip.WelcomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Welcome to RightSnip"
+        Width="480"
+        Height="590"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F4F8FD">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="145" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Background="#1269D3">
+            <Ellipse Width="380" Height="145" Fill="#2244BFFF" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-100,-70" />
+            <Ellipse Width="300" Height="120" Fill="#3329A4F5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-90,0,0,-58" />
+            <StackPanel Margin="32,25,32,20">
+                <TextBlock Text="RightSnip" FontFamily="Century Gothic, Segoe UI" FontSize="32" FontWeight="Bold" Foreground="White" />
+                <TextBlock x:Name="WelcomeSubtitle" Margin="0,7,0,0" Text="Welcome — here is how it works" FontSize="16" Foreground="#DDEEFF" />
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Margin="32,24,32,26">
+            <Border Background="White" BorderBrush="#D6E5F5" BorderThickness="1" CornerRadius="10" Padding="18,15">
+                <StackPanel>
+                    <TextBlock Text="Left-click RightSnip" FontSize="16" FontWeight="SemiBold" Foreground="#14385F" />
+                    <TextBlock Margin="0,4,0,0" Text="Captures the display under your mouse, copies it, saves it, and exits." TextWrapping="Wrap" Foreground="#526274" />
+                </StackPanel>
+            </Border>
+
+            <Border Margin="0,12,0,0" Background="White" BorderBrush="#D6E5F5" BorderThickness="1" CornerRadius="10" Padding="18,15">
+                <StackPanel>
+                    <TextBlock Text="Right-click the taskbar icon" FontSize="16" FontWeight="SemiBold" Foreground="#14385F" />
+                    <TextBlock Margin="0,4,0,0" Text="Opens RightSnip Options or your saved snips folder." TextWrapping="Wrap" Foreground="#526274" />
+                </StackPanel>
+            </Border>
+
+            <Border Margin="0,12,0,0" Background="#EAF4FF" CornerRadius="10" Padding="18,14">
+                <TextBlock Text="Snips are saved to Pictures → RightSnip and are ready to paste with Ctrl+V." TextWrapping="Wrap" Foreground="#24547F" />
+            </Border>
+
+            <CheckBox x:Name="UnderstandCheckBox"
+                      Margin="2,20,0,0"
+                      Content="I understand how RightSnip works"
+                      FontSize="14"
+                      Foreground="#26384A"
+                      Checked="UnderstandCheckBox_Changed"
+                      Unchecked="UnderstandCheckBox_Changed" />
+
+            <Button x:Name="ContinueButton"
+                    Margin="0,16,0,0"
+                    Height="48"
+                    Click="ContinueButton_Click"
+                    Content="Continue to RightSnip"
+                    FontSize="15"
+                    FontWeight="SemiBold"
+                    Foreground="White"
+                    Background="#1677E8"
+                    BorderThickness="0"
+                    IsEnabled="False"
+                    Cursor="Hand" />
+        </StackPanel>
+    </Grid>
+</Window>

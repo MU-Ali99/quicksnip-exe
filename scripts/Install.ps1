@@ -22,6 +22,11 @@ $shortcut.IconLocation = "$installedExecutable,0"
 $shortcut.Description = "Take a screenshot with RightSnip"
 $shortcut.Save()
 
+$onboardingMarker = Join-Path $env:LOCALAPPDATA "RightSnip\onboarding-complete"
+if (Test-Path -LiteralPath $onboardingMarker) {
+    Remove-Item -LiteralPath $onboardingMarker -Force
+}
+
 $registrationProcess = Start-Process `
     -FilePath $installedExecutable `
     -ArgumentList "--register-jump-list" `
