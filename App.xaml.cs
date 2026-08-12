@@ -10,6 +10,30 @@ public partial class App : System.Windows.Application
 
         try
         {
+            JumpListService.Register();
+
+            if (HasArgument(e.Args, "--register-jump-list"))
+            {
+                Shutdown();
+                return;
+            }
+
+            if (HasArgument(e.Args, "--open-folder"))
+            {
+                SnipFolderService.Open();
+                Shutdown();
+                return;
+            }
+
+            if (HasArgument(e.Args, "--menu"))
+            {
+                var optionsWindow = new OptionsWindow();
+                MainWindow = optionsWindow;
+                optionsWindow.Closed += (_, _) => Shutdown();
+                optionsWindow.Show();
+                return;
+            }
+
             await ScreenCaptureService.CaptureCurrentDisplayAsync();
             Shutdown();
         }
@@ -18,4 +42,7 @@ public partial class App : System.Windows.Application
             Shutdown(1);
         }
     }
+
+    private static bool HasArgument(string[] arguments, string expected) =>
+        arguments.Contains(expected, StringComparer.OrdinalIgnoreCase);
 }

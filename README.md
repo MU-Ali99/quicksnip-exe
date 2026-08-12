@@ -2,7 +2,7 @@
 
 RightSnip is a one-click native Windows screenshot prototype.
 
-Current build: **0.2.0**
+Current build: **0.3.0**
 
 ## Prototype behavior
 
@@ -48,6 +48,13 @@ The publish is a self-contained Windows x64 executable. Installation copies it t
 ```
 
 It also creates a RightSnip shortcut in the current user's Start Menu. Open Start, search for **RightSnip**, right-click it, and choose **Pin to taskbar**.
+
+Taskbar behavior:
+
+- Left-click RightSnip to capture immediately.
+- Right-click RightSnip to open its Windows Jump List.
+- **Open Snips Folder** opens `Pictures\RightSnip`.
+- **RightSnip Options** opens a small window with Right Snip, Open Snips Folder, and Close.
 
 To uninstall this prototype:
 

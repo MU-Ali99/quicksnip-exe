@@ -52,3 +52,12 @@ Do not add until the one-click prototype is tested:
 - Pinning to the taskbar remains an explicit Windows user action.
 
 The installed location is intentionally stable because taskbar shortcuts must not target replaceable Debug or publish output directories.
+
+## Build 0.3.0 command routing
+
+- No arguments: capture immediately and exit.
+- `--open-folder`: open `Pictures\RightSnip` and exit.
+- `--menu`: open the small RightSnip Options window.
+- `--register-jump-list`: register taskbar commands and exit without capturing.
+
+Windows owns the Jump List surface and system commands such as **Unpin from taskbar**. RightSnip adds tasks but does not replace or restyle the Windows panel.

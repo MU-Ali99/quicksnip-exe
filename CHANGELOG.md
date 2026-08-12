@@ -2,6 +2,19 @@
 
 RightSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.3.0 - 2026-08-12
+
+### Taskbar commands
+
+- Added **Open Snips Folder** to the Windows taskbar Jump List.
+- Added **RightSnip Options** to open a small branded quick-actions window.
+- Kept normal left-click behavior as immediate capture, copy, save, and exit.
+- Added installation-time Jump List registration without taking a screenshot.
+
+### Why
+
+RightSnip's main action should remain one-click, while secondary actions need a discoverable home that does not turn every launch into a normal application window. The Windows Jump List provides those actions through the existing taskbar right-click experience.
+
 ## 0.2.0 - 2026-08-12
 
 ### Taskbar-ready build

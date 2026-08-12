@@ -33,17 +33,13 @@ internal static class ScreenCaptureService
                 CopyPixelOperation.SourceCopy);
         }
 
-        var screenshotDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-            "RightSnip");
-
-        Directory.CreateDirectory(screenshotDirectory);
+        SnipFolderService.EnsureExists();
 
         var filename =
             $"rightsnip-{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.png";
 
         var savedPath =
-            Path.Combine(screenshotDirectory, filename);
+            Path.Combine(SnipFolderService.Path, filename);
 
         bitmap.Save(savedPath, ImageFormat.Png);
 

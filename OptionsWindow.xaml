@@ -1,0 +1,70 @@
+<Window x:Class="RightSnip.OptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="RightSnip Options"
+        Width="360"
+        Height="350"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F4F8FD">
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="24" />
+            <RowDefinition Height="58" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="46" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="38" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="RightSnip"
+                   FontFamily="Century Gothic, Segoe UI"
+                   FontWeight="Bold"
+                   FontSize="29"
+                   Foreground="#1269D3" />
+
+        <TextBlock Grid.Row="1"
+                   Margin="0,6,0,0"
+                   Text="Quick actions"
+                   FontSize="15"
+                   Foreground="#526274" />
+
+        <Button Grid.Row="3"
+                Click="RightSnipButton_Click"
+                Content="Right Snip"
+                FontSize="17"
+                FontWeight="SemiBold"
+                Foreground="White"
+                Background="#1677E8"
+                BorderThickness="0"
+                Cursor="Hand" />
+
+        <Button Grid.Row="5"
+                Click="OpenFolderButton_Click"
+                Content="Open Snips Folder"
+                FontSize="15"
+                FontWeight="SemiBold"
+                Foreground="#1269D3"
+                Background="White"
+                BorderBrush="#B8D5F6"
+                Cursor="Hand" />
+
+        <Button Grid.Row="7"
+                Click="CloseButton_Click"
+                Content="Close"
+                Foreground="#526274"
+                Background="Transparent"
+                BorderBrush="#CCD8E5"
+                Cursor="Hand" />
+
+        <TextBlock x:Name="StatusText"
+                   Grid.Row="8"
+                   Margin="0,10,0,0"
+                   TextWrapping="Wrap"
+                   FontSize="12"
+                   Foreground="#526274" />
+    </Grid>
+</Window>

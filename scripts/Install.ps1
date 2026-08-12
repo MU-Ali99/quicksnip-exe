@@ -22,6 +22,17 @@ $shortcut.IconLocation = "$installedExecutable,0"
 $shortcut.Description = "Take a screenshot with RightSnip"
 $shortcut.Save()
 
+$registrationProcess = Start-Process `
+    -FilePath $installedExecutable `
+    -ArgumentList "--register-jump-list" `
+    -Wait `
+    -PassThru
+
+if ($registrationProcess.ExitCode -ne 0) {
+    throw "RightSnip was installed, but Jump List registration failed."
+}
+
 Write-Output "Installed: $installedExecutable"
 Write-Output "Shortcut: $shortcutPath"
+Write-Output "Jump List: Open Snips Folder, RightSnip Options"
 Write-Output "Open Start, search for RightSnip, then choose Pin to taskbar."
