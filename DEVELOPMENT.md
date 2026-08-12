@@ -1,51 +1,40 @@
-# Development roadmap
+# Development
 
-## Phase 0 - Foundation
+## Immediate goal
 
-- Create an independent WPF repository.
-- Confirm a clean .NET build.
-- Define the initial product scope and platform constraints.
+Prove this exact native Windows flow:
 
-## Phase 1 - Native capture engine
+```text
+launch executable -> capture current display -> copy image -> save PNG -> exit
+```
 
-- Capture the display containing the mouse pointer.
-- Save PNG files to `Downloads\RightSnip`.
-- Copy captures using the native Windows clipboard.
-- Handle clipboard contention with a short bounded retry.
+## Project structure
 
-## Phase 2 - Drag Snip
+- `App.xaml` and `App.xaml.cs`: hidden WPF application lifecycle.
+- `ScreenCaptureService.cs`: display capture, PNG saving, and clipboard copy.
+- `RightSnip.csproj`: .NET Windows `WinExe` configuration.
 
-- Add a dimmed topmost selection overlay.
-- Support click-and-drag selection.
-- Support `Esc` cancellation.
-- Handle DPI scaling and negative coordinates on multi-monitor desktops.
-- Exclude the selection overlay from the final capture.
+WPF is used because it provides an STA Windows application context for reliable image clipboard access while compiling as a GUI executable with no console window.
 
-## Phase 3 - Application interface
+## Reliability behavior
 
-- Match RightSnip's minimal blue visual identity.
-- Provide Right Snip and Drag Snip actions.
-- Show the screenshot location.
-- Add explicit context-menu install and uninstall controls.
+- Captures the display containing the mouse pointer.
+- Uses a bounded retry if the Windows clipboard is temporarily busy.
+- Creates `Pictures\RightSnip` when necessary.
+- Exits with code `0` on success and `1` on failure.
+- Does not display UI during either path.
 
-## Phase 4 - Windows shell integration
+## Deferred work
 
-- Register per-user desktop and folder-background context-menu commands.
-- Add `Right Snip` and `Drag Snip` subcommands.
-- Verify installation and clean removal.
-- Document the Windows 11 **Show more options** behavior.
+Do not add until the one-click prototype is tested:
 
-## Phase 5 - Packaging and release
-
-- Publish a self-contained Windows x64 build.
-- Add application icons and version metadata.
-- Create an installer with explicit shell-integration consent.
-- Test clean install, upgrade, and uninstall behavior.
-
-## Reliability rules
-
-- Implement and test one phase at a time.
-- Do not register shell commands automatically.
-- Do not require administrator privileges for the MVP.
-- Do not delete or manage unrelated user files.
-- Preserve a working capture-and-clipboard baseline before adding UI polish.
+- Drag Snip
+- Settings UI
+- Tray icon
+- Screenshot editor
+- Notifications
+- History
+- Browser integration
+- Hotkeys
+- Multiple capture modes
+- Windows context-menu integration

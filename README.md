@@ -1,39 +1,39 @@
 # RightSnip for Windows
 
-RightSnip for Windows is a native desktop screenshot utility inspired by the RightSnip Chrome extension.
+RightSnip is a one-click native Windows screenshot prototype.
 
-## Product goal
+## Prototype behavior
 
-Bring the same simple capture experience to Windows:
+Launching RightSnip immediately:
 
-- **Right Snip** captures the current display or active desktop view.
-- **Drag Snip** captures a selected region.
-- Captures are saved automatically to `Downloads\RightSnip`.
-- Captures are copied through the native Windows clipboard.
-- Right Snip can be launched from the Windows desktop and folder-background context menus.
+1. Captures the display containing the mouse pointer.
+2. Copies the screenshot as an image to the Windows clipboard.
+3. Saves a timestamped PNG to `Pictures\RightSnip`.
+4. Exits.
 
-This application is maintained separately from the Chrome extension because its platform APIs, packaging, distribution, and release lifecycle are different.
+RightSnip does not open a normal window, console, editor, notification, or confirmation prompt.
 
-## Technology
+Example filename:
 
-- C#
-- .NET 10
-- WPF
-- Win32 screen-capture and shell integration where required
+```text
+rightsnip-2026-08-12-16-45-30.png
+```
 
-## Windows context menu
-
-The first reliable implementation will register per-user commands under `HKEY_CURRENT_USER`, so administrator privileges are not required.
-
-On Windows 11, traditional registry commands appear under **Show more options**. Direct placement in the compact Windows 11 context menu requires a packaged shell extension and is outside the first MVP.
-
-## Development
+## Build
 
 ```powershell
+cd C:\Users\ubaid\Desktop\Projects\rightsnip-exe
 dotnet build
+```
+
+## Run
+
+```powershell
 dotnet run
 ```
 
-No installer or system integration runs automatically. Context-menu registration is an explicit action in the application.
+For the intended experience, build or publish the executable, create a shortcut to it, and pin that shortcut to the Windows taskbar.
 
-The current context-menu build adds only **Right Snip**. Drag Snip will be considered in a later build.
+## Current scope
+
+This prototype intentionally excludes Drag Snip, settings, tray features, editing, notifications, history, browser integration, hotkeys, and multiple capture modes.

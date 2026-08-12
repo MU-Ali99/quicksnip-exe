@@ -34,14 +34,13 @@ internal static class ScreenCaptureService
         }
 
         var screenshotDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            "Downloads",
+            Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
             "RightSnip");
 
         Directory.CreateDirectory(screenshotDirectory);
 
         var filename =
-            $"rightsnip-windows-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.png";
+            $"rightsnip-{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.png";
 
         var savedPath =
             Path.Combine(screenshotDirectory, filename);
