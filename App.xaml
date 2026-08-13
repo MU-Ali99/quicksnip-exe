@@ -3,6 +3,45 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
+        <!-- QuickSnip compact typography scale, based on a 13 px body size. -->
+        <FontFamily x:Key="QuickSnipFont">Segoe UI Variable Text, Segoe UI</FontFamily>
+        <Style x:Key="TypeTitle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource QuickSnipFont}" />
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="LineHeight" Value="34" />
+        </Style>
+        <Style x:Key="TypeHeading1" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource QuickSnipFont}" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="LineHeight" Value="25" />
+        </Style>
+        <Style x:Key="TypeHeading2" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource QuickSnipFont}" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="LineHeight" Value="22" />
+        </Style>
+        <Style x:Key="TypeSubheading" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource QuickSnipFont}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="LineHeight" Value="19" />
+        </Style>
+        <Style x:Key="TypeBody" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource QuickSnipFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="LineHeight" Value="19" />
+        </Style>
+        <Style x:Key="TypeCaption" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource QuickSnipFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="LineHeight" Value="15" />
+        </Style>
+
         <Style x:Key="QuickSnipScrollThumb" TargetType="Thumb">
             <Setter Property="Background" Value="#805368E8" />
             <Setter Property="Template">

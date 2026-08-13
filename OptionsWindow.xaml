@@ -10,7 +10,7 @@
         Background="Transparent"
         WindowStyle="None"
         AllowsTransparency="True"
-        FontFamily="Segoe UI">
+        FontFamily="{StaticResource QuickSnipFont}">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="34" ResizeBorderThickness="7"
                       CornerRadius="0" GlassFrameThickness="0" />
@@ -267,8 +267,8 @@
                     </Grid.ColumnDefinitions>
                     <Image Source="Assets/QuickSnip-source.png" Width="58" Height="58" Stretch="Uniform" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
-                        <TextBlock Text="QuickSnip" FontSize="28" FontWeight="Bold" Foreground="White" />
-                        <TextBlock Text="One click. One snip." FontSize="14" Foreground="#E2EEFF" Margin="0,2,0,0" />
+                        <TextBlock Text="QuickSnip" Style="{StaticResource TypeTitle}" Foreground="White" />
+                        <TextBlock Text="One click. One snip." Style="{StaticResource TypeBody}" Foreground="#E2EEFF" Margin="0,2,0,0" />
                     </StackPanel>
                     <Button Grid.Column="2" Style="{StaticResource InfoButton}" Width="29" Height="29"
                             VerticalAlignment="Bottom" Margin="0,0,0,-5"
@@ -281,7 +281,7 @@
                     <StackPanel>
                         <Grid Margin="0,0,0,12">
                             <StackPanel>
-                                <TextBlock Text="Hotkeys" FontSize="17" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="Hotkeys" Style="{StaticResource TypeHeading2}" Foreground="White" />
                                 <TextBlock Text="Click a shortcut, then press new keys"
                                            Foreground="#DCE8FF" FontSize="12" Margin="0,2,0,0" />
                             </StackPanel>
@@ -344,7 +344,7 @@
 
                 <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}">
                     <StackPanel>
-                        <TextBlock Text="Default snip mode" FontSize="17" FontWeight="Bold" Foreground="White" />
+                        <TextBlock Text="Default snip mode" Style="{StaticResource TypeHeading2}" Foreground="White" />
                         <TextBlock Text="Choose what left-click captures from the taskbar"
                                    FontSize="12" Foreground="#DCE8FF" Margin="0,2,0,14" />
                         <UniformGrid Columns="3">
@@ -377,7 +377,7 @@
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                             <StackPanel>
-                                <TextBlock Text="Lock Snip" FontSize="17" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="Lock Snip" Style="{StaticResource TypeHeading2}" Foreground="White" />
                                 <TextBlock Text="Build a scrolling screenshot section by section"
                                            FontSize="12" Foreground="#DCE8FF" Margin="0,2,0,0" />
                             </StackPanel>
@@ -391,7 +391,8 @@
                             <Grid Margin="0,2,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
                                 <RadioButton x:Name="LockDisplayChoice" GroupName="LockTarget" Content="Screen Snip"
-                                             Foreground="White" FontWeight="Bold" VerticalAlignment="Center"
+                                             Style="{StaticResource ChoiceButton}" FontWeight="Bold" VerticalAlignment="Center"
+                                             Margin="-4,0,4,0"
                                              Checked="LockSnipSetting_Changed" />
                                 <TextBox x:Name="LockScreenSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
                                          GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
@@ -401,7 +402,8 @@
                             <Grid Margin="0,8,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
                                 <RadioButton x:Name="LockWindowChoice" GroupName="LockTarget" Content="Window Snip"
-                                             Foreground="White" FontWeight="Bold" VerticalAlignment="Center"
+                                             Style="{StaticResource ChoiceButton}" FontWeight="Bold" VerticalAlignment="Center"
+                                             Margin="-4,0,4,0"
                                              Checked="LockSnipSetting_Changed" />
                                 <TextBox x:Name="LockWindowSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
                                          GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
@@ -441,7 +443,7 @@
 
                 <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#381D2F82" BorderBrush="#4A7186D8">
                     <StackPanel>
-                        <TextBlock Text="Output" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,16" />
+                        <TextBlock Text="Output" Style="{StaticResource TypeHeading2}" Foreground="White" Margin="0,0,0,16" />
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                             <Border Width="40" Height="40" Background="#2EFFFFFF" CornerRadius="14">
@@ -478,7 +480,7 @@
 
                 <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}">
                     <StackPanel>
-                        <TextBlock Text="Save format" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,14" />
+                        <TextBlock Text="Save format" Style="{StaticResource TypeHeading2}" Foreground="White" Margin="0,0,0,14" />
                         <TextBlock Text="Format" Foreground="#DCE8FF" FontWeight="Bold" Margin="3,0,0,7" />
                         <UniformGrid Columns="3">
                             <RadioButton x:Name="PngFormatChoice" GroupName="Format" Content="PNG"
@@ -508,7 +510,7 @@
 
                 <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#381D2F82" BorderBrush="#4A7186D8">
                     <StackPanel>
-                        <TextBlock Text="Feedback and recovery" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,14" />
+                        <TextBlock Text="Feedback and recovery" Style="{StaticResource TypeHeading2}" Foreground="White" Margin="0,0,0,14" />
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                             <StackPanel>

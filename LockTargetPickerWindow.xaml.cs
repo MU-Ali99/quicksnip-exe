@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Controls;
 
 namespace QuickSnip;
 
@@ -14,7 +15,26 @@ public partial class LockTargetPickerWindow : Window
     {
         InitializeComponent();
         SourceInitialized += (_, _) => CoverVirtualDesktop();
-        Loaded += (_, _) => { Activate(); Focus(); };
+        Loaded += (_, _) =>
+        {
+            PositionHintOnPrimaryDisplay();
+            Activate();
+            Focus();
+        };
+        ContentRendered += (_, _) => PositionHintOnPrimaryDisplay();
+        DpiChanged += (_, _) => Dispatcher.BeginInvoke(PositionHintOnPrimaryDisplay);
+    }
+
+    private void PositionHintOnPrimaryDisplay()
+    {
+        Hint.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        const int primaryScreenWidth = 0;
+        const int topGapInPhysicalPixels = 24;
+        var anchor = PointFromScreen(new Point(
+            GetSystemMetrics(primaryScreenWidth) / 2.0,
+            topGapInPhysicalPixels));
+        Canvas.SetLeft(Hint, anchor.X - Hint.DesiredSize.Width / 2);
+        Canvas.SetTop(Hint, anchor.Y);
     }
 
     private void CoverVirtualDesktop()

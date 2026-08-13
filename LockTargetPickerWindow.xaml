@@ -7,8 +7,7 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         MouseRightButtonDown="Window_MouseRightButtonDown">
     <Canvas>
-        <Border x:Name="Hint" CornerRadius="9" Padding="12,7" BorderThickness="0"
-                Canvas.Left="24" Canvas.Top="24">
+        <Border x:Name="Hint" CornerRadius="9" Padding="12,7" BorderThickness="0">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="#F02278E8" Offset="0" />
