@@ -64,9 +64,14 @@ public partial class App : System.Windows.Application
             {
                 if (settings.LockSnipEnabled)
                 {
+                    HotkeyService.StopHost();
                     var controller = new LockSnipWindow(settings);
                     MainWindow = controller;
-                    controller.Closed += (_, _) => Shutdown();
+                    controller.Closed += (_, _) =>
+                    {
+                        HotkeyService.StartHostIfNeeded(SettingsService.Load());
+                        Shutdown();
+                    };
                     controller.Show();
                 }
                 else

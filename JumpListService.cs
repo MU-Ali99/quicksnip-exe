@@ -20,16 +20,16 @@ internal static class JumpListService
             ShowRecentCategory = false
         };
 
-        if (!settings.QuickSnipEnabled)
+        if (settings.ShowSnipModesInTaskbar && !settings.QuickSnipEnabled)
         {
             jumpList.JumpItems.Add(CreateTask(
                 executablePath,
-                "QuickSnip",
+                "Screen Snip",
                 "Capture the display containing the mouse pointer",
                 "--display"));
         }
 
-        if (!settings.ActiveWindowSnipEnabled)
+        if (settings.ShowSnipModesInTaskbar && !settings.ActiveWindowSnipEnabled)
         {
             jumpList.JumpItems.Add(CreateTask(
                 executablePath,
@@ -38,7 +38,7 @@ internal static class JumpListService
                 "--active-window"));
         }
 
-        if (!settings.DragSnipEnabled)
+        if (settings.ShowSnipModesInTaskbar && !settings.DragSnipEnabled)
         {
             jumpList.JumpItems.Add(CreateTask(
                 executablePath,

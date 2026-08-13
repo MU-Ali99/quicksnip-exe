@@ -11,6 +11,7 @@ internal static class HotkeyService
     public const int QuickSnipId = 4101;
     public const int WindowSnipId = 4102;
     public const int DragSnipId = 4103;
+    public const int LockSnipId = 4104;
     public const int LockCaptureId = 4201;
     public const int LockPreviousId = 4202;
     public const int LockNextId = 4203;
@@ -133,6 +134,7 @@ internal static class HotkeyService
         RegisterOne(QuickSnipId, settings.QuickSnipHotkey);
         RegisterOne(WindowSnipId, settings.WindowSnipHotkey);
         RegisterOne(DragSnipId, settings.DragSnipHotkey);
+        if (settings.LockSnipEnabled) RegisterOne(LockSnipId, settings.LockSnipHotkey);
         return result;
         void RegisterOne(int id, HotkeySetting value)
         {
@@ -155,6 +157,7 @@ internal static class HotkeyService
             QuickSnipId => "--display",
             WindowSnipId => "--active-window",
             DragSnipId => "--drag",
+            LockSnipId => "--lock-snip",
             _ => null
         };
         if (argument is not null)

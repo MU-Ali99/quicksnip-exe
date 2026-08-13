@@ -23,7 +23,7 @@ public partial class LockSnipWindow : Window
         _mouseHookCallback = MouseHook;
         PreviousHotkeyText.Text = HotkeyService.Display(_settings.LockPreviousHotkey);
         NextHotkeyText.Text = HotkeyService.Display(_settings.LockNextHotkey);
-        CaptureHotkeyText.Text = HotkeyService.Display(_settings.LockCaptureHotkey);
+        CaptureHotkeyText.Text = HotkeyService.Display(CaptureHotkey);
         SourceInitialized += Window_SourceInitialized;
         Loaded += Window_Loaded;
         Closed += (_, _) => Cleanup();
@@ -50,10 +50,14 @@ public partial class LockSnipWindow : Window
 
     private void RegisterSessionHotkeys()
     {
-        TryRegister(HotkeyService.LockCaptureId, _settings.LockCaptureHotkey);
+        TryRegister(HotkeyService.LockCaptureId, CaptureHotkey);
         TryRegister(HotkeyService.LockPreviousId, _settings.LockPreviousHotkey);
         TryRegister(HotkeyService.LockNextId, _settings.LockNextHotkey);
     }
+
+    private HotkeySetting CaptureHotkey => _settings.LockSnipTarget == "Window"
+        ? _settings.WindowSnipHotkey
+        : _settings.QuickSnipHotkey;
 
     private void TryRegister(int id, HotkeySetting setting)
     {

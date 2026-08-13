@@ -4,9 +4,10 @@ namespace QuickSnip;
 
 internal sealed class QuickSnipSettings
 {
-    public bool QuickSnipEnabled { get; set; }
+    public bool QuickSnipEnabled { get; set; } = true;
     public bool ActiveWindowSnipEnabled { get; set; }
-    public bool DragSnipEnabled { get; set; } = true;
+    public bool DragSnipEnabled { get; set; }
+    public bool ShowSnipModesInTaskbar { get; set; } = true;
     public bool LockSnipEnabled { get; set; }
     public string LockSnipTarget { get; set; } = "Display";
     public bool SavePng { get; set; } = true;
@@ -19,7 +20,7 @@ internal sealed class QuickSnipSettings
     public HotkeySetting QuickSnipHotkey { get; set; } = new();
     public HotkeySetting WindowSnipHotkey { get; set; } = new();
     public HotkeySetting DragSnipHotkey { get; set; } = new();
-    public HotkeySetting LockCaptureHotkey { get; set; } = new();
+    public HotkeySetting LockSnipHotkey { get; set; } = new();
     public HotkeySetting LockPreviousHotkey { get; set; } = HotkeySetting.Alt(Key.W);
     public HotkeySetting LockNextHotkey { get; set; } = HotkeySetting.Alt(Key.S);
 
@@ -32,9 +33,9 @@ internal sealed class QuickSnipSettings
 
         if (enabledModes != 1)
         {
-            QuickSnipEnabled = false;
+            QuickSnipEnabled = true;
             ActiveWindowSnipEnabled = false;
-            DragSnipEnabled = true;
+            DragSnipEnabled = false;
         }
 
         if (!SavePng && !CopyToClipboard)
@@ -68,7 +69,7 @@ internal sealed class QuickSnipSettings
         QuickSnipHotkey ??= new HotkeySetting();
         WindowSnipHotkey ??= new HotkeySetting();
         DragSnipHotkey ??= new HotkeySetting();
-        LockCaptureHotkey ??= new HotkeySetting();
+        LockSnipHotkey ??= new HotkeySetting();
         LockPreviousHotkey ??= HotkeySetting.Alt(Key.W);
         LockNextHotkey ??= HotkeySetting.Alt(Key.S);
     }
@@ -82,6 +83,7 @@ internal sealed class QuickSnipSettings
         QuickSnipEnabled = defaults.QuickSnipEnabled;
         ActiveWindowSnipEnabled = defaults.ActiveWindowSnipEnabled;
         DragSnipEnabled = defaults.DragSnipEnabled;
+        ShowSnipModesInTaskbar = defaults.ShowSnipModesInTaskbar;
         LockSnipEnabled = defaults.LockSnipEnabled;
         LockSnipTarget = defaults.LockSnipTarget;
         SavePng = defaults.SavePng;
@@ -94,13 +96,14 @@ internal sealed class QuickSnipSettings
         QuickSnipHotkey = new HotkeySetting();
         WindowSnipHotkey = new HotkeySetting();
         DragSnipHotkey = new HotkeySetting();
-        LockCaptureHotkey = new HotkeySetting();
+        LockSnipHotkey = new HotkeySetting();
         LockPreviousHotkey = HotkeySetting.Alt(Key.W);
         LockNextHotkey = HotkeySetting.Alt(Key.S);
     }
 
     public bool HasAnyHotkey() =>
-        QuickSnipHotkey.IsAssigned || WindowSnipHotkey.IsAssigned || DragSnipHotkey.IsAssigned;
+        QuickSnipHotkey.IsAssigned || WindowSnipHotkey.IsAssigned || DragSnipHotkey.IsAssigned ||
+        (LockSnipEnabled && LockSnipHotkey.IsAssigned);
 }
 
 internal sealed class HotkeySetting

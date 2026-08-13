@@ -303,7 +303,7 @@
                                 <ColumnDefinition Width="94" /><ColumnDefinition />
                                 <ColumnDefinition Width="52" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="QuickSnip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBlock Text="Screen Snip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
                             <TextBox x:Name="QuickSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
                                      GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
                             <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
@@ -320,6 +320,17 @@
                             <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
                                     Tag="WindowSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
                         </Grid>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="94" /><ColumnDefinition />
+                                <ColumnDefinition Width="52" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Lock Snip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBox x:Name="LockSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                     GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                            <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                    Tag="LockSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                        </Grid>
 
                         <Grid Margin="0,12,0,0">
                             <TextBlock Text="Suggested: Alt + 1  •  Alt + 2  •  Alt + 3"
@@ -333,36 +344,27 @@
 
                 <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}">
                     <StackPanel>
-                        <TextBlock Text="Choose your snip mode" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,18" />
+                        <TextBlock Text="Default snip mode" FontSize="17" FontWeight="Bold" Foreground="White" />
+                        <TextBlock Text="Choose what left-click captures from the taskbar"
+                                   FontSize="12" Foreground="#DCE8FF" Margin="0,2,0,14" />
+                        <UniformGrid Columns="3">
+                            <RadioButton x:Name="DragSnipToggle" GroupName="DefaultSnipMode" Content="Drag Snip"
+                                         Style="{StaticResource ChoiceButton}" Checked="DefaultSnipMode_Changed" />
+                            <RadioButton x:Name="QuickSnipToggle" GroupName="DefaultSnipMode" Content="Screen Snip"
+                                         Style="{StaticResource ChoiceButton}" Checked="DefaultSnipMode_Changed" />
+                            <RadioButton x:Name="ActiveWindowToggle" GroupName="DefaultSnipMode" Content="Window Snip"
+                                         Style="{StaticResource ChoiceButton}" Checked="DefaultSnipMode_Changed" />
+                        </UniformGrid>
+                        <Border Height="1" Background="#44FFFFFF" Margin="0,15,0,13" />
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                             <StackPanel>
-                                <TextBlock Text="Drag Snip" FontSize="16" FontWeight="Bold" Foreground="White" />
-                                <TextBlock Text="Drag to capture a selected area" FontSize="13" Foreground="#DCE8FF" />
+                                <TextBlock Text="Show modes in taskbar menu" Foreground="White" FontWeight="Bold" />
+                                <TextBlock Text="Display alternate snip modes when QuickSnip is right-clicked"
+                                           Foreground="#DCE8FF" FontSize="12" Margin="0,2,10,0"
+                                           TextWrapping="Wrap" />
                             </StackPanel>
-                            <CheckBox x:Name="DragSnipToggle" Grid.Column="1" VerticalAlignment="Center"
-                                      Style="{StaticResource ToggleSwitch}"
-                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
-                        </Grid>
-                        <Border Height="1" Background="#44FFFFFF" Margin="0,16" />
-                        <Grid>
-                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="QuickSnip" FontSize="16" FontWeight="Bold" Foreground="White" />
-                                <TextBlock Text="Capture the display under your pointer" FontSize="13" Foreground="#DCE8FF" />
-                            </StackPanel>
-                            <CheckBox x:Name="QuickSnipToggle" Grid.Column="1" VerticalAlignment="Center"
-                                      Style="{StaticResource ToggleSwitch}"
-                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
-                        </Grid>
-                        <Border Height="1" Background="#44FFFFFF" Margin="0,16" />
-                        <Grid>
-                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="Window Snip" FontSize="16" FontWeight="Bold" Foreground="White" />
-                                <TextBlock Text="Capture the currently focused application" FontSize="13" Foreground="#DCE8FF" />
-                            </StackPanel>
-                            <CheckBox x:Name="ActiveWindowToggle" Grid.Column="1" VerticalAlignment="Center"
+                            <CheckBox x:Name="TaskbarModesToggle" Grid.Column="1" VerticalAlignment="Center"
                                       Style="{StaticResource ToggleSwitch}"
                                       Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
                         </Grid>
@@ -386,20 +388,25 @@
 
                         <StackPanel x:Name="LockSnipControls" Margin="0,17,0,0">
                             <TextBlock Text="Capture target" Foreground="White" FontWeight="Bold" Margin="2,0,0,7" />
-                            <UniformGrid Columns="2">
-                                <RadioButton x:Name="LockDisplayChoice" GroupName="LockTarget" Content="Display"
-                                             Style="{StaticResource ChoiceButton}" Checked="LockSnipSetting_Changed" />
-                                <RadioButton x:Name="LockWindowChoice" GroupName="LockTarget" Content="Window"
-                                             Style="{StaticResource ChoiceButton}" Checked="LockSnipSetting_Changed" />
-                            </UniformGrid>
-
-                            <Grid Margin="0,15,0,0">
+                            <Grid Margin="0,2,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
-                                <TextBlock Text="Capture section" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
-                                <TextBox x:Name="LockCaptureHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                <RadioButton x:Name="LockDisplayChoice" GroupName="LockTarget" Content="Screen Snip"
+                                             Foreground="White" FontWeight="Bold" VerticalAlignment="Center"
+                                             Checked="LockSnipSetting_Changed" />
+                                <TextBox x:Name="LockScreenSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
                                          GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
                                 <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
-                                        Tag="LockCapture" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                                        Tag="LockScreenSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                            </Grid>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
+                                <RadioButton x:Name="LockWindowChoice" GroupName="LockTarget" Content="Window Snip"
+                                             Foreground="White" FontWeight="Bold" VerticalAlignment="Center"
+                                             Checked="LockSnipSetting_Changed" />
+                                <TextBox x:Name="LockWindowSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                         GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                                <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                        Tag="LockWindowSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
                             </Grid>
                             <Grid Margin="0,8,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
