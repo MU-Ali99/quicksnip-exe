@@ -42,7 +42,7 @@ The original Chrome-extension investigation established why a native app was nee
 ## Build
 
 ```powershell
-cd C:\Users\ubaid\Desktop\Projects\rightsnip-exe
+cd C:\path\to\quicksnip-exe
 dotnet build .\QuickSnip.csproj
 ```
 

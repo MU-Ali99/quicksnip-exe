@@ -35,13 +35,12 @@ Current tested rules:
 | 0.4.0 | Onboarding and reliability | Added first-run guidance, a capture semaphore, timestamp collision protection, logging, and DPI-safe physical monitor capture. |
 | 0.5.0 | QuickSnip modes and preferences | Renamed the product, added Window Snip, persistent mode/output settings, adaptive Jump List commands, and the themed Settings/Information UI. |
 
-The source folder and GitHub repository retain the historical `rightsnip-exe` name for this 0.5.0 commit. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
+The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
 
 ## Deferred work
 
 - Settings and Information intentionally use stable primary-work-area centering. A pointer-monitor placement experiment was rolled back because the borderless WPF windows could appear against the top edge or on the wrong monitor.
 - Drag Snip, editor, history, tray support, hotkeys, notifications, and Chrome companion integration remain outside this build.
-- The local/GitHub repository rename can be handled separately after the 0.5.0 state is safely pushed.
 
 ## Command routing
 
