@@ -38,6 +38,15 @@ internal static class JumpListService
                 "--active-window"));
         }
 
+        if (!settings.DragSnipEnabled)
+        {
+            jumpList.JumpItems.Add(CreateTask(
+                executablePath,
+                "Drag Snip",
+                "Drag to capture a selected area",
+                "--drag"));
+        }
+
         jumpList.JumpItems.Add(CreateTask(
             executablePath,
             "Open Snips Folder",

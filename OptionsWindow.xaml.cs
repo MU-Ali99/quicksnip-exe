@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,21 +16,15 @@ public partial class OptionsWindow : Window
     {
         InitializeComponent();
         _settings = SettingsService.Load();
-
-        // Capture modes are exclusive: one mode is always the left-click default.
-        if (_settings.QuickSnipEnabled == _settings.ActiveWindowSnipEnabled)
-        {
-            _settings.QuickSnipEnabled = true;
-            _settings.ActiveWindowSnipEnabled = false;
-            SettingsService.Save(_settings);
-            JumpListService.Register(_settings);
-        }
+        WindowPlacementService.Restore(this, _settings.SettingsWindow, 504, 760);
+        Closing += OptionsWindow_Closing;
 
         var version = Assembly.GetExecutingAssembly().GetName().Version;
         VersionText.Text = $"Build {version?.Major}.{version?.Minor}.{version?.Build}";
 
         QuickSnipToggle.IsChecked = _settings.QuickSnipEnabled;
         ActiveWindowToggle.IsChecked = _settings.ActiveWindowSnipEnabled;
+        DragSnipToggle.IsChecked = _settings.DragSnipEnabled;
         SavePngToggle.IsChecked = _settings.SavePng;
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
         SaveLocationText.Text = _settings.SaveFolder;
@@ -46,7 +41,8 @@ public partial class OptionsWindow : Window
         }
 
         var isCaptureToggle = ReferenceEquals(sender, QuickSnipToggle) ||
-                              ReferenceEquals(sender, ActiveWindowToggle);
+                              ReferenceEquals(sender, ActiveWindowToggle) ||
+                              ReferenceEquals(sender, DragSnipToggle);
 
         if (isCaptureToggle)
         {
@@ -57,15 +53,24 @@ public partial class OptionsWindow : Window
                 if (ReferenceEquals(sender, QuickSnipToggle))
                 {
                     ActiveWindowToggle.IsChecked = false;
+                    DragSnipToggle.IsChecked = false;
+                }
+                else if (ReferenceEquals(sender, ActiveWindowToggle))
+                {
+                    QuickSnipToggle.IsChecked = false;
+                    DragSnipToggle.IsChecked = false;
                 }
                 else
                 {
                     QuickSnipToggle.IsChecked = false;
+                    ActiveWindowToggle.IsChecked = false;
                 }
 
                 _loading = false;
             }
-            else if (QuickSnipToggle.IsChecked != true && ActiveWindowToggle.IsChecked != true)
+            else if (QuickSnipToggle.IsChecked != true &&
+                     ActiveWindowToggle.IsChecked != true &&
+                     DragSnipToggle.IsChecked != true)
             {
                 _loading = true;
                 QuickSnipToggle.IsChecked = true;
@@ -96,6 +101,7 @@ public partial class OptionsWindow : Window
     {
         _settings.QuickSnipEnabled = QuickSnipToggle.IsChecked == true;
         _settings.ActiveWindowSnipEnabled = ActiveWindowToggle.IsChecked == true;
+        _settings.DragSnipEnabled = DragSnipToggle.IsChecked == true;
         _settings.SavePng = SavePngToggle.IsChecked == true;
         _settings.CopyToClipboard = ClipboardToggle.IsChecked == true;
         SettingsService.Save(_settings);
@@ -111,6 +117,10 @@ public partial class OptionsWindow : Window
         ActiveWindowButton.Visibility = _settings.ActiveWindowSnipEnabled
             ? Visibility.Visible
             : Visibility.Collapsed;
+
+        DragSnipButton.Visibility = _settings.DragSnipEnabled
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private async void QuickSnipButton_Click(object sender, RoutedEventArgs e) =>
@@ -118,6 +128,9 @@ public partial class OptionsWindow : Window
 
     private async void ActiveWindowButton_Click(object sender, RoutedEventArgs e) =>
         await CaptureAndCloseAsync(CaptureTarget.ActiveWindow);
+
+    private async void DragSnipButton_Click(object sender, RoutedEventArgs e) =>
+        await CaptureAndCloseAsync(CaptureTarget.Drag);
 
     private async Task CaptureAndCloseAsync(CaptureTarget target)
     {
@@ -176,15 +189,31 @@ public partial class OptionsWindow : Window
 
     private void InformationButton_Click(object sender, RoutedEventArgs e)
     {
+        // Persist the currently visible bounds before the Information window reads them.
+        WindowPlacementService.Save(this, _settings.SettingsWindow);
+        SettingsService.Save(_settings);
+
         Hide();
         var guide = new WelcomeWindow(isFirstRun: false) { Owner = this };
         guide.ContinueRequested += (_, _) => guide.Close();
-        guide.Closed += (_, _) => { Show(); Activate(); };
+        guide.Closed += (_, _) =>
+        {
+            var latest = SettingsService.Load();
+            _settings.SettingsWindow = latest.SettingsWindow;
+            WindowPlacementService.Restore(this, _settings.SettingsWindow, 504, 760);
+            Show();
+            Activate();
+        };
         guide.Show();
-        App.CenterOnPrimaryWorkArea(guide);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void OptionsWindow_Closing(object? sender, CancelEventArgs e)
+    {
+        WindowPlacementService.Save(this, _settings.SettingsWindow);
+        SettingsService.Save(_settings);
+    }
 
     private void Header_MouseLeftButtonDown(
         object sender,

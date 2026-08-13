@@ -8,7 +8,8 @@ namespace QuickSnip;
 internal enum CaptureTarget
 {
     Display,
-    ActiveWindow
+    ActiveWindow,
+    Drag
 }
 
 internal static class ScreenCaptureService
@@ -36,11 +37,31 @@ internal static class ScreenCaptureService
         settings ??= SettingsService.Load();
         settings.Normalize();
 
-        using var bitmap = target switch
+        Bitmap bitmap;
+
+        if (target == CaptureTarget.Drag)
         {
-            CaptureTarget.ActiveWindow => NativeScreenCapture.CaptureActiveWindow(),
-            _ => NativeScreenCapture.CaptureDisplayContainingPointer()
-        };
+            var overlay = new DragSnipWindow();
+            var accepted = overlay.ShowDialog() == true;
+
+            if (!accepted || overlay.Selection is not { } selection)
+            {
+                return null;
+            }
+
+            // Let Desktop Window Manager remove the overlay before copying pixels.
+            await Task.Delay(80);
+            bitmap = NativeScreenCapture.CaptureRegion(selection);
+        }
+        else
+        {
+            bitmap = target == CaptureTarget.ActiveWindow
+                ? NativeScreenCapture.CaptureActiveWindow()
+                : NativeScreenCapture.CaptureDisplayContainingPointer();
+        }
+
+        using (bitmap)
+        {
 
         string? savedPath = null;
 
@@ -48,9 +69,12 @@ internal static class ScreenCaptureService
         {
             SnipFolderService.EnsureExists(settings.SaveFolder);
 
-            var mode = target == CaptureTarget.ActiveWindow
-                ? "window"
-                : "display";
+            var mode = target switch
+            {
+                CaptureTarget.ActiveWindow => "window",
+                CaptureTarget.Drag => "drag",
+                _ => "display"
+            };
 
             var filename =
                 $"quicksnip-{mode}-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.png";
@@ -65,9 +89,10 @@ internal static class ScreenCaptureService
             await CopyImageToClipboardAsync(clipboardImage);
         }
 
-        CaptureCooldownService.MarkCompleted();
+            CaptureCooldownService.MarkCompleted();
 
-        return savedPath;
+            return savedPath;
+        }
     }
 
     private static BitmapSource CreateClipboardImage(Bitmap bitmap)

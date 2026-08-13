@@ -76,6 +76,15 @@ internal static class NativeScreenCapture
         return CaptureRectangle(bounds);
     }
 
+    public static Bitmap CaptureRegion(PhysicalCaptureRectangle region) =>
+        CaptureRectangle(new NativeRectangle
+        {
+            Left = region.Left,
+            Top = region.Top,
+            Right = region.Left + region.Width,
+            Bottom = region.Top + region.Height
+        });
+
     private static Bitmap CaptureRectangle(NativeRectangle bounds)
     {
         var width = bounds.Right - bounds.Left;

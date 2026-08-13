@@ -2,6 +2,22 @@
 
 QuickSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.6.0 - 2026-08-12
+
+### Drag Snip and scalable windows
+
+- Added Drag Snip with a virtual-desktop overlay, cyan selection border, shaded outside area, and live selection dimensions.
+- Added cancellation with `Esc` or right-click without saving or changing the clipboard.
+- Added Drag Snip to the exclusive left-click default and adaptive Jump List mode system.
+- Made Settings and Information resizable without shrinking their internal controls; constrained content scrolls instead.
+- Settings and Information share one persisted size and last closed location so switching views does not move or resize the interface.
+- Validated restored placement against the connected virtual desktop and retained comfortable screen-edge margins.
+- Added transparent blue/cyan themed scrollbars to match the QuickSnip interface.
+
+### Why
+
+Drag Snip completes the three essential capture scopes—display, focused window, and selected area—without adding an editor or interrupting the direct taskbar workflow. Resizable, scrollable, placement-aware Settings and Information views keep the interface usable at different sizes while behaving like two pages of one application window.
+
 ## 0.5.0 - 2026-08-12
 
 ### QuickSnip rename, capture modes, and preferences

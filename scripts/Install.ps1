@@ -51,6 +51,6 @@ if (Test-Path -LiteralPath $oldInstallDirectory) {
 
 Write-Output "Installed: $installedExecutable"
 Write-Output "Shortcut: $shortcutPath"
-Write-Output "Jump List: Window Snip, Open Snips Folder, QuickSnip Settings"
+Write-Output "Jump List: alternate snip modes, Open Snips Folder, QuickSnip Settings"
 Write-Output "Open Start, search for QuickSnip, then choose Pin to taskbar."
 Write-Output "Existing Pictures\RightSnip screenshots were left untouched."

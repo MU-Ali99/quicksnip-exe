@@ -1,0 +1,29 @@
+<Window x:Class="QuickSnip.DragSnipWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize"
+        Cursor="Cross" Focusable="True"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        MouseMove="Window_MouseMove"
+        MouseLeftButtonUp="Window_MouseLeftButtonUp"
+        MouseRightButtonDown="Window_MouseRightButtonDown">
+    <Canvas x:Name="OverlayCanvas" Background="Transparent">
+        <Rectangle x:Name="TopShade" Fill="#9907132A" />
+        <Rectangle x:Name="LeftShade" Fill="#9907132A" />
+        <Rectangle x:Name="RightShade" Fill="#9907132A" />
+        <Rectangle x:Name="BottomShade" Fill="#9907132A" />
+        <Rectangle x:Name="SelectionBorder" Fill="Transparent" Stroke="#62D7F4"
+                   StrokeThickness="2" Visibility="Collapsed" />
+        <Border x:Name="SizeBadge" Visibility="Collapsed" Background="#E6203A9B"
+                BorderBrush="#8862D7F4" BorderThickness="1" CornerRadius="6" Padding="7,3">
+            <TextBlock x:Name="SizeText" Foreground="White" FontSize="12" FontWeight="SemiBold" />
+        </Border>
+        <Border x:Name="Hint" Background="#E6203A9B" BorderBrush="#8862D7F4"
+                BorderThickness="1" CornerRadius="10" Padding="14,8">
+            <TextBlock Text="Drag to select  •  Esc or right-click to cancel"
+                       Foreground="White" FontSize="13" />
+        </Border>
+    </Canvas>
+</Window>

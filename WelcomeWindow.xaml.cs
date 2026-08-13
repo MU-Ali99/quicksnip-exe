@@ -1,12 +1,14 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace QuickSnip;
 
 public partial class WelcomeWindow : Window
 {
     private readonly bool _isFirstRun;
+    private readonly QuickSnipSettings _settings;
 
     public event EventHandler? ContinueRequested;
 
@@ -14,6 +16,9 @@ public partial class WelcomeWindow : Window
     {
         _isFirstRun = isFirstRun;
         InitializeComponent();
+        _settings = SettingsService.Load();
+        WindowPlacementService.Restore(this, _settings.SettingsWindow, 504, 660);
+        Closing += WelcomeWindow_Closing;
 
         if (!isFirstRun)
         {
@@ -52,4 +57,10 @@ public partial class WelcomeWindow : Window
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void WelcomeWindow_Closing(object? sender, CancelEventArgs e)
+    {
+        WindowPlacementService.Save(this, _settings.SettingsWindow);
+        SettingsService.Save(_settings);
+    }
 }

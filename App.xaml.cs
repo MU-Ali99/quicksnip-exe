@@ -44,6 +44,15 @@ public partial class App : System.Windows.Application
                 return;
             }
 
+            if (HasArgument(e.Args, "--drag"))
+            {
+                await ScreenCaptureService.CaptureAsync(
+                    CaptureTarget.Drag,
+                    settings);
+                Shutdown();
+                return;
+            }
+
             if (HasArgument(e.Args, "--menu"))
             {
                 ShowOptionsWindow();
@@ -56,9 +65,11 @@ public partial class App : System.Windows.Application
                 return;
             }
 
-            var defaultTarget = settings.QuickSnipEnabled
-                ? CaptureTarget.Display
-                : CaptureTarget.ActiveWindow;
+            var defaultTarget = settings.DragSnipEnabled
+                ? CaptureTarget.Drag
+                : settings.ActiveWindowSnipEnabled
+                    ? CaptureTarget.ActiveWindow
+                    : CaptureTarget.Display;
 
             await ScreenCaptureService.CaptureAsync(defaultTarget, settings);
             Shutdown();
@@ -84,9 +95,7 @@ public partial class App : System.Windows.Application
             JumpListService.Register(SettingsService.Load());
             Shutdown();
         };
-        optionsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         optionsWindow.Show();
-        CenterOnPrimaryWorkArea(optionsWindow);
     }
 
     public void ShowWelcomeWindow(bool isFirstRun)
@@ -103,7 +112,6 @@ public partial class App : System.Windows.Application
 
         welcomeWindow.Closed += WelcomeWindowClosed;
         welcomeWindow.Show();
-        CenterOnPrimaryWorkArea(welcomeWindow);
     }
 
     private void WelcomeWindowClosed(object? sender, EventArgs e) =>
@@ -112,11 +120,4 @@ public partial class App : System.Windows.Application
     private static bool HasArgument(string[] arguments, string expected) =>
         arguments.Contains(expected, StringComparer.OrdinalIgnoreCase);
 
-    internal static void CenterOnPrimaryWorkArea(Window window)
-    {
-        window.Left = SystemParameters.WorkArea.Left +
-            (SystemParameters.WorkArea.Width - window.ActualWidth) / 2;
-        window.Top = SystemParameters.WorkArea.Top +
-            (SystemParameters.WorkArea.Height - window.ActualHeight) / 2;
-    }
 }
