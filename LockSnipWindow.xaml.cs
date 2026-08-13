@@ -79,9 +79,7 @@ public partial class LockSnipWindow : Window
         TryRegister(HotkeyService.LockNextId, _settings.LockNextHotkey);
     }
 
-    private HotkeySetting CaptureHotkey => _settings.LockSnipTarget == "Window"
-        ? _settings.WindowSnipHotkey
-        : _settings.QuickSnipHotkey;
+    private HotkeySetting CaptureHotkey => _settings.WindowSnipHotkey;
 
     private void TryRegister(int id, HotkeySetting setting)
     {
@@ -215,11 +213,11 @@ public partial class LockSnipWindow : Window
         AutoCaptureButton.Background = AutomationBrush(_autoCaptureEnabled);
         AutoScrollButton.Background = AutomationBrush(_autoScrollEnabled);
         AutomationStatusText.Text = _autoCaptureEnabled && _autoScrollEnabled
-            ? "Capture after each downward scroll"
+            ? "Scroll down or capture to start"
             : _autoCaptureEnabled
-                ? "Waiting for a downward scroll"
+                ? "Auto Capture requires a downward scroll to start"
                 : _autoScrollEnabled
-                    ? "Scroll after a successful capture"
+                    ? "Auto Scroll requires a capture to start"
                     : "Automation is off";
     }
 
@@ -242,10 +240,8 @@ public partial class LockSnipWindow : Window
         await Task.Delay(120);
         _target = NativeScreenCapture.GetLockedTarget(
             (int)Math.Round(point.X), (int)Math.Round(point.Y),
-            _settings.LockSnipTarget == "Window");
-        TargetNameText.Text = _settings.LockSnipTarget == "Window"
-            ? $"Locked window  •  {_target.Name}"
-            : $"Locked display  •  {_target.Name}";
+            true);
+        TargetNameText.Text = $"Locked window  •  {_target.Name}";
         Show();
         Activate();
         return true;

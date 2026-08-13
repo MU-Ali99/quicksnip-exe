@@ -30,8 +30,6 @@ public partial class OptionsWindow : Window
         DragSnipToggle.IsChecked = _settings.DragSnipEnabled;
         TaskbarModesToggle.IsChecked = _settings.ShowSnipModesInTaskbar;
         LockSnipToggle.IsChecked = _settings.LockSnipEnabled;
-        LockDisplayChoice.IsChecked = _settings.LockSnipTarget == "Display";
-        LockWindowChoice.IsChecked = _settings.LockSnipTarget == "Window";
         LockAutoCaptureToggle.IsChecked = _settings.LockAutoCaptureAvailable;
         LockAutoScrollToggle.IsChecked = _settings.LockAutoScrollAvailable;
         SelectLockSpeed();
@@ -108,7 +106,7 @@ public partial class OptionsWindow : Window
         _settings.DragSnipEnabled = DragSnipToggle.IsChecked == true;
         _settings.ShowSnipModesInTaskbar = TaskbarModesToggle.IsChecked == true;
         _settings.LockSnipEnabled = LockSnipToggle.IsChecked == true;
-        _settings.LockSnipTarget = LockWindowChoice.IsChecked == true ? "Window" : "Display";
+        _settings.LockSnipTarget = "Window";
         _settings.LockAutoCaptureAvailable = LockAutoCaptureToggle.IsChecked == true;
         _settings.LockAutoScrollAvailable = LockAutoScrollToggle.IsChecked == true;
         _settings.LockAutomationSpeed = LockFastChoice.IsChecked == true
@@ -347,7 +345,7 @@ public partial class OptionsWindow : Window
         if (sender is not Button { Tag: string name }) return;
         var box = name switch
         {
-            "QuickSnip" or "LockScreenSnip" => QuickSnipHotkeyBox,
+            "QuickSnip" => QuickSnipHotkeyBox,
             "WindowSnip" => WindowSnipHotkeyBox,
             "LockWindowSnip" => WindowSnipHotkeyBox,
             "DragSnip" => DragSnipHotkeyBox,
@@ -391,7 +389,7 @@ public partial class OptionsWindow : Window
 
     private (int Id, HotkeySetting Current, Action<HotkeySetting> Assign) GetHotkeyBinding(TextBox box)
     {
-        if (ReferenceEquals(box, QuickSnipHotkeyBox) || ReferenceEquals(box, LockScreenSnipHotkeyBox))
+        if (ReferenceEquals(box, QuickSnipHotkeyBox))
             return (HotkeyService.QuickSnipId, _settings.QuickSnipHotkey, value => _settings.QuickSnipHotkey = value);
         if (ReferenceEquals(box, WindowSnipHotkeyBox) || ReferenceEquals(box, LockWindowSnipHotkeyBox))
             return (HotkeyService.WindowSnipId, _settings.WindowSnipHotkey, value => _settings.WindowSnipHotkey = value);
@@ -410,7 +408,6 @@ public partial class OptionsWindow : Window
         WindowSnipHotkeyBox.Text = HotkeyService.Display(_settings.WindowSnipHotkey);
         DragSnipHotkeyBox.Text = HotkeyService.Display(_settings.DragSnipHotkey);
         LockSnipHotkeyBox.Text = HotkeyService.Display(_settings.LockSnipHotkey);
-        LockScreenSnipHotkeyBox.Text = HotkeyService.Display(_settings.QuickSnipHotkey);
         LockWindowSnipHotkeyBox.Text = HotkeyService.Display(_settings.WindowSnipHotkey);
         LockPreviousHotkeyBox.Text = HotkeyService.Display(_settings.LockPreviousHotkey);
         LockNextHotkeyBox.Text = HotkeyService.Display(_settings.LockNextHotkey);
@@ -469,8 +466,6 @@ public partial class OptionsWindow : Window
         DragSnipToggle.IsChecked = _settings.DragSnipEnabled;
         TaskbarModesToggle.IsChecked = _settings.ShowSnipModesInTaskbar;
         LockSnipToggle.IsChecked = _settings.LockSnipEnabled;
-        LockDisplayChoice.IsChecked = _settings.LockSnipTarget == "Display";
-        LockWindowChoice.IsChecked = _settings.LockSnipTarget == "Window";
         LockAutoCaptureToggle.IsChecked = _settings.LockAutoCaptureAvailable;
         LockAutoScrollToggle.IsChecked = _settings.LockAutoScrollAvailable;
         SelectLockSpeed();

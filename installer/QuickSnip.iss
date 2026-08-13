@@ -1,5 +1,5 @@
 #define MyAppName "QuickSnip"
-#define MyAppVersion "0.9.0"
+#define MyAppVersion "0.10.0"
 #define MyAppPublisher "MU-Ali99"
 #define MyAppExeName "QuickSnip.exe"
 
@@ -17,7 +17,7 @@ DefaultGroupName=QuickSnip
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=..\artifacts\installer
-OutputBaseFilename=QuickSnip-Setup-0.9.0-win-x64
+OutputBaseFilename=QuickSnip-Setup-0.10.0-win-x64
 SetupIconFile=..\Assets\QuickSnip.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/max

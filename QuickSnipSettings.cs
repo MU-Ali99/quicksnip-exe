@@ -9,7 +9,7 @@ internal sealed class QuickSnipSettings
     public bool DragSnipEnabled { get; set; }
     public bool ShowSnipModesInTaskbar { get; set; } = true;
     public bool LockSnipEnabled { get; set; }
-    public string LockSnipTarget { get; set; } = "Display";
+    public string LockSnipTarget { get; set; } = "Window";
     public bool LockAutoCaptureAvailable { get; set; }
     public bool LockAutoScrollAvailable { get; set; }
     public string LockAutomationSpeed { get; set; } = "Normal";
@@ -70,10 +70,7 @@ internal sealed class QuickSnipSettings
 
         CustomFilenamePrefix ??= "quicksnip";
 
-        if (LockSnipTarget is not ("Display" or "Window"))
-        {
-            LockSnipTarget = "Display";
-        }
+        LockSnipTarget = "Window";
 
         if (LockAutomationSpeed is not ("Slow" or "Normal" or "Fast"))
         {

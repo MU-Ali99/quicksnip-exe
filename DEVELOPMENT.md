@@ -4,7 +4,7 @@
 
 Every tested user-facing feature build receives a semantic version, documentation update, commit, tag, push, and GitHub release.
 
-## Build 0.9.0 architecture
+## Build 0.10.0 architecture
 
 - `QuickSnip.csproj`: .NET 10 WPF `WinExe` project.
 - `NativeScreenCapture.cs`: physical-pixel display and active-window capture.
@@ -49,6 +49,7 @@ Current tested rules:
 | 0.8.0 | Custom hotkeys and design | Added opt-in global shortcuts, conflict-safe registration, a conditional background host/startup entry, Drag Snip defaults, and unified cobalt/indigo interfaces. |
 | 0.8.1 | Drag Snip placement maintenance | Stabilized the Drag Snip instruction pill on the primary display. |
 | 0.9.0 | Lock Snip and interface refinement | Added locked display/window capture, controlled scrolling, immediate per-section output, shared hotkeys, taskbar-mode visibility, compact typography, and controller polish. |
+| 0.10.0 | Naming and Lock Snip automation | Added simple filename presets, collision-safe custom names, Window-only locked targeting, Up/Down terminology, downward-scroll Auto Capture, post-capture Auto Scroll, and Stop control. |
 
 The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
 
@@ -79,6 +80,17 @@ Build 0.9.0 promotes the tested Lock Snip prototype into the released applicatio
 - Lock Snip is opt-in and loads only while a session is active.
 
 Lock Snip intentionally saves each captured section immediately rather than retaining or stitching a long in-memory image. Broader application, monitor, DPI, and scrolling tests remain part of the future reliability audit.
+
+## Build 0.10.0 naming and automation
+
+- Filename presets support mode/date, date-only, window/date, and exact custom names without exposing a technical pattern editor.
+- Invalid Windows filename characters are sanitized and collisions receive numeric suffixes.
+- Lock Snip targets application windows only because a display itself cannot receive scrolling input reliably.
+- Previous/Next wording is replaced by Scroll Up/Scroll Down in Settings and Up/Down in the controller.
+- Auto Capture arms after a downward mouse-wheel scroll over the locked target.
+- Auto Scroll runs only after a successful capture.
+- When both are active, either a downward scroll or a capture starts the linked loop; Stop disables both and cancels pending work.
+- Automated verification covered clean builds, Settings startup, display capture, PNG/JPEG/WebP signatures, clipboard image data, filename sanitization/collisions, and simultaneous-launch protection.
 
 ## Build 0.7.0 safety and migration
 

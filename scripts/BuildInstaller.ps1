@@ -24,4 +24,4 @@ if ($LASTEXITCODE -ne 0) {
     throw "QuickSnip installer build failed."
 }
 
-Write-Output (Join-Path $projectRoot "artifacts\installer\QuickSnip-Setup-0.9.0-win-x64.exe")
+Write-Output (Join-Path $projectRoot "artifacts\installer\QuickSnip-Setup-0.10.0-win-x64.exe")

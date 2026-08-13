@@ -395,21 +395,7 @@
                             <TextBlock Text="Capture target" Foreground="White" FontWeight="Bold" Margin="2,0,0,7" />
                             <Grid Margin="0,2,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
-                                <RadioButton x:Name="LockDisplayChoice" GroupName="LockTarget" Content="Screen Snip"
-                                             Style="{StaticResource ChoiceButton}" FontWeight="Bold" VerticalAlignment="Center"
-                                             Margin="-4,0,4,0"
-                                             Checked="LockSnipSetting_Changed" />
-                                <TextBox x:Name="LockScreenSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
-                                         GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
-                                <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
-                                        Tag="LockScreenSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
-                            </Grid>
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
-                                <RadioButton x:Name="LockWindowChoice" GroupName="LockTarget" Content="Window Snip"
-                                             Style="{StaticResource ChoiceButton}" FontWeight="Bold" VerticalAlignment="Center"
-                                             Margin="-4,0,4,0"
-                                             Checked="LockSnipSetting_Changed" />
+                                <TextBlock Text="Window Snip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
                                 <TextBox x:Name="LockWindowSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
                                          GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
                                 <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
@@ -417,7 +403,7 @@
                             </Grid>
                             <Grid Margin="0,8,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
-                                <TextBlock Text="Previous position" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                                <TextBlock Text="Scroll up" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
                                 <TextBox x:Name="LockPreviousHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
                                          GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
                                 <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
@@ -425,7 +411,7 @@
                             </Grid>
                             <Grid Margin="0,8,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
-                                <TextBlock Text="Next position" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                                <TextBlock Text="Scroll down" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
                                 <TextBox x:Name="LockNextHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
                                          GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
                                 <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"

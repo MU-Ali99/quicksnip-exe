@@ -2,6 +2,23 @@
 
 QuickSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.10.0 - 2026-08-13
+
+### Filename controls and Lock Snip automation
+
+- Added mode/date, date-only, window/date, and exact custom filename choices with live preview.
+- Sanitized invalid Windows filename characters and added collision-safe numeric suffixes.
+- Simplified Lock Snip to a Window-only target because displays cannot reliably receive scrolling input.
+- Renamed Previous/Next controls to Up/Down and Scroll Up/Scroll Down.
+- Added optional downward-scroll Auto Capture and successful-capture Auto Scroll controls.
+- Linked both automation modes when enabled together and added an explicit full-width Stop action.
+- Added clear automation start guidance beneath Stop and refined controller readability and hover feedback.
+- Verified PNG, JPEG, WebP, clipboard image output, filenames, process exit, startup, and rapid-click protection.
+
+### Why
+
+This build makes saved files understandable without requiring filename patterns and turns Lock Snip into a focused window-scrolling workflow with predictable automation rules and a clear escape control.
+
 ## 0.9.0 - 2026-08-13
 
 ### Lock Snip and interface refinement

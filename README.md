@@ -4,7 +4,7 @@
 
 QuickSnip is a native Windows screenshot utility designed around direct taskbar capture.
 
-Current build: **0.9.0**
+Current build: **0.10.0**
 
 ## Capture modes
 
@@ -25,6 +25,7 @@ Drag Snip uses left-drag to select. Press `Esc` or right-click to cancel without
 - Show a compact branded “Snip taken” toast, enabled by default and configurable.
 - Move QuickSnip images to the Windows Recycle Bin after confirmation.
 - Reset window placement or restore preferences without deleting screenshots.
+- Choose mode/date, date-only, window/date, or exact custom filenames with collision-safe suffixes.
 
 Save and clipboard output can be enabled independently, but at least one output must remain enabled. The default folder is `Pictures\QuickSnip`.
 
@@ -46,10 +47,11 @@ QuickSnip supports separate custom global shortcuts for Drag Snip, QuickSnip, an
 
 ## Lock Snip
 
-Lock Snip keeps one selected display or application window as its capture target while you continue working elsewhere. Its floating controller provides Previous, Next, Capture, Reset Window, and Close actions. Every capture is immediately saved, copied according to Output preferences, and confirmed by the optional toast.
+Lock Snip keeps one selected application window as its capture and scrolling target while you continue working elsewhere. Its floating controller provides Up, Down, Capture, Reset Window, Auto Capture, Auto Scroll, Stop, and Close actions. Every capture is immediately saved, copied according to Output preferences, and confirmed by the optional toast.
 
-- Screen Snip and Window Snip shortcuts are reused inside their matching locked target.
-- Previous and Next positions have configurable shortcuts.
+- Window Snip's shortcut is reused for Lock Snip capture.
+- Scroll Up and Scroll Down have configurable shortcuts.
+- Auto Capture responds only to downward scrolling. Auto Scroll runs only after a successful capture; enabling both creates a capture-and-scroll loop until Stop is pressed.
 - Chrome supports background scrolling; File Explorer uses a focused scrolling fallback that restores the previous window and pointer.
 - Lock Snip is optional and loads only during an active session.
 - Middle-click closes the controller.
@@ -73,6 +75,8 @@ QuickSnip has progressed through its initial Windows builds:
 - **0.8.1 — Placement maintenance:** stabilizes the Drag Snip instruction pill on the primary display.
 
 - **0.9.0 — Lock Snip:** adds locked display/window capture, controlled scrolling, immediate output, shared hotkeys, taskbar-mode controls, and refined typography.
+
+- **0.10.0 — Naming and Lock Snip automation:** adds friendly filename choices, Window-only Lock Snip targeting, Up/Down controls, linked Auto Capture/Auto Scroll, and an explicit Stop action.
 
 The original Chrome-extension investigation established why a native app was needed: Chrome can capture protected pages such as `chrome://` through extension APIs, but browser clipboard restrictions can prevent the captured image from being copied. The Windows app performs capture, clipboard, and saving outside those browser restrictions.
 
@@ -102,8 +106,8 @@ Build the normal installer and portable ZIP with:
 
 Release outputs:
 
-- `QuickSnip-Setup-0.9.0-win-x64.exe`
-- `QuickSnip-Portable-0.9.0-win-x64.zip`
+- `QuickSnip-Setup-0.10.0-win-x64.exe`
+- `QuickSnip-Portable-0.10.0-win-x64.zip`
 
 The self-contained executable is installed at:
 

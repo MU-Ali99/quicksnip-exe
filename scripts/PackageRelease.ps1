@@ -2,8 +2,8 @@ $ErrorActionPreference = "Stop"
 
 $projectRoot = [System.IO.Path]::GetFullPath("$PSScriptRoot\..")
 $releaseDirectory = Join-Path $projectRoot "artifacts\release"
-$portableDirectory = Join-Path $projectRoot "artifacts\portable\QuickSnip-0.9.0-win-x64"
-$portableArchive = Join-Path $releaseDirectory "QuickSnip-Portable-0.9.0-win-x64.zip"
+$portableDirectory = Join-Path $projectRoot "artifacts\portable\QuickSnip-0.10.0-win-x64"
+$portableArchive = Join-Path $releaseDirectory "QuickSnip-Portable-0.10.0-win-x64.zip"
 
 & (Join-Path $PSScriptRoot "BuildInstaller.ps1")
 
@@ -23,7 +23,7 @@ if (Test-Path -LiteralPath $portableArchive) {
 }
 
 Compress-Archive -Path (Join-Path $portableDirectory "*") -DestinationPath $portableArchive
-Copy-Item -LiteralPath (Join-Path $projectRoot "artifacts\installer\QuickSnip-Setup-0.9.0-win-x64.exe") `
+Copy-Item -LiteralPath (Join-Path $projectRoot "artifacts\installer\QuickSnip-Setup-0.10.0-win-x64.exe") `
     -Destination $releaseDirectory -Force
 
 Get-ChildItem -LiteralPath $releaseDirectory | Select-Object FullName, Length
