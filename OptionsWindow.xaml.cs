@@ -27,7 +27,10 @@ public partial class OptionsWindow : Window
         DragSnipToggle.IsChecked = _settings.DragSnipEnabled;
         SavePngToggle.IsChecked = _settings.SavePng;
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
+        ToastToggle.IsChecked = _settings.ShowCaptureToast;
+        SelectSaveChoices();
         SaveLocationText.Text = _settings.SaveFolder;
+        UpdateSaveFormatState();
 
         _loading = false;
         UpdateActionButtons();
@@ -104,8 +107,16 @@ public partial class OptionsWindow : Window
         _settings.DragSnipEnabled = DragSnipToggle.IsChecked == true;
         _settings.SavePng = SavePngToggle.IsChecked == true;
         _settings.CopyToClipboard = ClipboardToggle.IsChecked == true;
+        _settings.ShowCaptureToast = ToastToggle.IsChecked == true;
+        _settings.ImageFormat = JpegFormatChoice.IsChecked == true
+            ? "JPEG"
+            : WebpFormatChoice.IsChecked == true ? "WebP" : "PNG";
+        _settings.ImageQuality = LowQualityChoice.IsChecked == true
+            ? "Low"
+            : MediumQualityChoice.IsChecked == true ? "Medium" : "High";
         SettingsService.Save(_settings);
         JumpListService.Register(_settings);
+        UpdateSaveFormatState();
     }
 
     private void UpdateActionButtons()
@@ -187,6 +198,69 @@ public partial class OptionsWindow : Window
         }
     }
 
+    private void SaveChoice_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        SaveSettingsFromControls();
+        StatusText.Text = "Save preferences updated.";
+    }
+
+    private void ResetWindowButton_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.SettingsWindow = new WindowPlacementSettings();
+        WindowPlacementService.Restore(this, _settings.SettingsWindow, 504, 760);
+        SettingsService.Save(_settings);
+        StatusText.Text = "Window size and position reset.";
+    }
+
+    private void RestoreDefaultsButton_Click(object sender, RoutedEventArgs e)
+    {
+        var answer = MessageBox.Show(
+            this,
+            "Restore QuickSnip preferences to their defaults? Your save folder and screenshots will be preserved.",
+            "Restore QuickSnip defaults",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (answer != MessageBoxResult.Yes) return;
+
+        _settings.RestoreDefaultsPreservingUserData();
+        SettingsService.Save(_settings);
+        LoadControlsFromSettings();
+        JumpListService.Register(_settings);
+        StatusText.Text = "Default preferences restored. Screenshots were preserved.";
+    }
+
+    private void RecycleSnipsButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var files = SnipCleanupService.FindSnips(_settings.SaveFolder);
+            if (files.Length == 0)
+            {
+                StatusText.Text = "No QuickSnip images were found in the current save folder.";
+                return;
+            }
+
+            var answer = MessageBox.Show(
+                this,
+                $"Move {files.Length} QuickSnip image(s) from:\n{_settings.SaveFolder}\n\nto the Windows Recycle Bin?",
+                "Move QuickSnip images",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (answer != MessageBoxResult.Yes) return;
+
+            var moved = SnipCleanupService.MoveToRecycleBin(files);
+            StatusText.Text = $"Moved {moved} QuickSnip image(s) to the Recycle Bin.";
+        }
+        catch (Exception exception)
+        {
+            AppLogger.Error("Move snips to Recycle Bin", exception);
+            StatusText.Text = "Some images could not be moved. Details were saved to the diagnostic log.";
+        }
+    }
+
     private void InformationButton_Click(object sender, RoutedEventArgs e)
     {
         // Persist the currently visible bounds before the Information window reads them.
@@ -224,5 +298,39 @@ public partial class OptionsWindow : Window
         {
             DragMove();
         }
+    }
+
+    private void LoadControlsFromSettings()
+    {
+        _loading = true;
+        QuickSnipToggle.IsChecked = _settings.QuickSnipEnabled;
+        ActiveWindowToggle.IsChecked = _settings.ActiveWindowSnipEnabled;
+        DragSnipToggle.IsChecked = _settings.DragSnipEnabled;
+        SavePngToggle.IsChecked = _settings.SavePng;
+        ClipboardToggle.IsChecked = _settings.CopyToClipboard;
+        ToastToggle.IsChecked = _settings.ShowCaptureToast;
+        SelectSaveChoices();
+        SaveLocationText.Text = _settings.SaveFolder;
+        _loading = false;
+        UpdateActionButtons();
+        UpdateSaveFormatState();
+    }
+
+    private void UpdateSaveFormatState()
+    {
+        SaveFileLabel.Text = $"Save {_settings.ImageFormat}";
+        var isPng = _settings.ImageFormat == "PNG";
+        LosslessBadge.Visibility = isPng ? Visibility.Visible : Visibility.Collapsed;
+        QualityChoices.Visibility = isPng ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void SelectSaveChoices()
+    {
+        PngFormatChoice.IsChecked = _settings.ImageFormat == "PNG";
+        JpegFormatChoice.IsChecked = _settings.ImageFormat == "JPEG";
+        WebpFormatChoice.IsChecked = _settings.ImageFormat == "WebP";
+        LowQualityChoice.IsChecked = _settings.ImageQuality == "Low";
+        MediumQualityChoice.IsChecked = _settings.ImageQuality == "Medium";
+        HighQualityChoice.IsChecked = _settings.ImageQuality == "High";
     }
 }

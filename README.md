@@ -4,7 +4,7 @@
 
 QuickSnip is a native Windows screenshot utility designed around direct taskbar capture.
 
-Current build: **0.6.0**
+Current build: **0.7.0**
 
 ## Capture modes
 
@@ -16,11 +16,15 @@ Exactly one capture mode is the left-click default. Selecting one immediately tu
 
 Drag Snip uses left-drag to select. Press `Esc` or right-click to cancel without saving or changing the clipboard.
 
-## Output preferences
+## Output and recovery
 
-- Save timestamped PNG files.
+- Save PNG, JPEG, or WebP files.
+- Choose Low, Medium, or High quality for JPEG and WebP.
 - Copy the image to the Windows clipboard.
 - Choose a custom save folder.
+- Optionally show a compact branded “Snip taken” toast, disabled by default.
+- Move QuickSnip images to the Windows Recycle Bin after confirmation.
+- Reset window placement or restore preferences without deleting screenshots.
 
 Save and clipboard output can be enabled independently, but at least one output must remain enabled. The default folder is `Pictures\QuickSnip`.
 
@@ -32,7 +36,7 @@ Save and clipboard output can be enabled independently, but at least one output 
 
 ## Progress so far
 
-QuickSnip has progressed through six Windows builds:
+QuickSnip has progressed through seven Windows builds:
 
 - **0.1.0 — Native proof:** captured the display, copied an image to the Windows clipboard, saved a PNG, and exited silently.
 - **0.2.0 — Taskbar-ready:** added a self-contained executable, stable per-user installation, icon, Start Menu shortcut, and pinning workflow.
@@ -40,7 +44,9 @@ QuickSnip has progressed through six Windows builds:
 - **0.4.0 — Reliability:** added onboarding, overlap protection, collision-safe filenames, diagnostics, and physical-pixel multi-monitor capture.
 - **0.5.0 — QuickSnip:** renamed RightSnip, added Window Snip, persistent output preferences, adaptive taskbar commands, and the blue extension-inspired Settings and Information design.
 
-- **0.6.0 — Drag and scalable windows:** adds area selection plus resizable Settings and Information views that share the same remembered size and location.
+- **0.6.0 — Drag and scalable windows:** added area selection plus resizable Settings and Information views that share the same remembered size and location.
+
+- **0.7.0 — Output and distribution:** adds image formats, quality choices, compact capture feedback, recovery controls, final Drag Snip polish, and a normal Windows installer.
 
 The original Chrome-extension investigation established why a native app was needed: Chrome can capture protected pages such as `chrome://` through extension APIs, but browser clipboard restrictions can prevent the captured image from being copied. The Windows app performs capture, clipboard, and saving outside those browser restrictions.
 
@@ -58,13 +64,24 @@ dotnet build .\QuickSnip.csproj
 .\scripts\Install.ps1
 ```
 
+Build the normal installer and portable ZIP with:
+
+```powershell
+.\scripts\PackageRelease.ps1
+```
+
+Release outputs:
+
+- `QuickSnip-Setup-0.7.0-win-x64.exe`
+- `QuickSnip-Portable-0.7.0-win-x64.zip`
+
 The self-contained executable is installed at:
 
 ```text
 %LOCALAPPDATA%\Programs\QuickSnip\QuickSnip.exe
 ```
 
-The installer creates a Start Menu shortcut. Search for **QuickSnip** and choose **Pin to taskbar**. The installer removes the superseded installed RightSnip executable and shortcut but never removes or moves screenshots from `Pictures\RightSnip`.
+The installer creates Start Menu and Windows Installed Apps entries and supports clean per-user upgrades and uninstall. Settings, logs, `Pictures\QuickSnip`, and legacy `Pictures\RightSnip` screenshots are preserved. Search Start for **QuickSnip** and choose **Pin to taskbar**.
 
 ## Diagnostics
 

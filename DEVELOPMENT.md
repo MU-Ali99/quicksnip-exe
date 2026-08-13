@@ -4,16 +4,20 @@
 
 Every tested user-facing feature build receives a semantic version, documentation update, commit, tag, push, and GitHub release.
 
-## Build 0.6.0 architecture
+## Build 0.7.0 architecture
 
 - `QuickSnip.csproj`: .NET 10 WPF `WinExe` project.
 - `NativeScreenCapture.cs`: physical-pixel display and active-window capture.
-- `ScreenCaptureService.cs`: output routing for PNG and clipboard.
+- `ScreenCaptureService.cs`: capture output routing, clipboard retries, and optional local toast.
+- `ScreenshotFileService.cs`: PNG/JPEG/WebP encoding, quality, timestamped naming, and collision handling.
+- `SnipCleanupService.cs`: constrained QuickSnip-file discovery and Windows Recycle Bin moves.
 - `SettingsService.cs`: persistent JSON preferences.
 - `OptionsWindow`: extension-inspired QuickSnip Settings interface and output toggles.
 - `JumpListService`: adaptive taskbar commands.
 - `DragSnipWindow`: virtual-desktop selection overlay with cancellation and shaded outside area.
 - `WindowPlacementService`: persisted, clamped window size and location.
+- `CaptureToastWindow`: short-lived local confirmation; no background process or network activity.
+- `installer/QuickSnip.iss`: stable per-user upgrade/uninstall identity.
 
 Settings are stored at `%LOCALAPPDATA%\QuickSnip\settings.json`.
 
@@ -37,6 +41,7 @@ Current tested rules:
 | 0.4.0 | Onboarding and reliability | Added first-run guidance, a capture semaphore, timestamp collision protection, logging, and DPI-safe physical monitor capture. |
 | 0.5.0 | QuickSnip modes and preferences | Renamed the product, added Window Snip, persistent mode/output settings, adaptive Jump List commands, and the themed Settings/Information UI. |
 | 0.6.0 | Drag Snip and scalable windows | Added a cancellable selection overlay and shared, validated window sizing and placement for Settings and Information. |
+| 0.7.0 | Output and distribution | Added multi-format saving, quality choices, local toast, recovery controls, Recycle Bin cleanup, and installer/portable packages. |
 
 The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
 
@@ -44,6 +49,17 @@ The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, execut
 
 - Automatic pointer-monitor placement remains deferred. Saved placement is restored when valid; otherwise the window uses a comfortable primary-screen default.
 - Editor, history, tray support, hotkeys, notifications, and Chrome companion integration remain outside this build.
+
+## Build 0.7.0 safety and migration
+
+- SkiaSharp encodes PNG, JPEG, and WebP. Clipboard output remains a WPF `BitmapSource`, independent of disk format.
+- PNG is lossless; the quality selector applies to JPEG and WebP.
+- Files use automatic mode-and-timestamp names and receive numeric suffixes on collision.
+- Recycle cleanup only targets supported image files beginning with `quicksnip-` under the configured save folder and requires confirmation.
+- Restore Defaults preserves the configured save folder, window placement, and every screenshot.
+- The installer uses a stable AppId, installs under `%LOCALAPPDATA%\Programs\QuickSnip`, and leaves `%LOCALAPPDATA%\QuickSnip` plus screenshot folders untouched during uninstall.
+- Inno Setup 6 builds the installer. `scripts\PackageRelease.ps1` also creates a portable ZIP.
+- Release publishing must use `scripts\Publish.ps1`; its native-library extraction flag is required for the self-contained WPF executable.
 
 ## Command routing
 

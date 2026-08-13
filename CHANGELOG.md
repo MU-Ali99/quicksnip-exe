@@ -2,6 +2,23 @@
 
 QuickSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.7.0 - 2026-08-13
+
+### Output control, recovery, and distribution
+
+- Added PNG, JPEG, and WebP disk formats using SkiaSharp codecs.
+- Added Low, Medium, and High quality choices for JPEG and WebP.
+- Kept clipboard output as an actual image regardless of the selected disk format.
+- Increased clipboard retry handling and added a visible failure message while preserving a successfully saved file.
+- Added an optional compact, branded local “Snip taken” toast, disabled by default.
+- Refined Drag Snip with a compact branded instruction pill, smaller dimension badge, and white selection lines.
+- Added Reset Window and Restore Defaults controls that preserve screenshots and the selected save folder.
+- Added confirmed Recycle Bin cleanup restricted to QuickSnip-named image files.
+- Added an Inno Setup per-user installer with clean upgrades, Start Menu and Installed Apps registration, and safe uninstall.
+- Added a portable self-contained ZIP release package.
+
+Installer upgrade and uninstall tests preserved the existing settings file and all 39 screenshots. PNG, JPEG, and WebP signatures were verified from real captures, and the final Settings, capture, and correctly packaged native executable passed launch testing.
+
 ## 0.6.0 - 2026-08-12
 
 ### Drag Snip and scalable windows

@@ -117,8 +117,11 @@ public partial class DragSnipWindow : Window
         SetRectangle(SelectionBorder, selection);
         UpdateShade(selection);
         SizeText.Text = $"{Math.Max(0, (int)selection.Width)} × {Math.Max(0, (int)selection.Height)}";
-        Canvas.SetLeft(SizeBadge, Math.Min(selection.Right + 8, Math.Max(0, ActualWidth - 90)));
-        Canvas.SetTop(SizeBadge, Math.Min(selection.Bottom + 8, Math.Max(0, ActualHeight - 34)));
+        SizeBadge.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        Canvas.SetLeft(SizeBadge, Math.Min(selection.Right + 5,
+            Math.Max(0, ActualWidth - SizeBadge.DesiredSize.Width - 4)));
+        Canvas.SetTop(SizeBadge, Math.Min(selection.Bottom + 5,
+            Math.Max(0, ActualHeight - SizeBadge.DesiredSize.Height - 4)));
     }
 
     private void UpdateShade(Rect selection)

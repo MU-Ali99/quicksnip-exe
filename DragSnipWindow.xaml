@@ -14,16 +14,33 @@
         <Rectangle x:Name="LeftShade" Fill="#9907132A" />
         <Rectangle x:Name="RightShade" Fill="#9907132A" />
         <Rectangle x:Name="BottomShade" Fill="#9907132A" />
-        <Rectangle x:Name="SelectionBorder" Fill="Transparent" Stroke="#62D7F4"
-                   StrokeThickness="2" Visibility="Collapsed" />
-        <Border x:Name="SizeBadge" Visibility="Collapsed" Background="#E6203A9B"
-                BorderBrush="#8862D7F4" BorderThickness="1" CornerRadius="6" Padding="7,3">
-            <TextBlock x:Name="SizeText" Foreground="White" FontSize="12" FontWeight="SemiBold" />
+        <Rectangle x:Name="SelectionBorder" Fill="Transparent" Stroke="White"
+                   StrokeThickness="1.5" Visibility="Collapsed" />
+        <Border x:Name="SizeBadge" Visibility="Collapsed" BorderThickness="0"
+                CornerRadius="5" Padding="4,1">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#F02278E8" Offset="0" />
+                    <GradientStop Color="#F03D62D8" Offset="0.55" />
+                    <GradientStop Color="#F023399F" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <TextBlock x:Name="SizeText" Foreground="White" FontSize="9" FontWeight="SemiBold" />
         </Border>
-        <Border x:Name="Hint" Background="#E6203A9B" BorderBrush="#8862D7F4"
-                BorderThickness="1" CornerRadius="10" Padding="14,8">
-            <TextBlock Text="Drag to select  •  Esc or right-click to cancel"
-                       Foreground="White" FontSize="13" />
+        <Border x:Name="Hint" BorderThickness="0" CornerRadius="8" Padding="7,4">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#F02278E8" Offset="0" />
+                    <GradientStop Color="#F03D62D8" Offset="0.55" />
+                    <GradientStop Color="#F023399F" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Assets/QuickSnip-source.png" Width="17" Height="17"
+                       Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,5,0" />
+                <TextBlock Text="Drag to select  •  Esc or right-click to cancel"
+                           Foreground="White" FontSize="10" VerticalAlignment="Center" />
+            </StackPanel>
         </Border>
     </Canvas>
 </Window>

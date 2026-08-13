@@ -14,7 +14,7 @@ internal enum CaptureTarget
 
 internal static class ScreenCaptureService
 {
-    private const int ClipboardAttempts = 6;
+    private const int ClipboardAttempts = 10;
     private static readonly TimeSpan ClipboardRetryDelay =
         TimeSpan.FromMilliseconds(80);
 
@@ -67,32 +67,47 @@ internal static class ScreenCaptureService
 
         if (settings.SavePng)
         {
-            SnipFolderService.EnsureExists(settings.SaveFolder);
-
-            var mode = target switch
-            {
-                CaptureTarget.ActiveWindow => "window",
-                CaptureTarget.Drag => "drag",
-                _ => "display"
-            };
-
-            var filename =
-                $"quicksnip-{mode}-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.png";
-
-            savedPath = Path.Combine(settings.SaveFolder, filename);
-            bitmap.Save(savedPath, ImageFormat.Png);
+            savedPath = ScreenshotFileService.Save(bitmap, target, settings);
         }
 
+        var clipboardCopied = false;
         if (settings.CopyToClipboard)
         {
             var clipboardImage = CreateClipboardImage(bitmap);
-            await CopyImageToClipboardAsync(clipboardImage);
+            try
+            {
+                await CopyImageToClipboardAsync(clipboardImage);
+                clipboardCopied = true;
+            }
+            catch (Exception exception)
+            {
+                AppLogger.Error("Copy screenshot to clipboard", exception);
+                ShowToast("Clipboard was busy", savedPath is null
+                    ? "The snip could not be copied."
+                    : "The image was still saved successfully.");
+            }
         }
 
             CaptureCooldownService.MarkCompleted();
 
+            if (settings.ShowCaptureToast && (clipboardCopied || savedPath is not null))
+            {
+                var detail = settings.SavePng && settings.CopyToClipboard
+                    ? "Copied and saved"
+                    : settings.CopyToClipboard
+                        ? "Copied to clipboard"
+                        : "Saved";
+                ShowToast("Snip taken", detail);
+            }
+
             return savedPath;
         }
+    }
+
+    private static void ShowToast(string title, string detail)
+    {
+        var toast = new CaptureToastWindow(title, detail);
+        toast.ShowDialog();
     }
 
     private static BitmapSource CreateClipboardImage(Bitmap bitmap)

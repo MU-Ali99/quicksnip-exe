@@ -106,6 +106,37 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ChoiceButton" TargetType="RadioButton">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Foreground" Value="#DCE8FF" />
+            <Setter Property="Background" Value="#35203A9B" />
+            <Setter Property="BorderBrush" Value="#557CB8F4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="ChoiceSurface" Margin="3,0" CornerRadius="9"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ChoiceSurface" Property="Background" Value="#504E8DE0" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ChoiceSurface" Property="Background" Value="#FF42BDEB" />
+                                <Setter TargetName="ChoiceSurface" Property="BorderBrush" Value="#FF8AE8FA" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Style x:Key="InfoButton" TargetType="Button">
             <Setter Property="Width" Value="36" />
@@ -258,7 +289,7 @@
                                 <TextBlock Text="↓" FontSize="23" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
-                                <TextBlock Text="Save PNG" FontSize="14" Foreground="#D4E2FF" />
+                                <TextBlock x:Name="SaveFileLabel" Text="Save image" FontSize="14" Foreground="#D4E2FF" />
                                 <TextBlock x:Name="SaveLocationText" FontSize="13" FontWeight="Bold" Foreground="White" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                             <CheckBox x:Name="SavePngToggle" Grid.Column="2" VerticalAlignment="Center"
@@ -283,6 +314,58 @@
                             <Button Style="{StaticResource ActionButton}" Click="ChangeFolderButton_Click" Content="Change Folder" />
                             <Button Grid.Column="2" Style="{StaticResource ActionButton}" Click="OpenFolderButton_Click" Content="Open Folder" />
                         </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}">
+                    <StackPanel>
+                        <TextBlock Text="Save format" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,14" />
+                        <TextBlock Text="Format" Foreground="#DCE8FF" Margin="3,0,0,7" />
+                        <UniformGrid Columns="3">
+                            <RadioButton x:Name="PngFormatChoice" GroupName="Format" Content="PNG"
+                                         Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
+                            <RadioButton x:Name="JpegFormatChoice" GroupName="Format" Content="JPEG"
+                                         Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
+                            <RadioButton x:Name="WebpFormatChoice" GroupName="Format" Content="WebP"
+                                         Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
+                        </UniformGrid>
+                        <Grid Margin="3,15,3,0">
+                            <TextBlock Text="Quality" Foreground="#DCE8FF" VerticalAlignment="Center" />
+                            <Border x:Name="LosslessBadge" HorizontalAlignment="Right" CornerRadius="10"
+                                    Background="#4042BDEB" BorderBrush="#8062D7F4" BorderThickness="1" Padding="10,3">
+                                <TextBlock Text="Lossless" Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                            </Border>
+                        </Grid>
+                        <UniformGrid x:Name="QualityChoices" Columns="3" Margin="0,7,0,0">
+                            <RadioButton x:Name="LowQualityChoice" GroupName="Quality" Content="Low"
+                                         Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
+                            <RadioButton x:Name="MediumQualityChoice" GroupName="Quality" Content="Medium"
+                                         Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
+                            <RadioButton x:Name="HighQualityChoice" GroupName="Quality" Content="High"
+                                         Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#332044A8" BorderBrush="#3347A6FF">
+                    <StackPanel>
+                        <TextBlock Text="Feedback and recovery" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,14" />
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="“Snip taken” toast" Foreground="White" FontWeight="SemiBold" />
+                                <TextBlock Text="Local confirmation only; disabled by default" Foreground="#DCE8FF" FontSize="12" />
+                            </StackPanel>
+                            <CheckBox x:Name="ToastToggle" Grid.Column="1" Style="{StaticResource ToggleSwitch}"
+                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
+                        </Grid>
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="8" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                            <Button Style="{StaticResource ActionButton}" Click="ResetWindowButton_Click" Content="Reset Window" />
+                            <Button Grid.Column="2" Style="{StaticResource ActionButton}" Click="RestoreDefaultsButton_Click" Content="Restore Defaults" />
+                        </Grid>
+                        <Button Margin="0,8,0,0" Style="{StaticResource ActionButton}"
+                                Click="RecycleSnipsButton_Click" Content="🗑  Move Snips to Recycle Bin" />
                     </StackPanel>
                 </Border>
 
