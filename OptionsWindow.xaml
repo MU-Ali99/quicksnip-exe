@@ -1,50 +1,285 @@
-<Window x:Class="RightSnip.OptionsWindow"
+<Window x:Class="QuickSnip.OptionsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="RightSnip Options"
-        Width="430"
-        Height="535"
+        Title="QuickSnip Settings"
+        Width="504" Height="760"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#F4F8FD">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="155" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        Background="Transparent"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        FontFamily="Segoe UI">
+    <Window.Resources>
+        <Style x:Key="ToggleSwitch" TargetType="CheckBox">
+            <Setter Property="Width" Value="64" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Width="64" Height="34">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0:0:0.10">
+                                            <VisualTransition.GeneratedEasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </VisualTransition.GeneratedEasingFunction>
+                                        </VisualTransition>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Unchecked">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                             Storyboard.TargetProperty="X" To="0" Duration="0" />
+                                            <ColorAnimation Storyboard.TargetName="TrackBrush"
+                                                            Storyboard.TargetProperty="Color" To="#7893DA" Duration="0" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                             Storyboard.TargetProperty="X" To="29" Duration="0" />
+                                            <ColorAnimation Storyboard.TargetName="TrackBrush"
+                                                            Storyboard.TargetProperty="Color" To="#62D7F4" Duration="0" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Indeterminate" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border x:Name="Track" CornerRadius="18">
+                                <Border.Background>
+                                    <SolidColorBrush x:Name="TrackBrush" Color="#7893DA" />
+                                </Border.Background>
+                            </Border>
+                            <Ellipse x:Name="Thumb" Width="27" Height="27" Fill="White"
+                                     HorizontalAlignment="Left" Margin="4,0,0,0">
+                                <Ellipse.RenderTransform>
+                                    <TranslateTransform x:Name="ThumbTransform" />
+                                </Ellipse.RenderTransform>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="5" ShadowDepth="1" Opacity="0.35" />
+                                </Ellipse.Effect>
+                            </Ellipse>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <Grid Background="#1269D3">
-            <Ellipse Width="390" Height="145" Fill="#2244BFFF" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-110,-68" />
-            <Ellipse Width="310" Height="120" Fill="#3329A4F5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-95,0,0,-57" />
+        <Style x:Key="GlassCard" TargetType="Border">
+            <Setter Property="Background" Value="#2EFFFFFF" />
+            <Setter Property="BorderBrush" Value="#55FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="24" />
+            <Setter Property="Padding" Value="22" />
+        </Style>
 
-            <Button Width="34" Height="34" Margin="0,18,18,0" HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Click="InformationButton_Click" Content="i" FontFamily="Georgia" FontSize="18" FontWeight="Bold"
-                    Foreground="White" Background="#22FFFFFF" BorderBrush="#66FFFFFF" Cursor="Hand" ToolTip="How RightSnip works" />
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#2EFFFFFF" />
+            <Setter Property="BorderBrush" Value="#55FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" CornerRadius="10"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#44FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-            <StackPanel Margin="30,27,68,20">
-                <TextBlock Text="RightSnip" FontFamily="Century Gothic, Segoe UI" FontSize="31" FontWeight="Bold" Foreground="White" />
-                <TextBlock Margin="0,7,0,0" Text="Capture. Save. Paste." FontSize="16" Foreground="#DDEEFF" />
-                <TextBlock x:Name="VersionText" Margin="0,8,0,0" FontSize="12" Foreground="#BFDFFF" />
+        <Style x:Key="InfoButton" TargetType="Button">
+            <Setter Property="Width" Value="36" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#28FFFFFF" />
+            <Setter Property="BorderBrush" Value="#88FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Circle" CornerRadius="18"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Circle" Property="Background" Value="#55FFFFFF" />
+                                <Setter TargetName="Circle" Property="BorderBrush" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TitleCloseButton" TargetType="Button">
+            <Setter Property="Width" Value="46" /><Setter Property="Height" Value="33" />
+            <Setter Property="Foreground" Value="White" /><Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" /><Setter Property="FontSize" Value="18" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Border x:Name="CloseSurface" CornerRadius="0" Background="{TemplateBinding Background}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-2,0,0" />
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger.EnterActions><BeginStoryboard><Storyboard>
+                            <ColorAnimation Storyboard.TargetName="CloseSurface" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#E81123" Duration="0:0:0.14" />
+                        </Storyboard></BeginStoryboard></Trigger.EnterActions>
+                        <Trigger.ExitActions><BeginStoryboard><Storyboard>
+                            <ColorAnimation Storyboard.TargetName="CloseSurface" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#002878DB" Duration="0:0:0.14" />
+                        </Storyboard></BeginStoryboard></Trigger.ExitActions>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="0" BorderBrush="#77C7F5FF" BorderThickness="1" ClipToBounds="True">
+    <Grid ClipToBounds="True">
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#51A7F3" Offset="0" />
+                <GradientStop Color="#3868DE" Offset="0.43" />
+                <GradientStop Color="#203A9B" Offset="1" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Border Height="34" VerticalAlignment="Top" Panel.ZIndex="20"
+                Background="#2878DB" BorderBrush="#55C7F5FF" BorderThickness="0,0,0,1"
+                MouseLeftButtonDown="Header_MouseLeftButtonDown">
+            <Grid Margin="12,0,0,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition /><ColumnDefinition Width="46" /></Grid.ColumnDefinitions>
+                <Image Source="Assets/QuickSnip-source.png" Width="20" Height="20" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="QuickSnip Settings" Margin="8,0,0,0"
+                           VerticalAlignment="Center" Foreground="#EAF5FF" FontSize="12" FontWeight="SemiBold" />
+                <Button Grid.Column="2" Style="{StaticResource TitleCloseButton}" Content="×"
+                        Click="CloseButton_Click" ToolTip="Close" />
+            </Grid>
+        </Border>
+
+        <!-- Layered waves inspired by the original browser extension. -->
+        <Path Fill="#1853C7" Opacity="0.34" Stretch="Fill"
+              Data="M 0,95 C 135,15 290,40 504,145 L 504,330 C 290,250 145,260 0,350 Z"
+              VerticalAlignment="Top" Height="350" />
+        <Path Fill="#152D87" Opacity="0.42" Stretch="Fill"
+              Data="M 0,0 C 140,90 300,45 504,145 L 504,290 C 310,180 135,240 0,175 Z"
+              VerticalAlignment="Bottom" Height="330" />
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,34,0,0">
+            <StackPanel Margin="24,22,24,22">
+                <Grid Margin="0,0,0,20"
+                      MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="42" />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="Assets/QuickSnip-source.png" Width="58" Height="58" Stretch="Uniform" />
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                        <TextBlock Text="QuickSnip" FontSize="28" FontWeight="Bold" Foreground="White" />
+                        <TextBlock Text="One click. One snip." FontSize="14" Foreground="#E2EEFF" Margin="0,2,0,0" />
+                    </StackPanel>
+                    <Button Grid.Column="2" Style="{StaticResource InfoButton}" VerticalAlignment="Top"
+                            Click="InformationButton_Click" Content="i"
+                            FontFamily="Georgia" FontSize="18" FontWeight="Bold"
+                            ToolTip="How QuickSnip works" />
+                </Grid>
+
+                <Border Style="{StaticResource GlassCard}">
+                    <StackPanel>
+                        <TextBlock Text="Choose your snip mode" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,18" />
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="QuickSnip" FontSize="16" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="Capture the display under your pointer" FontSize="13" Foreground="#DCE8FF" />
+                            </StackPanel>
+                            <CheckBox x:Name="QuickSnipToggle" Grid.Column="1" VerticalAlignment="Center"
+                                      Style="{StaticResource ToggleSwitch}"
+                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
+                        </Grid>
+                        <Border Height="1" Background="#44FFFFFF" Margin="0,16" />
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Window Snip" FontSize="16" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="Capture the currently focused application" FontSize="13" Foreground="#DCE8FF" />
+                            </StackPanel>
+                            <CheckBox x:Name="ActiveWindowToggle" Grid.Column="1" VerticalAlignment="Center"
+                                      Style="{StaticResource ToggleSwitch}"
+                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#332044A8" BorderBrush="#3347A6FF">
+                    <StackPanel>
+                        <TextBlock Text="Output" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,16" />
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <Border Width="40" Height="40" Background="#2EFFFFFF" CornerRadius="10">
+                                <TextBlock Text="↓" FontSize="23" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                                <TextBlock Text="Save PNG" FontSize="14" Foreground="#D4E2FF" />
+                                <TextBlock x:Name="SaveLocationText" FontSize="13" FontWeight="Bold" Foreground="White" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <CheckBox x:Name="SavePngToggle" Grid.Column="2" VerticalAlignment="Center"
+                                      Style="{StaticResource ToggleSwitch}"
+                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
+                        </Grid>
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <Border Width="40" Height="40" Background="#2EFFFFFF" CornerRadius="10">
+                                <TextBlock Text="▣" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                                <TextBlock Text="Copy to clipboard" FontSize="14" Foreground="#D4E2FF" />
+                                <TextBlock Text="Ready to paste with Ctrl+V" FontSize="13" FontWeight="Bold" Foreground="White" />
+                            </StackPanel>
+                            <CheckBox x:Name="ClipboardToggle" Grid.Column="2" VerticalAlignment="Center"
+                                      Style="{StaticResource ToggleSwitch}"
+                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
+                        </Grid>
+                        <Grid Margin="0,17,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="10" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                            <Button Style="{StaticResource ActionButton}" Click="ChangeFolderButton_Click" Content="Change Folder" />
+                            <Button Grid.Column="2" Style="{StaticResource ActionButton}" Click="OpenFolderButton_Click" Content="Open Folder" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Grid Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="10" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                    <Button x:Name="QuickSnipButton" Style="{StaticResource ActionButton}" Height="46"
+                            Click="QuickSnipButton_Click" Content="QuickSnip" Background="#42BDEB" BorderThickness="0" />
+                    <Button x:Name="ActiveWindowButton" Grid.Column="2" Style="{StaticResource ActionButton}" Height="46"
+                            Click="ActiveWindowButton_Click" Content="Window Snip" Background="#506CC8" />
+                </Grid>
+
+                <TextBlock x:Name="StatusText" Margin="2,10,0,0" TextWrapping="Wrap" FontSize="12" Foreground="#E2EEFF" />
+                <TextBlock x:Name="VersionText" TextAlignment="Center" Margin="0,12,0,0" FontSize="11" Foreground="#BFD5FF" />
             </StackPanel>
-        </Grid>
-
-        <StackPanel Grid.Row="1" Margin="28,24,28,26">
-            <Button x:Name="RightSnipButton" Height="60" Click="RightSnipButton_Click" Content="Right Snip"
-                    FontSize="17" FontWeight="SemiBold" Foreground="White" Background="#1677E8" BorderThickness="0" Cursor="Hand" />
-
-            <Border Margin="0,18,0,0" Background="White" BorderBrush="#D6E5F5" BorderThickness="1" CornerRadius="10" Padding="17,15">
-                <StackPanel>
-                    <TextBlock Text="Save location" FontSize="13" Foreground="#74869A" />
-                    <TextBlock x:Name="SaveLocationText" Margin="0,4,0,0" FontSize="14" FontWeight="SemiBold" Foreground="#26384A" TextWrapping="Wrap" />
-                    <Button Margin="0,13,0,0" Height="40" Click="OpenFolderButton_Click" Content="Open Snips Folder"
-                            FontSize="14" FontWeight="SemiBold" Foreground="#1269D3" Background="#F7FBFF" BorderBrush="#B8D5F6" Cursor="Hand" />
-                </StackPanel>
-            </Border>
-
-            <Button Margin="0,18,0,0" Height="38" Click="CloseButton_Click" Content="Close"
-                    Foreground="#526274" Background="Transparent" BorderBrush="#CCD8E5" Cursor="Hand" />
-
-            <TextBlock x:Name="StatusText" Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12" Foreground="#526274" />
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
+    </Border>
 </Window>

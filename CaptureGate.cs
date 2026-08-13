@@ -1,8 +1,8 @@
-namespace RightSnip;
+namespace QuickSnip;
 
 internal sealed class CaptureGate : IDisposable
 {
-    private const string SemaphoreName = "Local\\RightSnip.CaptureGate";
+    private const string SemaphoreName = "Local\\QuickSnip.CaptureGate";
     private readonly Semaphore _semaphore;
     private bool _ownsGate;
 

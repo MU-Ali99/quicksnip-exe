@@ -1,74 +1,56 @@
-# Development
+# QuickSnip development
 
-## Versioning rule
+## Versioning
 
-Every tested build that adds a user-facing feature receives a new semantic build version before it is committed, tagged, and pushed. Documentation and the changelog must explain what changed and why.
+Every tested user-facing feature build receives a semantic version, documentation update, commit, tag, push, and GitHub release.
 
-## Immediate goal
+## Build 0.5.0 architecture
 
-Prove this exact native Windows flow:
+- `QuickSnip.csproj`: .NET 10 WPF `WinExe` project.
+- `NativeScreenCapture.cs`: physical-pixel display and active-window capture.
+- `ScreenCaptureService.cs`: output routing for PNG and clipboard.
+- `SettingsService.cs`: persistent JSON preferences.
+- `OptionsWindow`: extension-inspired QuickSnip Settings interface and output toggles.
+- `JumpListService`: adaptive taskbar commands.
 
-```text
-launch executable -> capture current display -> copy image -> save PNG -> exit
-```
+Settings are stored at `%LOCALAPPDATA%\QuickSnip\settings.json`.
 
-## Project structure
+Current tested rules:
 
-- `App.xaml` and `App.xaml.cs`: hidden WPF application lifecycle.
-- `ScreenCaptureService.cs`: display capture, PNG saving, and clipboard copy.
-- `RightSnip.csproj`: .NET Windows `WinExe` configuration.
+- Capture modes are mutually exclusive: exactly one is the left-click default.
+- At least one output stays enabled.
+- Selecting QuickSnip immediately disables Window Snip; selecting Window Snip immediately disables QuickSnip.
+- The inactive capture mode remains available through the taskbar Jump List.
+- Trying to disable the active mode without selecting another immediately restores QuickSnip.
+- A one-second cross-process cooldown ignores accidental repeated clicks.
+- Window Snip uses `BitBlt` rather than `PrintWindow` because GPU-rendered apps can return a successful but black `PrintWindow` image. Maximized bounds are clipped to the monitor work area to exclude the taskbar.
 
-WPF is used because it provides an STA Windows application context for reliable image clipboard access while compiling as a GUI executable with no console window.
+## Build progression
 
-## Reliability behavior
+| Build | Milestone | Engineering result |
+| --- | --- | --- |
+| 0.1.0 | One-click prototype | Proved silent display capture, image clipboard copy, PNG saving, and immediate exit. |
+| 0.2.0 | Stable taskbar executable | Added self-contained x64 publishing, per-user installation, branding, shortcut creation, and pinning. |
+| 0.3.0 | Windows Jump List | Separated the primary left-click action from folder and settings commands available on right-click. |
+| 0.4.0 | Onboarding and reliability | Added first-run guidance, a capture semaphore, timestamp collision protection, logging, and DPI-safe physical monitor capture. |
+| 0.5.0 | QuickSnip modes and preferences | Renamed the product, added Window Snip, persistent mode/output settings, adaptive Jump List commands, and the themed Settings/Information UI. |
 
-- Captures the display containing the mouse pointer.
-- Uses a bounded retry if the Windows clipboard is temporarily busy.
-- Creates `Pictures\RightSnip` when necessary.
-- Exits with code `0` on success and `1` on failure.
-- Does not display UI during either path.
+The source folder and GitHub repository retain the historical `rightsnip-exe` name for this 0.5.0 commit. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
 
 ## Deferred work
 
-Do not add until the one-click prototype is tested:
+- Settings and Information intentionally use stable primary-work-area centering. A pointer-monitor placement experiment was rolled back because the borderless WPF windows could appear against the top edge or on the wrong monitor.
+- Drag Snip, editor, history, tray support, hotkeys, notifications, and Chrome companion integration remain outside this build.
+- The local/GitHub repository rename can be handled separately after the 0.5.0 state is safely pushed.
 
-- Drag Snip
-- Settings UI
-- Tray icon
-- Screenshot editor
-- Notifications
-- History
-- Browser integration
-- Hotkeys
-- Multiple capture modes
-- Windows context-menu integration
+## Command routing
 
-## Taskbar packaging
+- No arguments: run the enabled default capture mode.
+- `--active-window`: capture the focused application window.
+- `--open-folder`: open the configured save folder.
+- `--menu`: open QuickSnip Settings.
+- `--register-jump-list`: register commands without capturing.
 
-- `scripts/New-AppIcon.ps1` generates a multi-size Windows icon from the established RightSnip artwork.
-- `scripts/Publish.ps1` produces a self-contained single-file Windows x64 executable.
-- `scripts/Install.ps1` installs it per-user and creates a Start Menu shortcut.
-- `scripts/Uninstall.ps1` removes only that installed executable and shortcut.
-- Pinning to the taskbar remains an explicit Windows user action.
+## Rename migration
 
-The installed location is intentionally stable because taskbar shortcuts must not target replaceable Debug or publish output directories.
-
-## Build 0.3.0 command routing
-
-- No arguments: capture immediately and exit.
-- `--open-folder`: open `Pictures\RightSnip` and exit.
-- `--menu`: open the small RightSnip Options window.
-- `--register-jump-list`: register taskbar commands and exit without capturing.
-
-Windows owns the Jump List surface and system commands such as **Unpin from taskbar**. RightSnip adds tasks but does not replace or restyle the Windows panel.
-
-## Build 0.4.0 state and reliability
-
-- The onboarding marker is `%LOCALAPPDATA%\RightSnip\onboarding-complete`.
-- A fresh installation removes that marker so the next normal launch shows the guide.
-- Opening the guide from Options does not reset or rewrite normal capture behavior.
-- A named Windows semaphore allows only one capture at a time across RightSnip processes.
-- A repeated click during capture exits silently.
-- Capture failures append diagnostics to `%LOCALAPPDATA%\RightSnip\Logs\rightsnip.log`.
-- Filenames include milliseconds.
-- `PerMonitorV2` DPI awareness plus Win32 `GetMonitorInfo` and `BitBlt` keeps monitor bounds and copied pixels in the same physical coordinate space, including monitors positioned left of the primary display.
+Build 0.5.0 changes the installed product identity from RightSnip to QuickSnip. Installation removes only `%LOCALAPPDATA%\Programs\RightSnip` and the old Start Menu shortcut. It does not touch the old source repository, AppData diagnostics, or `Pictures\RightSnip` screenshots.

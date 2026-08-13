@@ -1,6 +1,6 @@
 param(
-    [string]$Source = "$PSScriptRoot\..\Assets\RightSnip-source.png",
-    [string]$Destination = "$PSScriptRoot\..\Assets\RightSnip.ico"
+    [string]$Source = "$PSScriptRoot\..\Assets\QuickSnip-source.png",
+    [string]$Destination = "$PSScriptRoot\..\Assets\QuickSnip.ico"
 )
 
 $ErrorActionPreference = "Stop"

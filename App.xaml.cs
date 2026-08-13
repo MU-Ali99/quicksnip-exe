@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace RightSnip;
+namespace QuickSnip;
 
 public partial class App : System.Windows.Application
 {
@@ -10,7 +10,8 @@ public partial class App : System.Windows.Application
 
         try
         {
-            JumpListService.Register();
+            var settings = SettingsService.Load();
+            JumpListService.Register(settings);
 
             if (HasArgument(e.Args, "--register-jump-list"))
             {
@@ -20,7 +21,25 @@ public partial class App : System.Windows.Application
 
             if (HasArgument(e.Args, "--open-folder"))
             {
-                SnipFolderService.Open();
+                SnipFolderService.Open(settings.SaveFolder);
+                Shutdown();
+                return;
+            }
+
+            if (HasArgument(e.Args, "--active-window"))
+            {
+                await ScreenCaptureService.CaptureAsync(
+                    CaptureTarget.ActiveWindow,
+                    settings);
+                Shutdown();
+                return;
+            }
+
+            if (HasArgument(e.Args, "--display"))
+            {
+                await ScreenCaptureService.CaptureAsync(
+                    CaptureTarget.Display,
+                    settings);
                 Shutdown();
                 return;
             }
@@ -37,10 +56,15 @@ public partial class App : System.Windows.Application
                 return;
             }
 
-            await ScreenCaptureService.CaptureCurrentDisplayAsync();
+            var defaultTarget = settings.QuickSnipEnabled
+                ? CaptureTarget.Display
+                : CaptureTarget.ActiveWindow;
+
+            await ScreenCaptureService.CaptureAsync(defaultTarget, settings);
             Shutdown();
         }
-        catch (CaptureAlreadyRunningException)
+        catch (Exception exception) when (
+            exception is CaptureAlreadyRunningException or CaptureCooldownException)
         {
             Shutdown();
         }
@@ -55,8 +79,14 @@ public partial class App : System.Windows.Application
     {
         var optionsWindow = new OptionsWindow();
         MainWindow = optionsWindow;
-        optionsWindow.Closed += (_, _) => Shutdown();
+        optionsWindow.Closed += (_, _) =>
+        {
+            JumpListService.Register(SettingsService.Load());
+            Shutdown();
+        };
+        optionsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         optionsWindow.Show();
+        CenterOnPrimaryWorkArea(optionsWindow);
     }
 
     public void ShowWelcomeWindow(bool isFirstRun)
@@ -73,6 +103,7 @@ public partial class App : System.Windows.Application
 
         welcomeWindow.Closed += WelcomeWindowClosed;
         welcomeWindow.Show();
+        CenterOnPrimaryWorkArea(welcomeWindow);
     }
 
     private void WelcomeWindowClosed(object? sender, EventArgs e) =>
@@ -80,4 +111,12 @@ public partial class App : System.Windows.Application
 
     private static bool HasArgument(string[] arguments, string expected) =>
         arguments.Contains(expected, StringComparer.OrdinalIgnoreCase);
+
+    internal static void CenterOnPrimaryWorkArea(Window window)
+    {
+        window.Left = SystemParameters.WorkArea.Left +
+            (SystemParameters.WorkArea.Width - window.ActualWidth) / 2;
+        window.Top = SystemParameters.WorkArea.Top +
+            (SystemParameters.WorkArea.Height - window.ActualHeight) / 2;
+    }
 }

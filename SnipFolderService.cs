@@ -1,24 +1,24 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace RightSnip;
+namespace QuickSnip;
 
 internal static class SnipFolderService
 {
-    public static string Path => System.IO.Path.Combine(
+    public static string DefaultPath => System.IO.Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-        "RightSnip");
+        "QuickSnip");
 
-    public static void EnsureExists() =>
-        Directory.CreateDirectory(Path);
+    public static void EnsureExists(string path) =>
+        Directory.CreateDirectory(path);
 
-    public static void Open()
+    public static void Open(string path)
     {
-        EnsureExists();
+        EnsureExists(path);
 
         Process.Start(new ProcessStartInfo
         {
-            FileName = Path,
+            FileName = path,
             UseShellExecute = true
         });
     }

@@ -1,14 +1,14 @@
 $ErrorActionPreference = "Stop"
 
 $projectRoot = [System.IO.Path]::GetFullPath("$PSScriptRoot\..")
-$publishedExecutable = Join-Path $projectRoot "artifacts\publish\win-x64\RightSnip.exe"
-$installDirectory = Join-Path $env:LOCALAPPDATA "Programs\RightSnip"
-$installedExecutable = Join-Path $installDirectory "RightSnip.exe"
+$publishedExecutable = Join-Path $projectRoot "artifacts\publish\win-x64\QuickSnip.exe"
+$installDirectory = Join-Path $env:LOCALAPPDATA "Programs\QuickSnip"
+$installedExecutable = Join-Path $installDirectory "QuickSnip.exe"
 $startMenuDirectory = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"
-$shortcutPath = Join-Path $startMenuDirectory "RightSnip.lnk"
+$shortcutPath = Join-Path $startMenuDirectory "QuickSnip.lnk"
 
 if (-not (Test-Path -LiteralPath $publishedExecutable)) {
-    throw "Publish RightSnip before installing it. Run .\scripts\Publish.ps1."
+    throw "Publish QuickSnip before installing it. Run .\scripts\Publish.ps1."
 }
 
 [System.IO.Directory]::CreateDirectory($installDirectory) | Out-Null
@@ -19,10 +19,10 @@ $shortcut = $shell.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = $installedExecutable
 $shortcut.WorkingDirectory = $installDirectory
 $shortcut.IconLocation = "$installedExecutable,0"
-$shortcut.Description = "Take a screenshot with RightSnip"
+$shortcut.Description = "Take a screenshot with QuickSnip"
 $shortcut.Save()
 
-$onboardingMarker = Join-Path $env:LOCALAPPDATA "RightSnip\onboarding-complete"
+$onboardingMarker = Join-Path $env:LOCALAPPDATA "QuickSnip\onboarding-complete"
 if (Test-Path -LiteralPath $onboardingMarker) {
     Remove-Item -LiteralPath $onboardingMarker -Force
 }
@@ -34,10 +34,23 @@ $registrationProcess = Start-Process `
     -PassThru
 
 if ($registrationProcess.ExitCode -ne 0) {
-    throw "RightSnip was installed, but Jump List registration failed."
+    throw "QuickSnip was installed, but Jump List registration failed."
+}
+
+# Remove only the superseded RightSnip program and shortcut.
+$oldShortcut = Join-Path $startMenuDirectory "RightSnip.lnk"
+$oldInstallDirectory = Join-Path $env:LOCALAPPDATA "Programs\RightSnip"
+
+if (Test-Path -LiteralPath $oldShortcut) {
+    Remove-Item -LiteralPath $oldShortcut -Force
+}
+
+if (Test-Path -LiteralPath $oldInstallDirectory) {
+    Remove-Item -LiteralPath $oldInstallDirectory -Recurse -Force
 }
 
 Write-Output "Installed: $installedExecutable"
 Write-Output "Shortcut: $shortcutPath"
-Write-Output "Jump List: Open Snips Folder, RightSnip Options"
-Write-Output "Open Start, search for RightSnip, then choose Pin to taskbar."
+Write-Output "Jump List: Window Snip, Open Snips Folder, QuickSnip Settings"
+Write-Output "Open Start, search for QuickSnip, then choose Pin to taskbar."
+Write-Output "Existing Pictures\RightSnip screenshots were left untouched."

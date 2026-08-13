@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 $projectRoot = [System.IO.Path]::GetFullPath("$PSScriptRoot\..")
-$project = Join-Path $projectRoot "RightSnip.csproj"
+$project = Join-Path $projectRoot "QuickSnip.csproj"
 $publishDirectory = Join-Path $projectRoot "artifacts\publish\win-x64"
 
 dotnet publish $project `
@@ -13,7 +13,7 @@ dotnet publish $project `
     --output $publishDirectory
 
 if ($LASTEXITCODE -ne 0) {
-    throw "RightSnip publish failed."
+    throw "QuickSnip publish failed."
 }
 
-Write-Output (Join-Path $publishDirectory "RightSnip.exe")
+Write-Output (Join-Path $publishDirectory "QuickSnip.exe")

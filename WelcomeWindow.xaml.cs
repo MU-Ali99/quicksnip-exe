@@ -1,6 +1,8 @@
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
-namespace RightSnip;
+namespace QuickSnip;
 
 public partial class WelcomeWindow : Window
 {
@@ -15,16 +17,13 @@ public partial class WelcomeWindow : Window
 
         if (!isFirstRun)
         {
-            WelcomeSubtitle.Text = "How RightSnip works";
+            WelcomeSubtitle.Text = "How QuickSnip works";
             UnderstandCheckBox.IsChecked = true;
-            UnderstandCheckBox.Content = "I understand how RightSnip works";
-            ContinueButton.Content = "Back to RightSnip Options";
+            ContinueButton.Content = "Back to QuickSnip Settings";
         }
     }
 
-    private void UnderstandCheckBox_Changed(
-        object sender,
-        RoutedEventArgs e) =>
+    private void UnderstandCheckBox_Changed(object sender, RoutedEventArgs e) =>
         ContinueButton.IsEnabled = UnderstandCheckBox.IsChecked == true;
 
     private void ContinueButton_Click(
@@ -43,4 +42,14 @@ public partial class WelcomeWindow : Window
 
         ContinueRequested?.Invoke(this, EventArgs.Empty);
     }
+
+    private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed && e.OriginalSource is not Button)
+        {
+            DragMove();
+        }
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 }

@@ -1,11 +1,11 @@
 using System.IO;
 using System.Windows.Shell;
 
-namespace RightSnip;
+namespace QuickSnip;
 
 internal static class JumpListService
 {
-    public static void Register()
+    public static void Register(QuickSnipSettings settings)
     {
         var executablePath = Environment.ProcessPath;
 
@@ -20,16 +20,34 @@ internal static class JumpListService
             ShowRecentCategory = false
         };
 
+        if (!settings.QuickSnipEnabled)
+        {
+            jumpList.JumpItems.Add(CreateTask(
+                executablePath,
+                "QuickSnip",
+                "Capture the display containing the mouse pointer",
+                "--display"));
+        }
+
+        if (!settings.ActiveWindowSnipEnabled)
+        {
+            jumpList.JumpItems.Add(CreateTask(
+                executablePath,
+                "Window Snip",
+                "Capture only the focused application window",
+                "--active-window"));
+        }
+
         jumpList.JumpItems.Add(CreateTask(
             executablePath,
             "Open Snips Folder",
-            "Open Pictures\\RightSnip",
+            "Open the configured QuickSnip save folder",
             "--open-folder"));
 
         jumpList.JumpItems.Add(CreateTask(
             executablePath,
-            "RightSnip Options",
-            "Open the RightSnip command window",
+            "QuickSnip Settings",
+            "Open QuickSnip settings",
             "--menu"));
 
         JumpList.SetJumpList(System.Windows.Application.Current, jumpList);

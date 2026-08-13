@@ -1,85 +1,74 @@
-# RightSnip for Windows
+# QuickSnip for Windows
 
-RightSnip is a one-click native Windows screenshot prototype.
+**One click. One snip.**
 
-Current build: **0.4.0**
+QuickSnip is a native Windows screenshot utility designed around direct taskbar capture.
 
-## Prototype behavior
+Current build: **0.5.0**
 
-Launching RightSnip immediately:
+## Capture modes
 
-1. Captures the display containing the mouse pointer.
-2. Copies the screenshot as an image to the Windows clipboard.
-3. Saves a timestamped PNG to `Pictures\RightSnip`.
-4. Exits.
+- **QuickSnip** captures the display containing the mouse pointer.
+- **Window Snip** captures only the focused application window.
 
-RightSnip does not open a normal window, console, editor, notification, or confirmation prompt.
+Exactly one capture mode is the left-click default. Selecting one immediately turns the other off, and the inactive mode remains available in the taskbar right-click Jump List. If the active mode is turned off without selecting another, QuickSnip is restored immediately.
 
-Example filename:
+## Output preferences
 
-```text
-rightsnip-2026-08-12-16-45-30.png
-```
+- Save timestamped PNG files.
+- Copy the image to the Windows clipboard.
+- Choose a custom save folder.
+
+Save and clipboard output can be enabled independently, but at least one output must remain enabled. The default folder is `Pictures\QuickSnip`.
+
+## Taskbar behavior
+
+- Left-click QuickSnip to run the enabled default capture mode.
+- Right-click QuickSnip for Window Snip, Open Snips Folder, and QuickSnip Settings.
+- QuickSnip Settings uses compact toggle rows inspired by the original browser-extension popup.
+
+## Progress so far
+
+QuickSnip grew through five tested Windows builds:
+
+- **0.1.0 — Native proof:** captured the display, copied an image to the Windows clipboard, saved a PNG, and exited silently.
+- **0.2.0 — Taskbar-ready:** added a self-contained executable, stable per-user installation, icon, Start Menu shortcut, and pinning workflow.
+- **0.3.0 — Jump List:** added Open Snips Folder and the first settings/actions window while preserving one-click capture.
+- **0.4.0 — Reliability:** added onboarding, overlap protection, collision-safe filenames, diagnostics, and physical-pixel multi-monitor capture.
+- **0.5.0 — QuickSnip:** renamed RightSnip, added Window Snip, persistent output preferences, adaptive taskbar commands, and the blue extension-inspired Settings and Information design.
+
+The original Chrome-extension investigation established why a native app was needed: Chrome can capture protected pages such as `chrome://` through extension APIs, but browser clipboard restrictions can prevent the captured image from being copied. The Windows app performs capture, clipboard, and saving outside those browser restrictions.
 
 ## Build
 
 ```powershell
 cd C:\Users\ubaid\Desktop\Projects\rightsnip-exe
-dotnet build
+dotnet build .\QuickSnip.csproj
 ```
 
-## Run
-
-```powershell
-dotnet run
-```
-
-## Publish and install for taskbar use
+## Publish and install
 
 ```powershell
 .\scripts\Publish.ps1
 .\scripts\Install.ps1
 ```
 
-The publish is a self-contained Windows x64 executable. Installation copies it to:
+The self-contained executable is installed at:
 
 ```text
-%LOCALAPPDATA%\Programs\RightSnip\RightSnip.exe
+%LOCALAPPDATA%\Programs\QuickSnip\QuickSnip.exe
 ```
 
-It also creates a RightSnip shortcut in the current user's Start Menu. Open Start, search for **RightSnip**, right-click it, and choose **Pin to taskbar**.
+The installer creates a Start Menu shortcut. Search for **QuickSnip** and choose **Pin to taskbar**. Build 0.5.0 removes the superseded installed RightSnip executable and shortcut but never removes or moves screenshots from `Pictures\RightSnip`.
 
-Taskbar behavior:
+## Diagnostics
 
-- Left-click RightSnip to capture immediately.
-- Right-click RightSnip to open its Windows Jump List.
-- **Open Snips Folder** opens `Pictures\RightSnip`.
-- **RightSnip Options** opens a small window with Right Snip, Open Snips Folder, and Close.
-
-## First launch
-
-After each fresh installation, the first normal launch opens a short guide instead of taking a screenshot. It explains left-click capture, taskbar right-click actions, pinning, saving, and clipboard paste behavior. After selecting **I understand how RightSnip works**, Continue opens the main Options window.
-
-Later left-clicks return to immediate capture. The guide can be reopened with the information button in RightSnip Options.
-
-RightSnip prevents overlapping captures, uses collision-resistant millisecond filenames, follows the display containing the mouse pointer, and writes silent failure details to:
+Failures are logged silently at:
 
 ```text
-%LOCALAPPDATA%\RightSnip\Logs\rightsnip.log
+%LOCALAPPDATA%\QuickSnip\Logs\quicksnip.log
 ```
 
-To uninstall this prototype:
+## Current limitation
 
-```powershell
-.\scripts\Uninstall.ps1
-```
-
-## Why the installed build is separate
-
-Development output under `bin\` can move or be replaced during compilation. The installer copies the tested self-contained executable to a stable per-user path so a pinned taskbar shortcut continues to work across source builds.
-
-Build history and the reasons behind changes are recorded in `CHANGELOG.md`.
-
-## Current scope
-
-This prototype intentionally excludes Drag Snip, settings, tray features, editing, notifications, history, browser integration, hotkeys, and multiple capture modes.
+QuickSnip Settings and Information currently open centered on the primary monitor. Opening them on the monitor where the taskbar command was invoked is deferred until monitor placement can be made reliable with the borderless themed windows. Screenshot capture itself continues to follow the mouse pointer across monitors.

@@ -1,10 +1,16 @@
 using System.IO;
 
-namespace RightSnip;
+namespace QuickSnip;
 
 internal static class AppLogger
 {
+    public static void Information(string operation, string message) =>
+        Write(operation, message);
+
     public static void Error(string operation, Exception exception)
+        => Write(operation, exception.ToString());
+
+    private static void Write(string operation, string message)
     {
         try
         {
@@ -12,7 +18,7 @@ internal static class AppLogger
 
             var entry =
                 $"[{DateTimeOffset.Now:O}] {operation}{Environment.NewLine}" +
-                $"{exception}{Environment.NewLine}{Environment.NewLine}";
+                $"{message}{Environment.NewLine}{Environment.NewLine}";
 
             File.AppendAllText(AppPaths.LogFile, entry);
         }

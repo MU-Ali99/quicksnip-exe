@@ -1,6 +1,29 @@
 # Changelog
 
-RightSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
+QuickSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
+
+## 0.5.0 - 2026-08-12
+
+### QuickSnip rename, capture modes, and preferences
+
+- Renamed the Windows product, executable, installation, shortcut, AppData, logs, screenshots, namespaces, and user interface from RightSnip to QuickSnip.
+- Added Window Snip using native Windows foreground-window bounds.
+- Added extension-inspired toggle rows for QuickSnip, Window Snip, Save PNG, and Copy to clipboard.
+- Added persistent JSON preferences and a custom save-folder picker.
+- Added mutually exclusive capture-mode toggles: the selected mode becomes the left-click default.
+- Kept a disabled capture mode available as an alternate right-click Jump List action.
+- Immediately restores QuickSnip when the user tries to leave all capture modes disabled.
+- Added fast, animated toggle state changes and adaptive alternate-mode Jump List commands.
+- Added themed, movable Settings and Information windows with custom title bars and Windows-style close-button hover feedback.
+- Added the QuickSnip icon and restored the familiar bright-blue extension-style header treatment.
+- Window Snip uses physical visible-window pixels for compatibility with hardware-accelerated apps and clips maximized windows to the monitor work area so the taskbar is excluded.
+- Active-window discovery rejects 1×1 shell helpers, cloaked windows, untitled surfaces, and desktop/taskbar classes before selecting the top real application window.
+- Added a one-second cooldown that ignores accidental repeated clicks after a completed capture.
+- Preserved all existing screenshots in `Pictures\RightSnip` during migration.
+
+### Why
+
+QuickSnip better describes the product's promise: one click, one snip. Active-window capture adds a useful focused mode without the selection-overlay complexity of Drag Snip, while extension-style toggles keep capture and output choices compact and familiar.
 
 ## 0.4.0 - 2026-08-12
 

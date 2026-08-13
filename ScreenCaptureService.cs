@@ -1,10 +1,15 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace RightSnip;
+namespace QuickSnip;
+
+internal enum CaptureTarget
+{
+    Display,
+    ActiveWindow
+}
 
 internal static class ScreenCaptureService
 {
@@ -12,7 +17,9 @@ internal static class ScreenCaptureService
     private static readonly TimeSpan ClipboardRetryDelay =
         TimeSpan.FromMilliseconds(80);
 
-    public static async Task<string> CaptureCurrentDisplayAsync()
+    public static async Task<string?> CaptureAsync(
+        CaptureTarget target,
+        QuickSnipSettings? settings = null)
     {
         using var captureGate = CaptureGate.TryEnter();
 
@@ -21,21 +28,44 @@ internal static class ScreenCaptureService
             throw new CaptureAlreadyRunningException();
         }
 
-        using var bitmap =
-            NativeScreenCapture.CaptureDisplayContainingPointer();
+        if (!CaptureCooldownService.IsReady())
+        {
+            throw new CaptureCooldownException();
+        }
 
-        SnipFolderService.EnsureExists();
+        settings ??= SettingsService.Load();
+        settings.Normalize();
 
-        var filename =
-            $"rightsnip-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.png";
+        using var bitmap = target switch
+        {
+            CaptureTarget.ActiveWindow => NativeScreenCapture.CaptureActiveWindow(),
+            _ => NativeScreenCapture.CaptureDisplayContainingPointer()
+        };
 
-        var savedPath =
-            Path.Combine(SnipFolderService.Path, filename);
+        string? savedPath = null;
 
-        bitmap.Save(savedPath, ImageFormat.Png);
+        if (settings.SavePng)
+        {
+            SnipFolderService.EnsureExists(settings.SaveFolder);
 
-        var clipboardImage = CreateClipboardImage(bitmap);
-        await CopyImageToClipboardAsync(clipboardImage);
+            var mode = target == CaptureTarget.ActiveWindow
+                ? "window"
+                : "display";
+
+            var filename =
+                $"quicksnip-{mode}-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.png";
+
+            savedPath = Path.Combine(settings.SaveFolder, filename);
+            bitmap.Save(savedPath, ImageFormat.Png);
+        }
+
+        if (settings.CopyToClipboard)
+        {
+            var clipboardImage = CreateClipboardImage(bitmap);
+            await CopyImageToClipboardAsync(clipboardImage);
+        }
+
+        CaptureCooldownService.MarkCompleted();
 
         return savedPath;
     }
@@ -52,12 +82,10 @@ internal static class ScreenCaptureService
         image.StreamSource = stream;
         image.EndInit();
         image.Freeze();
-
         return image;
     }
 
-    private static async Task CopyImageToClipboardAsync(
-        BitmapSource image)
+    private static async Task CopyImageToClipboardAsync(BitmapSource image)
     {
         Exception? lastError = null;
 
@@ -80,7 +108,7 @@ internal static class ScreenCaptureService
         }
 
         throw new InvalidOperationException(
-            "The screenshot was saved, but the Windows clipboard was busy.",
+            "The screenshot output succeeded, but the Windows clipboard was busy.",
             lastError);
     }
 }
@@ -88,7 +116,15 @@ internal static class ScreenCaptureService
 internal sealed class CaptureAlreadyRunningException : Exception
 {
     public CaptureAlreadyRunningException()
-        : base("A RightSnip capture is already running.")
+        : base("A QuickSnip capture is already running.")
+    {
+    }
+}
+
+internal sealed class CaptureCooldownException : Exception
+{
+    public CaptureCooldownException()
+        : base("QuickSnip ignored an accidental repeated click.")
     {
     }
 }

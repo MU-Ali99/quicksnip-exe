@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace RightSnip;
+namespace QuickSnip;
 
 internal static class OnboardingService
 {
