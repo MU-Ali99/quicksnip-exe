@@ -20,6 +20,7 @@ internal static class ScreenshotFileService
         {
             CaptureTarget.ActiveWindow => "window",
             CaptureTarget.Drag => "drag",
+            CaptureTarget.Lock => "lock",
             _ => "display"
         };
 

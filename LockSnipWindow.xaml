@@ -1,0 +1,64 @@
+<Window x:Class="QuickSnip.LockSnipWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lock Snip" Width="390" Height="220" SizeToContent="Manual"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#554F63C5" />
+            <Setter Property="BorderBrush" Value="#8899A8F4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Surface" CornerRadius="11" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Surface" Property="Background" Value="#776F82E2" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Surface" Property="Opacity" Value="0.75" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Border CornerRadius="20" BorderThickness="1" BorderBrush="#887E91EE" Padding="18">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#F02278E8" Offset="0" />
+                <GradientStop Color="#F03D62D8" Offset="0.5" />
+                <GradientStop Color="#F01B2E86" Offset="1" />
+            </LinearGradientBrush>
+        </Border.Background>
+        <StackPanel>
+            <Grid MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="34" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <Image Source="Assets/QuickSnip-source.png" Width="27" Height="27" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock x:Name="TargetTitle" Text="Lock Snip" Foreground="White" FontSize="16" FontWeight="Bold" />
+                    <TextBlock x:Name="TargetDetail" Text="Choose a target" Foreground="#DCE8FF" FontSize="12" />
+                </StackPanel>
+                <TextBlock x:Name="SectionText" Grid.Column="2" Text="Section 0" Foreground="White"
+                           FontWeight="SemiBold" VerticalAlignment="Center" />
+            </Grid>
+            <Grid Margin="0,18,0,0">
+                <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="10" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                <Button Content="◀  Previous" Height="38" Click="PreviousButton_Click" />
+                <Button Grid.Column="2" Content="Next  ▶" Height="38" Click="NextButton_Click" />
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Button Content="Capture" Height="38" FontWeight="Bold" Click="CaptureButton_Click" />
+            </Grid>
+            <Button Content="Close" Height="32" Margin="0,10,0,0" Click="CloseButton_Click" />
+        </StackPanel>
+    </Border>
+</Window>

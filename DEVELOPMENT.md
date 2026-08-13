@@ -62,6 +62,22 @@ The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, execut
 - Drag Snip's instruction pill remains on the primary display while launch-display placement awaits broader multi-monitor testing.
 - Editor, history, tray support, and Chrome companion integration remain outside this build.
 
+## Lock Snip prototype checkpoint (unreleased 0.9.0 work)
+
+This checkpoint preserves the first working Lock Snip prototype without changing the official 0.8.1 release version.
+
+- Lock Snip appears below capture modes and above Output in Settings.
+- The user can lock either a selected display or selected window.
+- Capture Section saves, copies, and shows the configured toast immediately for every capture.
+- Previous Position and Next Position default to `Alt+W` and `Alt+S` during an active session; Capture Section is unassigned by default.
+- A compact floating controller provides Previous, Next, Capture, and Close actions.
+- Middle-click closes the active Lock Snip session.
+- Chrome accepts background wheel scrolling directly.
+- File Explorer uses a focused input fallback that restores the previous foreground window and pointer position.
+- Lock Snip is opt-in and loads only while a session is active.
+
+Remaining 0.9.0 work includes visual polish, broader application testing, monitor/DPI testing, target/controller placement, scrolling accuracy, and final documentation. This checkpoint intentionally saves individual sections rather than stitching them.
+
 ## Build 0.7.0 safety and migration
 
 - SkiaSharp encodes PNG, JPEG, and WebP. Clipboard output remains a WPF `BitmapSource`, independent of disk format.

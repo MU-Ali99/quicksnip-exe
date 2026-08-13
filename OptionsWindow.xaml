@@ -369,6 +369,69 @@
                     </StackPanel>
                 </Border>
 
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}"
+                        Background="#44233A91" BorderBrush="#66758CEB">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Lock Snip" FontSize="17" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="Build a scrolling screenshot section by section"
+                                           FontSize="12" Foreground="#DCE8FF" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <CheckBox x:Name="LockSnipToggle" Grid.Column="1" VerticalAlignment="Center"
+                                      Style="{StaticResource ToggleSwitch}"
+                                      Checked="LockSnipSetting_Changed" Unchecked="LockSnipSetting_Changed" />
+                        </Grid>
+
+                        <StackPanel x:Name="LockSnipControls" Margin="0,17,0,0">
+                            <TextBlock Text="Capture target" Foreground="White" FontWeight="Bold" Margin="2,0,0,7" />
+                            <UniformGrid Columns="2">
+                                <RadioButton x:Name="LockDisplayChoice" GroupName="LockTarget" Content="Display"
+                                             Style="{StaticResource ChoiceButton}" Checked="LockSnipSetting_Changed" />
+                                <RadioButton x:Name="LockWindowChoice" GroupName="LockTarget" Content="Window"
+                                             Style="{StaticResource ChoiceButton}" Checked="LockSnipSetting_Changed" />
+                            </UniformGrid>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
+                                <TextBlock Text="Capture section" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                                <TextBox x:Name="LockCaptureHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                         GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                                <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                        Tag="LockCapture" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                            </Grid>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
+                                <TextBlock Text="Previous position" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                                <TextBox x:Name="LockPreviousHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                         GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                                <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                        Tag="LockPrevious" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                            </Grid>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
+                                <TextBlock Text="Next position" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                                <TextBox x:Name="LockNextHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                         GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                                <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                        Tag="LockNext" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                            </Grid>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="132" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                                <TextBlock Text="Close Lock Snip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                                <Border Grid.Column="1" CornerRadius="12" Background="#55354FB8"
+                                        BorderBrush="#778899F0" BorderThickness="1" Padding="12,8">
+                                    <TextBlock Text="Mouse wheel button" Foreground="White" FontWeight="SemiBold"
+                                               HorizontalAlignment="Center" />
+                                </Border>
+                            </Grid>
+                            <Button Margin="0,13,0,0" Height="36" Style="{StaticResource ActionButton}"
+                                    Click="ResetLockSnipHotkeysButton_Click" Content="Reset Lock Snip Hotkeys" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
                 <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#381D2F82" BorderBrush="#4A7186D8">
                     <StackPanel>
                         <TextBlock Text="Output" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,16" />

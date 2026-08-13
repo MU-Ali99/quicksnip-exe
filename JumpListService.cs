@@ -47,6 +47,15 @@ internal static class JumpListService
                 "--drag"));
         }
 
+        if (settings.LockSnipEnabled)
+        {
+            jumpList.JumpItems.Add(CreateTask(
+                executablePath,
+                "Lock Snip",
+                "Build a scrolling screenshot from a locked display or window",
+                "--lock-snip"));
+        }
+
         jumpList.JumpItems.Add(CreateTask(
             executablePath,
             "Open Snips Folder",

@@ -60,6 +60,22 @@ public partial class App : System.Windows.Application
                 return;
             }
 
+            if (HasArgument(e.Args, "--lock-snip"))
+            {
+                if (settings.LockSnipEnabled)
+                {
+                    var controller = new LockSnipWindow(settings);
+                    MainWindow = controller;
+                    controller.Closed += (_, _) => Shutdown();
+                    controller.Show();
+                }
+                else
+                {
+                    Shutdown();
+                }
+                return;
+            }
+
             if (HasArgument(e.Args, "--menu"))
             {
                 HotkeyService.StopHost();

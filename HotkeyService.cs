@@ -11,6 +11,9 @@ internal static class HotkeyService
     public const int QuickSnipId = 4101;
     public const int WindowSnipId = 4102;
     public const int DragSnipId = 4103;
+    public const int LockCaptureId = 4201;
+    public const int LockPreviousId = 4202;
+    public const int LockNextId = 4203;
     private const int WmHotkey = 0x0312;
     private const int WmClose = 0x0010;
     private const uint NoRepeat = 0x4000;

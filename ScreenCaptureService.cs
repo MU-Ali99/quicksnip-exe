@@ -9,7 +9,8 @@ internal enum CaptureTarget
 {
     Display,
     ActiveWindow,
-    Drag
+    Drag,
+    Lock
 }
 
 internal static class ScreenCaptureService
@@ -62,7 +63,15 @@ internal static class ScreenCaptureService
 
         using (bitmap)
         {
+            return await OutputBitmapAsync(bitmap, target, settings);
+        }
+    }
 
+    internal static async Task<string?> OutputBitmapAsync(
+        Bitmap bitmap,
+        CaptureTarget target,
+        QuickSnipSettings settings)
+    {
         string? savedPath = null;
 
         if (settings.SavePng)
@@ -100,8 +109,7 @@ internal static class ScreenCaptureService
                 ShowToast("Snip taken", detail);
             }
 
-            return savedPath;
-        }
+        return savedPath;
     }
 
     private static void ShowToast(string title, string detail)

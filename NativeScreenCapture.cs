@@ -14,6 +14,130 @@ internal static class NativeScreenCapture
     private const int CaptureLayeredWindows = 0x40000000;
     private const int ExtendedFrameBounds = 9;
     private const int DwmCloaked = 14;
+    private const uint GetRoot = 2;
+    private const int MouseWheel = 0x020A;
+
+    public static LockedCaptureTarget GetLockedTarget(int x, int y, bool captureWindow)
+    {
+        var point = new NativePoint { X = x, Y = y };
+        var scrollWindow = WindowFromPoint(point);
+        var window = GetAncestor(scrollWindow, GetRoot);
+        if (!IsCapturableWindow(window))
+        {
+            window = IntPtr.Zero;
+        }
+
+        NativeRectangle bounds;
+        string name;
+        if (captureWindow && window != IntPtr.Zero && TryGetWindowBounds(window, out bounds))
+        {
+            var title = new StringBuilder(512);
+            GetWindowText(window, title, title.Capacity);
+            name = title.ToString();
+        }
+        else
+        {
+            var monitor = MonitorFromPoint(point, MonitorDefaultToNearest);
+            var info = new MonitorInfo { Size = Marshal.SizeOf<MonitorInfo>() };
+            if (!GetMonitorInfo(monitor, ref info))
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            bounds = info.Monitor;
+            name = $"Display {DisplayNumber(monitor)}";
+        }
+
+        return new LockedCaptureTarget(
+            window,
+            scrollWindow,
+            new PhysicalCaptureRectangle(bounds.Left, bounds.Top,
+                bounds.Right - bounds.Left, bounds.Bottom - bounds.Top),
+            name,
+            captureWindow && window != IntPtr.Zero);
+    }
+
+    public static Bitmap CaptureLockedTarget(LockedCaptureTarget target)
+    {
+        var bounds = target.Bounds;
+        if (target.IsWindow && target.Window != IntPtr.Zero &&
+            TryGetWindowBounds(target.Window, out var current))
+        {
+            bounds = new PhysicalCaptureRectangle(current.Left, current.Top,
+                current.Right - current.Left, current.Bottom - current.Top);
+        }
+        return CaptureRegion(bounds);
+    }
+
+    public static void ScrollLockedTarget(LockedCaptureTarget target, bool next)
+    {
+        if (target.ScrollWindow == IntPtr.Zero) return;
+        var centerX = target.Bounds.Left + target.Bounds.Width / 2;
+        var centerY = target.Bounds.Top + target.Bounds.Height / 2;
+        var delta = next ? -720 : 720;
+
+        if (IsFileExplorerWindow(target.Window))
+        {
+            ScrollWithInputFallback(target.Window, centerX, centerY, delta);
+            return;
+        }
+
+        var wParam = new IntPtr(delta << 16);
+        var lParam = new IntPtr((centerY << 16) | (centerX & 0xFFFF));
+        PostMessage(target.ScrollWindow, MouseWheel, wParam, lParam);
+    }
+
+    private static bool IsFileExplorerWindow(IntPtr window)
+    {
+        var className = new StringBuilder(128);
+        GetClassName(window, className, className.Capacity);
+        return className.ToString() is "CabinetWClass" or "ExploreWClass";
+    }
+
+    private static void ScrollWithInputFallback(
+        IntPtr targetWindow,
+        int targetX,
+        int targetY,
+        int delta)
+    {
+        var previousWindow = GetForegroundWindow();
+        GetCursorPos(out var previousPointer);
+
+        try
+        {
+            SetForegroundWindow(targetWindow);
+            SetCursorPos(targetX, targetY);
+            Thread.Sleep(35);
+
+            var input = new Input
+            {
+                Type = 0,
+                Mouse = new MouseInput
+                {
+                    MouseData = unchecked((uint)delta),
+                    Flags = 0x0800
+                }
+            };
+            SendInput(1, [input], Marshal.SizeOf<Input>());
+            Thread.Sleep(35);
+        }
+        finally
+        {
+            SetCursorPos(previousPointer.X, previousPointer.Y);
+            if (previousWindow != IntPtr.Zero && previousWindow != targetWindow)
+                SetForegroundWindow(previousWindow);
+        }
+    }
+
+    private static int DisplayNumber(IntPtr selected)
+    {
+        var number = 0;
+        var result = 1;
+        EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, (monitor, _, _, _) =>
+        {
+            number++;
+            if (monitor == selected) result = number;
+            return true;
+        }, IntPtr.Zero);
+        return result;
+    }
 
     public static Bitmap CaptureDisplayContainingPointer()
     {
@@ -265,12 +389,31 @@ internal static class NativeScreenCapture
     }
 
     private delegate bool EnumWindowsCallback(IntPtr window, IntPtr parameter);
+    private delegate bool MonitorCallback(IntPtr monitor, IntPtr dc, IntPtr rectangle, IntPtr parameter);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct NativePoint
     {
         public int X;
         public int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct Input
+    {
+        public uint Type;
+        public MouseInput Mouse;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MouseInput
+    {
+        public int X;
+        public int Y;
+        public uint MouseData;
+        public uint Flags;
+        public uint Time;
+        public IntPtr ExtraInfo;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -304,6 +447,21 @@ internal static class NativeScreenCapture
 
     [DllImport("user32.dll")]
     private static extern IntPtr GetForegroundWindow();
+
+    [DllImport("user32.dll")]
+    private static extern bool SetForegroundWindow(IntPtr window);
+
+    [DllImport("user32.dll")]
+    private static extern bool SetCursorPos(int x, int y);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern uint SendInput(uint count, Input[] inputs, int size);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr WindowFromPoint(NativePoint point);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetAncestor(IntPtr window, uint flags);
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool GetWindowRect(
@@ -377,4 +535,18 @@ internal static class NativeScreenCapture
         int sourceX,
         int sourceY,
         int rasterOperation);
+
+    [DllImport("user32.dll")]
+    private static extern bool PostMessage(IntPtr window, int message, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    private static extern bool EnumDisplayMonitors(
+        IntPtr dc, IntPtr clip, MonitorCallback callback, IntPtr parameter);
 }
+
+internal sealed record LockedCaptureTarget(
+    IntPtr Window,
+    IntPtr ScrollWindow,
+    PhysicalCaptureRectangle Bounds,
+    string Name,
+    bool IsWindow);

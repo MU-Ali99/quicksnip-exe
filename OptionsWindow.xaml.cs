@@ -28,6 +28,9 @@ public partial class OptionsWindow : Window
         QuickSnipToggle.IsChecked = _settings.QuickSnipEnabled;
         ActiveWindowToggle.IsChecked = _settings.ActiveWindowSnipEnabled;
         DragSnipToggle.IsChecked = _settings.DragSnipEnabled;
+        LockSnipToggle.IsChecked = _settings.LockSnipEnabled;
+        LockDisplayChoice.IsChecked = _settings.LockSnipTarget == "Display";
+        LockWindowChoice.IsChecked = _settings.LockSnipTarget == "Window";
         SavePngToggle.IsChecked = _settings.SavePng;
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
         ToastToggle.IsChecked = _settings.ShowCaptureToast;
@@ -35,9 +38,27 @@ public partial class OptionsWindow : Window
         SaveLocationText.Text = _settings.SaveFolder;
         UpdateSaveFormatState();
         UpdateHotkeyBoxes();
+        UpdateLockSnipState();
 
         _loading = false;
         UpdateActionButtons();
+    }
+
+    private void LockSnipSetting_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        SaveSettingsFromControls();
+        UpdateLockSnipState();
+        StatusText.Text = LockSnipToggle.IsChecked == true
+            ? "Lock Snip enabled. Start it from the taskbar right-click menu."
+            : "Lock Snip disabled.";
+    }
+
+    private void UpdateLockSnipState()
+    {
+        var enabled = LockSnipToggle.IsChecked == true;
+        LockSnipControls.IsEnabled = enabled;
+        LockSnipControls.Opacity = enabled ? 1 : 0.55;
     }
 
     private void SettingToggle_Changed(object sender, RoutedEventArgs e)
@@ -109,6 +130,8 @@ public partial class OptionsWindow : Window
         _settings.QuickSnipEnabled = QuickSnipToggle.IsChecked == true;
         _settings.ActiveWindowSnipEnabled = ActiveWindowToggle.IsChecked == true;
         _settings.DragSnipEnabled = DragSnipToggle.IsChecked == true;
+        _settings.LockSnipEnabled = LockSnipToggle.IsChecked == true;
+        _settings.LockSnipTarget = LockWindowChoice.IsChecked == true ? "Window" : "Display";
         _settings.SavePng = SavePngToggle.IsChecked == true;
         _settings.CopyToClipboard = ClipboardToggle.IsChecked == true;
         _settings.ShowCaptureToast = ToastToggle.IsChecked == true;
@@ -311,7 +334,10 @@ public partial class OptionsWindow : Window
         {
             "QuickSnip" => QuickSnipHotkeyBox,
             "WindowSnip" => WindowSnipHotkeyBox,
-            _ => DragSnipHotkeyBox
+            "DragSnip" => DragSnipHotkeyBox,
+            "LockCapture" => LockCaptureHotkeyBox,
+            "LockPrevious" => LockPreviousHotkeyBox,
+            _ => LockNextHotkeyBox
         };
         var (id, _, assign) = GetHotkeyBinding(box);
         HotkeyService.Unregister(_windowHandle, id);
@@ -320,6 +346,20 @@ public partial class OptionsWindow : Window
         HotkeyService.UpdateStartup(_settings);
         UpdateHotkeyBoxes();
         StatusText.Text = $"{name.Replace("Snip", " Snip").Trim()} hotkey cleared.";
+    }
+
+    private void ResetLockSnipHotkeysButton_Click(object sender, RoutedEventArgs e)
+    {
+        HotkeyService.Unregister(_windowHandle, HotkeyService.LockCaptureId);
+        HotkeyService.Unregister(_windowHandle, HotkeyService.LockPreviousId);
+        HotkeyService.Unregister(_windowHandle, HotkeyService.LockNextId);
+        _settings.LockCaptureHotkey = new HotkeySetting();
+        _settings.LockPreviousHotkey = HotkeySetting.Alt(Key.W);
+        _settings.LockNextHotkey = HotkeySetting.Alt(Key.S);
+        SettingsService.Save(_settings);
+        RebindAllHotkeys();
+        UpdateHotkeyBoxes();
+        StatusText.Text = "Lock Snip hotkeys reset.";
     }
 
     private void ResetHotkeysButton_Click(object sender, RoutedEventArgs e)
@@ -340,7 +380,13 @@ public partial class OptionsWindow : Window
             return (HotkeyService.QuickSnipId, _settings.QuickSnipHotkey, value => _settings.QuickSnipHotkey = value);
         if (ReferenceEquals(box, WindowSnipHotkeyBox))
             return (HotkeyService.WindowSnipId, _settings.WindowSnipHotkey, value => _settings.WindowSnipHotkey = value);
-        return (HotkeyService.DragSnipId, _settings.DragSnipHotkey, value => _settings.DragSnipHotkey = value);
+        if (ReferenceEquals(box, DragSnipHotkeyBox))
+            return (HotkeyService.DragSnipId, _settings.DragSnipHotkey, value => _settings.DragSnipHotkey = value);
+        if (ReferenceEquals(box, LockCaptureHotkeyBox))
+            return (HotkeyService.LockCaptureId, _settings.LockCaptureHotkey, value => _settings.LockCaptureHotkey = value);
+        if (ReferenceEquals(box, LockPreviousHotkeyBox))
+            return (HotkeyService.LockPreviousId, _settings.LockPreviousHotkey, value => _settings.LockPreviousHotkey = value);
+        return (HotkeyService.LockNextId, _settings.LockNextHotkey, value => _settings.LockNextHotkey = value);
     }
 
     private void UpdateHotkeyBoxes()
@@ -348,6 +394,9 @@ public partial class OptionsWindow : Window
         QuickSnipHotkeyBox.Text = HotkeyService.Display(_settings.QuickSnipHotkey);
         WindowSnipHotkeyBox.Text = HotkeyService.Display(_settings.WindowSnipHotkey);
         DragSnipHotkeyBox.Text = HotkeyService.Display(_settings.DragSnipHotkey);
+        LockCaptureHotkeyBox.Text = HotkeyService.Display(_settings.LockCaptureHotkey);
+        LockPreviousHotkeyBox.Text = HotkeyService.Display(_settings.LockPreviousHotkey);
+        LockNextHotkeyBox.Text = HotkeyService.Display(_settings.LockNextHotkey);
     }
 
     private void RebindAllHotkeys()
@@ -355,10 +404,22 @@ public partial class OptionsWindow : Window
         if (_windowHandle == IntPtr.Zero) return;
         UnregisterAllHotkeys();
         var registered = HotkeyService.RegisterAll(_windowHandle, _settings);
+        RegisterLock(HotkeyService.LockCaptureId, _settings.LockCaptureHotkey);
+        RegisterLock(HotkeyService.LockPreviousId, _settings.LockPreviousHotkey);
+        RegisterLock(HotkeyService.LockNextId, _settings.LockNextHotkey);
         var expected = new[] { _settings.QuickSnipHotkey, _settings.WindowSnipHotkey, _settings.DragSnipHotkey }
             .Count(value => value.IsAssigned);
+        if (_settings.LockSnipEnabled)
+            expected += new[] { _settings.LockCaptureHotkey, _settings.LockPreviousHotkey, _settings.LockNextHotkey }
+                .Count(value => value.IsAssigned);
         if (registered.Count != expected)
             StatusText.Text = "One or more saved hotkeys are currently used by another application.";
+
+        void RegisterLock(int id, HotkeySetting setting)
+        {
+            if (_settings.LockSnipEnabled && setting.IsAssigned && HotkeyService.TryRegister(_windowHandle, id, setting))
+                registered.Add(id);
+        }
     }
 
     private void UnregisterAllHotkeys()
@@ -367,6 +428,9 @@ public partial class OptionsWindow : Window
         HotkeyService.Unregister(_windowHandle, HotkeyService.QuickSnipId);
         HotkeyService.Unregister(_windowHandle, HotkeyService.WindowSnipId);
         HotkeyService.Unregister(_windowHandle, HotkeyService.DragSnipId);
+        HotkeyService.Unregister(_windowHandle, HotkeyService.LockCaptureId);
+        HotkeyService.Unregister(_windowHandle, HotkeyService.LockPreviousId);
+        HotkeyService.Unregister(_windowHandle, HotkeyService.LockNextId);
     }
 
     private void Header_MouseLeftButtonDown(
@@ -386,6 +450,9 @@ public partial class OptionsWindow : Window
         QuickSnipToggle.IsChecked = _settings.QuickSnipEnabled;
         ActiveWindowToggle.IsChecked = _settings.ActiveWindowSnipEnabled;
         DragSnipToggle.IsChecked = _settings.DragSnipEnabled;
+        LockSnipToggle.IsChecked = _settings.LockSnipEnabled;
+        LockDisplayChoice.IsChecked = _settings.LockSnipTarget == "Display";
+        LockWindowChoice.IsChecked = _settings.LockSnipTarget == "Window";
         SavePngToggle.IsChecked = _settings.SavePng;
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
         ToastToggle.IsChecked = _settings.ShowCaptureToast;
@@ -395,6 +462,7 @@ public partial class OptionsWindow : Window
         _loading = false;
         UpdateActionButtons();
         UpdateSaveFormatState();
+        UpdateLockSnipState();
     }
 
     private void UpdateSaveFormatState()
