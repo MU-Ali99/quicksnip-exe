@@ -257,7 +257,7 @@
               VerticalAlignment="Bottom" Height="330" />
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,34,0,0">
-            <StackPanel Margin="24,22,24,22">
+            <StackPanel Margin="24,22,14,22">
                 <Grid Margin="0,0,0,20"
                       MouseLeftButtonDown="Header_MouseLeftButtonDown">
                     <Grid.ColumnDefinitions>

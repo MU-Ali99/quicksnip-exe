@@ -4,7 +4,7 @@
 
 Every tested user-facing feature build receives a semantic version, documentation update, commit, tag, push, and GitHub release.
 
-## Build 0.8.1 architecture
+## Build 0.9.0 architecture
 
 - `QuickSnip.csproj`: .NET 10 WPF `WinExe` project.
 - `NativeScreenCapture.cs`: physical-pixel display and active-window capture.
@@ -47,6 +47,8 @@ Current tested rules:
 | 0.6.0 | Drag Snip and scalable windows | Added a cancellable selection overlay and shared, validated window sizing and placement for Settings and Information. |
 | 0.7.0 | Output and distribution | Added multi-format saving, quality choices, local toast, recovery controls, Recycle Bin cleanup, and installer/portable packages. |
 | 0.8.0 | Custom hotkeys and design | Added opt-in global shortcuts, conflict-safe registration, a conditional background host/startup entry, Drag Snip defaults, and unified cobalt/indigo interfaces. |
+| 0.8.1 | Drag Snip placement maintenance | Stabilized the Drag Snip instruction pill on the primary display. |
+| 0.9.0 | Lock Snip and interface refinement | Added locked display/window capture, controlled scrolling, immediate per-section output, shared hotkeys, taskbar-mode visibility, compact typography, and controller polish. |
 
 The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
 
@@ -62,9 +64,9 @@ The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, execut
 - Drag Snip's instruction pill remains on the primary display while launch-display placement awaits broader multi-monitor testing.
 - Editor, history, tray support, and Chrome companion integration remain outside this build.
 
-## Lock Snip prototype checkpoint (unreleased 0.9.0 work)
+## Build 0.9.0 Lock Snip
 
-This checkpoint preserves the first working Lock Snip prototype without changing the official 0.8.1 release version.
+Build 0.9.0 promotes the tested Lock Snip prototype into the released application.
 
 - Lock Snip appears below capture modes and above Output in Settings.
 - The user can lock either a selected display or selected window.
@@ -76,7 +78,7 @@ This checkpoint preserves the first working Lock Snip prototype without changing
 - File Explorer uses a focused input fallback that restores the previous foreground window and pointer position.
 - Lock Snip is opt-in and loads only while a session is active.
 
-Remaining 0.9.0 work includes visual polish, broader application testing, monitor/DPI testing, target/controller placement, scrolling accuracy, and final documentation. This checkpoint intentionally saves individual sections rather than stitching them.
+Lock Snip intentionally saves each captured section immediately rather than retaining or stitching a long in-memory image. Broader application, monitor, DPI, and scrolling tests remain part of the future reliability audit.
 
 ## Build 0.7.0 safety and migration
 

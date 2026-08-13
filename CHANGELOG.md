@@ -2,6 +2,25 @@
 
 QuickSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.9.0 - 2026-08-13
+
+### Lock Snip and interface refinement
+
+- Added optional Lock Snip for a selected display or application window.
+- Added a compact movable controller with Previous, Next, Capture, Reset Window, and Close actions.
+- Made every locked capture save, copy, and show feedback immediately instead of waiting for a final stitch.
+- Added controlled background scrolling for Chrome and a focus-restoring fallback for File Explorer.
+- Reused Screen Snip and Window Snip shortcuts for their matching locked targets.
+- Added configurable Lock Snip, Previous Position, and Next Position shortcuts with conflict protection.
+- Added a segmented default snip-mode selector and optional taskbar-menu visibility for alternate modes.
+- Renamed the display action to Screen Snip while retaining QuickSnip as the product name.
+- Added a compact shared typography hierarchy without changing the established color system.
+- Refined Lock Snip target selection, application naming, controller size, transparency, and placement.
+
+### Why
+
+Lock Snip allows one display or window to remain the capture and scroll target while the user works elsewhere. Immediate independent outputs keep the workflow lightweight and recoverable without accumulating a large stitched image in memory.
+
 ## 0.8.1 - 2026-08-13
 
 ### Drag Snip instruction placement

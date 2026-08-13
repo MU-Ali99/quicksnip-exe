@@ -4,7 +4,7 @@
 
 QuickSnip is a native Windows screenshot utility designed around direct taskbar capture.
 
-Current build: **0.8.1**
+Current build: **0.9.0**
 
 ## Capture modes
 
@@ -44,9 +44,19 @@ QuickSnip supports separate custom global shortcuts for Drag Snip, QuickSnip, an
 - Right-click QuickSnip for Window Snip, Open Snips Folder, and QuickSnip Settings.
 - QuickSnip Settings uses compact toggle rows inspired by the original browser-extension popup.
 
+## Lock Snip
+
+Lock Snip keeps one selected display or application window as its capture target while you continue working elsewhere. Its floating controller provides Previous, Next, Capture, Reset Window, and Close actions. Every capture is immediately saved, copied according to Output preferences, and confirmed by the optional toast.
+
+- Screen Snip and Window Snip shortcuts are reused inside their matching locked target.
+- Previous and Next positions have configurable shortcuts.
+- Chrome supports background scrolling; File Explorer uses a focused scrolling fallback that restores the previous window and pointer.
+- Lock Snip is optional and loads only during an active session.
+- Middle-click closes the controller.
+
 ## Progress so far
 
-QuickSnip has progressed through eight Windows builds:
+QuickSnip has progressed through its initial Windows builds:
 
 - **0.1.0 — Native proof:** captured the display, copied an image to the Windows clipboard, saved a PNG, and exited silently.
 - **0.2.0 — Taskbar-ready:** added a self-contained executable, stable per-user installation, icon, Start Menu shortcut, and pinning workflow.
@@ -59,6 +69,10 @@ QuickSnip has progressed through eight Windows builds:
 - **0.7.0 — Output and distribution:** adds image formats, quality choices, compact capture feedback, recovery controls, final Drag Snip polish, and a normal Windows installer.
 
 - **0.8.0 — Custom hotkeys and design:** adds opt-in global shortcuts, conflict handling, conditional background startup, Drag Snip defaults, and a unified richer-blue interface.
+
+- **0.8.1 — Placement maintenance:** stabilizes the Drag Snip instruction pill on the primary display.
+
+- **0.9.0 — Lock Snip:** adds locked display/window capture, controlled scrolling, immediate output, shared hotkeys, taskbar-mode controls, and refined typography.
 
 The original Chrome-extension investigation established why a native app was needed: Chrome can capture protected pages such as `chrome://` through extension APIs, but browser clipboard restrictions can prevent the captured image from being copied. The Windows app performs capture, clipboard, and saving outside those browser restrictions.
 
@@ -88,8 +102,8 @@ Build the normal installer and portable ZIP with:
 
 Release outputs:
 
-- `QuickSnip-Setup-0.8.1-win-x64.exe`
-- `QuickSnip-Portable-0.8.1-win-x64.zip`
+- `QuickSnip-Setup-0.9.0-win-x64.exe`
+- `QuickSnip-Portable-0.9.0-win-x64.zip`
 
 The self-contained executable is installed at:
 
