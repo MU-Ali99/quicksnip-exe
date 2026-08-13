@@ -33,7 +33,8 @@ internal static class NativeScreenCapture
         {
             var title = new StringBuilder(512);
             GetWindowText(window, title, title.Capacity);
-            name = title.ToString();
+            GetWindowThreadProcessId(window, out var processId);
+            name = GetApplicationName(processId, title.ToString());
         }
         else
         {
@@ -52,6 +53,26 @@ internal static class NativeScreenCapture
                 bounds.Right - bounds.Left, bounds.Bottom - bounds.Top),
             name,
             captureWindow && window != IntPtr.Zero);
+    }
+
+    private static string GetApplicationName(uint processId, string fallback)
+    {
+        try
+        {
+            using var process = Process.GetProcessById((int)processId);
+            var description = process.MainModule?.FileVersionInfo.FileDescription;
+            if (!string.IsNullOrWhiteSpace(description))
+                return description.Replace("Microsoft ", "", StringComparison.OrdinalIgnoreCase);
+            if (!string.IsNullOrWhiteSpace(process.ProcessName))
+                return process.ProcessName;
+        }
+        catch
+        {
+            // Fall back to the selected window title when process metadata is unavailable.
+        }
+
+        var separator = fallback.LastIndexOf(" - ", StringComparison.Ordinal);
+        return separator >= 0 ? fallback[(separator + 3)..] : fallback;
     }
 
     public static Bitmap CaptureLockedTarget(LockedCaptureTarget target)

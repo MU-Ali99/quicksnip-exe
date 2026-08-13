@@ -13,7 +13,6 @@ public partial class LockSnipWindow : Window
     private IntPtr _handle;
     private HwndSource? _source;
     private bool _capturing;
-    private int _sectionCount;
     private IntPtr _mouseHook;
     private readonly MouseHookCallback _mouseHookCallback;
 
@@ -22,6 +21,9 @@ public partial class LockSnipWindow : Window
         InitializeComponent();
         _settings = settings;
         _mouseHookCallback = MouseHook;
+        PreviousHotkeyText.Text = HotkeyService.Display(_settings.LockPreviousHotkey);
+        NextHotkeyText.Text = HotkeyService.Display(_settings.LockNextHotkey);
+        CaptureHotkeyText.Text = HotkeyService.Display(_settings.LockCaptureHotkey);
         SourceInitialized += Window_SourceInitialized;
         Loaded += Window_Loaded;
         Closed += (_, _) => Cleanup();
@@ -29,20 +31,10 @@ public partial class LockSnipWindow : Window
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        Hide();
-        var picker = new LockTargetPickerWindow();
-        if (picker.ShowDialog() != true || picker.SelectedScreenPoint is not { } point)
+        if (!await PickTargetAsync(closeWhenCancelled: true))
         {
-            Close();
             return;
         }
-
-        await Task.Delay(120);
-        _target = NativeScreenCapture.GetLockedTarget(
-            (int)Math.Round(point.X), (int)Math.Round(point.Y),
-            _settings.LockSnipTarget == "Window");
-        TargetTitle.Text = $"Lock Snip — {_target.Name}";
-        TargetDetail.Text = _settings.LockSnipTarget == "Window" ? "Locked window" : "Locked display";
         Show();
         Activate();
         InstallMouseHook();
@@ -91,9 +83,7 @@ public partial class LockSnipWindow : Window
         try
         {
             using var bitmap = NativeScreenCapture.CaptureLockedTarget(_target);
-            _sectionCount++;
             await ScreenCaptureService.OutputBitmapAsync(bitmap, CaptureTarget.Lock, _settings);
-            SectionText.Text = $"Section {_sectionCount}";
         }
         finally
         {
@@ -113,6 +103,31 @@ public partial class LockSnipWindow : Window
     private void PreviousButton_Click(object sender, RoutedEventArgs e) => Move(false);
     private void NextButton_Click(object sender, RoutedEventArgs e) => Move(true);
     private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+    private async void ResetWindowButton_Click(object sender, RoutedEventArgs e) =>
+        await PickTargetAsync(closeWhenCancelled: false);
+
+    private async Task<bool> PickTargetAsync(bool closeWhenCancelled)
+    {
+        Hide();
+        var picker = new LockTargetPickerWindow();
+        if (picker.ShowDialog() != true || picker.SelectedScreenPoint is not { } point)
+        {
+            if (closeWhenCancelled) Close();
+            else { Show(); Activate(); }
+            return false;
+        }
+
+        await Task.Delay(120);
+        _target = NativeScreenCapture.GetLockedTarget(
+            (int)Math.Round(point.X), (int)Math.Round(point.Y),
+            _settings.LockSnipTarget == "Window");
+        TargetNameText.Text = _settings.LockSnipTarget == "Window"
+            ? $"Locked window  •  {_target.Name}"
+            : $"Locked display  •  {_target.Name}";
+        Show();
+        Activate();
+        return true;
+    }
 
     private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {

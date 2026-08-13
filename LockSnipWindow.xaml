@@ -1,7 +1,7 @@
 <Window x:Class="QuickSnip.LockSnipWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Lock Snip" Width="390" Height="220" SizeToContent="Manual"
+        Title="Lock Snip" Width="420" Height="225" SizeToContent="Manual"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize">
     <Window.Resources>
@@ -30,8 +30,33 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="WindowCloseButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Surface" CornerRadius="7" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Surface" Property="Background" Value="#E74856" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Surface" Property="Background" Value="#B83242" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    <Border CornerRadius="20" BorderThickness="1" BorderBrush="#887E91EE" Padding="18">
+    <Grid>
+    <Border CornerRadius="20" BorderThickness="1" BorderBrush="#887E91EE" Padding="18,14,18,18">
         <Border.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Color="#F02278E8" Offset="0" />
@@ -40,25 +65,40 @@
             </LinearGradientBrush>
         </Border.Background>
         <StackPanel>
-            <Grid MouseLeftButtonDown="Header_MouseLeftButtonDown">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="34" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+            <Grid Height="58" Background="Transparent" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <Grid.RowDefinitions><RowDefinition Height="34" /><RowDefinition Height="24" /></Grid.RowDefinitions>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="34" /><ColumnDefinition /></Grid.ColumnDefinitions>
                 <Image Source="Assets/QuickSnip-source.png" Width="27" Height="27" />
-                <StackPanel Grid.Column="1">
-                    <TextBlock x:Name="TargetTitle" Text="Lock Snip" Foreground="White" FontSize="16" FontWeight="Bold" />
-                    <TextBlock x:Name="TargetDetail" Text="Choose a target" Foreground="#DCE8FF" FontSize="12" />
-                </StackPanel>
-                <TextBlock x:Name="SectionText" Grid.Column="2" Text="Section 0" Foreground="White"
-                           FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="Lock Snip" Foreground="White" FontSize="17"
+                           FontWeight="Bold" VerticalAlignment="Center" />
+                <TextBlock x:Name="TargetNameText" Grid.Row="1" Grid.ColumnSpan="2" Text="Choose a target"
+                           Foreground="#E5EEFF" FontSize="12" FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom" />
             </Grid>
-            <Grid Margin="0,18,0,0">
+            <Grid Margin="0,13,0,0">
                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="10" /><ColumnDefinition /></Grid.ColumnDefinitions>
-                <Button Content="◀  Previous" Height="38" Click="PreviousButton_Click" />
-                <Button Grid.Column="2" Content="Next  ▶" Height="38" Click="NextButton_Click" />
+                <Button Height="44" Click="PreviousButton_Click">
+                    <StackPanel><TextBlock Text="◀  Previous" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="PreviousHotkeyText" FontSize="10" Foreground="#DCE8FF" HorizontalAlignment="Center" /></StackPanel>
+                </Button>
+                <Button Grid.Column="2" Height="44" Click="NextButton_Click">
+                    <StackPanel><TextBlock Text="Next  ▶" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="NextHotkeyText" FontSize="10" Foreground="#DCE8FF" HorizontalAlignment="Center" /></StackPanel>
+                </Button>
             </Grid>
             <Grid Margin="0,10,0,0">
-                <Button Content="Capture" Height="38" FontWeight="Bold" Click="CaptureButton_Click" />
+                <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="10" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                <Button Height="44" Click="CaptureButton_Click">
+                    <StackPanel><TextBlock Text="Capture" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="CaptureHotkeyText" FontSize="10" Foreground="#DCE8FF" HorizontalAlignment="Center" /></StackPanel>
+                </Button>
+                <Button Grid.Column="2" Height="44" Content="Reset Window" FontWeight="Bold"
+                        Click="ResetWindowButton_Click" />
             </Grid>
-            <Button Content="Close" Height="32" Margin="0,10,0,0" Click="CloseButton_Click" />
         </StackPanel>
     </Border>
+    <Button HorizontalAlignment="Right" VerticalAlignment="Top"
+            Style="{StaticResource WindowCloseButton}" Content="×"
+            Click="CloseButton_Click" ToolTip="Close Lock Snip • Middle click" />
+    </Grid>
 </Window>
