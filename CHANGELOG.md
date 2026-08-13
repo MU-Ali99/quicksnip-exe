@@ -2,6 +2,19 @@
 
 QuickSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.8.1 - 2026-08-13
+
+### Drag Snip instruction placement
+
+- Fixed the Drag Snip instruction pill appearing across a monitor seam.
+- Fixed secondary-display launches causing the pill to disappear or shift unpredictably.
+- Anchored the pill near the top center of the primary display with a consistent gap.
+- Re-applied placement after WPF rendering and DPI changes.
+
+### Why
+
+The virtual-desktop overlay spans monitors that may use different scaling. A stable primary-display anchor provides predictable behavior until launch-display placement can be tested across more monitor arrangements.
+
 ## 0.8.0 - 2026-08-13
 
 ### Custom global hotkeys and interface refinement

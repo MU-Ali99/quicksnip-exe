@@ -4,7 +4,7 @@
 
 QuickSnip is a native Windows screenshot utility designed around direct taskbar capture.
 
-Current build: **0.8.0**
+Current build: **0.8.1**
 
 ## Capture modes
 
@@ -62,6 +62,10 @@ QuickSnip has progressed through eight Windows builds:
 
 The original Chrome-extension investigation established why a native app was needed: Chrome can capture protected pages such as `chrome://` through extension APIs, but browser clipboard restrictions can prevent the captured image from being copied. The Windows app performs capture, clipboard, and saving outside those browser restrictions.
 
+### Build 0.8.1 maintenance update
+
+Drag Snip now keeps its instruction pill centered near the top of the primary display, including when capture is launched from another display. QuickSnip re-applies this placement after rendering and DPI changes. Launch-display placement is deferred until it can be tested across more multi-monitor arrangements.
+
 ## Build
 
 ```powershell
@@ -84,8 +88,8 @@ Build the normal installer and portable ZIP with:
 
 Release outputs:
 
-- `QuickSnip-Setup-0.8.0-win-x64.exe`
-- `QuickSnip-Portable-0.8.0-win-x64.zip`
+- `QuickSnip-Setup-0.8.1-win-x64.exe`
+- `QuickSnip-Portable-0.8.1-win-x64.zip`
 
 The self-contained executable is installed at:
 

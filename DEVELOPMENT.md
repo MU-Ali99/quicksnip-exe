@@ -4,7 +4,7 @@
 
 Every tested user-facing feature build receives a semantic version, documentation update, commit, tag, push, and GitHub release.
 
-## Build 0.8.0 architecture
+## Build 0.8.1 architecture
 
 - `QuickSnip.csproj`: .NET 10 WPF `WinExe` project.
 - `NativeScreenCapture.cs`: physical-pixel display and active-window capture.
@@ -50,9 +50,16 @@ Current tested rules:
 
 The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
 
+## Build 0.8.1 maintenance
+
+- The Drag Snip instruction pill is anchored near the top center of the primary display.
+- Placement is re-applied after content rendering and DPI changes to prevent Windows from shifting it when capture starts from another monitor.
+- Automatic placement on the launch display is intentionally deferred until it can be tested across more monitor layouts and scaling combinations.
+
 ## Deferred work
 
 - Automatic pointer-monitor placement remains deferred. Saved placement is restored when valid; otherwise the window uses a comfortable primary-screen default.
+- Drag Snip's instruction pill remains on the primary display while launch-display placement awaits broader multi-monitor testing.
 - Editor, history, tray support, and Chrome companion integration remain outside this build.
 
 ## Build 0.7.0 safety and migration

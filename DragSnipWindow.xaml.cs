@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -32,6 +31,8 @@ public partial class DragSnipWindow : Window
             Activate();
             Focus();
         };
+        ContentRendered += (_, _) => PositionHint();
+        DpiChanged += (_, _) => Dispatcher.BeginInvoke(PositionHint);
     }
 
     private void CoverVirtualDesktop()
@@ -142,8 +143,16 @@ public partial class DragSnipWindow : Window
     private void PositionHint()
     {
         Hint.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        Canvas.SetLeft(Hint, Math.Max(12, (ActualWidth - Hint.DesiredSize.Width) / 2));
-        Canvas.SetTop(Hint, 24);
+        const int primaryScreenWidth = 0;
+        const int topGapInPhysicalPixels = 24;
+        var target = PointFromScreen(new Point(
+            GetSystemMetrics(primaryScreenWidth) / 2.0,
+            topGapInPhysicalPixels));
+        var left = target.X - (Hint.DesiredSize.Width / 2);
+        var top = target.Y;
+
+        Canvas.SetLeft(Hint, left);
+        Canvas.SetTop(Hint, top);
     }
 
     private static Rect Normalize(Point first, Point second) => new(
@@ -158,10 +167,10 @@ public partial class DragSnipWindow : Window
         element.Height = Math.Max(0, bounds.Height);
     }
 
-    [DllImport("user32.dll")]
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
     private static extern int GetSystemMetrics(int index);
 
-    [DllImport("user32.dll", SetLastError = true)]
+    [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
     private static extern bool SetWindowPos(
         IntPtr window,
         IntPtr insertAfter,
@@ -170,4 +179,5 @@ public partial class DragSnipWindow : Window
         int width,
         int height,
         uint flags);
+
 }
