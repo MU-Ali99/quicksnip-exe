@@ -4,7 +4,7 @@
 
 Every tested user-facing feature build receives a semantic version, documentation update, commit, tag, push, and GitHub release.
 
-## Build 0.7.0 architecture
+## Build 0.8.0 architecture
 
 - `QuickSnip.csproj`: .NET 10 WPF `WinExe` project.
 - `NativeScreenCapture.cs`: physical-pixel display and active-window capture.
@@ -17,6 +17,7 @@ Every tested user-facing feature build receives a semantic version, documentatio
 - `DragSnipWindow`: virtual-desktop selection overlay with cancellation and shaded outside area.
 - `WindowPlacementService`: persisted, clamped window size and location.
 - `CaptureToastWindow`: short-lived local confirmation; no background process or network activity.
+- `HotkeyService`: Win32 global shortcut registration, conflict detection, invisible host routing, and per-user startup registration.
 - `installer/QuickSnip.iss`: stable per-user upgrade/uninstall identity.
 
 Settings are stored at `%LOCALAPPDATA%\QuickSnip\settings.json`.
@@ -27,7 +28,10 @@ Current tested rules:
 - At least one output stays enabled.
 - Selecting a capture mode immediately disables the other two.
 - Inactive capture modes remain available through the taskbar Jump List.
-- Trying to disable the active mode without selecting another immediately restores QuickSnip.
+- Trying to disable the active mode without selecting another immediately restores Drag Snip.
+- Hotkeys are unassigned by default and require at least one modifier key.
+- Assigned hotkeys register immediately; conflicts keep the previous valid shortcut.
+- The invisible hotkey host and Windows startup entry exist only while at least one shortcut is assigned.
 - A one-second cross-process cooldown ignores accidental repeated clicks.
 - Window Snip uses `BitBlt` rather than `PrintWindow` because GPU-rendered apps can return a successful but black `PrintWindow` image. Maximized bounds are clipped to the monitor work area to exclude the taskbar.
 
@@ -42,13 +46,14 @@ Current tested rules:
 | 0.5.0 | QuickSnip modes and preferences | Renamed the product, added Window Snip, persistent mode/output settings, adaptive Jump List commands, and the themed Settings/Information UI. |
 | 0.6.0 | Drag Snip and scalable windows | Added a cancellable selection overlay and shared, validated window sizing and placement for Settings and Information. |
 | 0.7.0 | Output and distribution | Added multi-format saving, quality choices, local toast, recovery controls, Recycle Bin cleanup, and installer/portable packages. |
+| 0.8.0 | Custom hotkeys and design | Added opt-in global shortcuts, conflict-safe registration, a conditional background host/startup entry, Drag Snip defaults, and unified cobalt/indigo interfaces. |
 
 The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, executable, namespaces, assets, AppData, logs, and new screenshot folder use QuickSnip. Existing `Pictures\RightSnip` images remain untouched.
 
 ## Deferred work
 
 - Automatic pointer-monitor placement remains deferred. Saved placement is restored when valid; otherwise the window uses a comfortable primary-screen default.
-- Editor, history, tray support, hotkeys, notifications, and Chrome companion integration remain outside this build.
+- Editor, history, tray support, and Chrome companion integration remain outside this build.
 
 ## Build 0.7.0 safety and migration
 
@@ -69,6 +74,7 @@ The GitHub repository is `MU-Ali99/quicksnip-exe`. The installed product, execut
 - `--open-folder`: open the configured save folder.
 - `--menu`: open QuickSnip Settings.
 - `--register-jump-list`: register commands without capturing.
+- `--hotkey-host`: run the invisible global-hotkey message host.
 
 ## Rename migration
 

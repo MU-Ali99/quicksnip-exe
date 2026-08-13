@@ -17,11 +17,11 @@
     </WindowChrome.WindowChrome>
     <Window.Resources>
         <Style x:Key="GlassCard" TargetType="Border">
-            <Setter Property="Background" Value="#2EFFFFFF" />
-            <Setter Property="BorderBrush" Value="#55FFFFFF" />
+            <Setter Property="Background" Value="#28233D99" />
+            <Setter Property="BorderBrush" Value="#5C8296E8" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="18" />
-            <Setter Property="Padding" Value="18,15" />
+            <Setter Property="CornerRadius" Value="24" />
+            <Setter Property="Padding" Value="22" />
         </Style>
         <Style x:Key="RoundButton" TargetType="Button">
             <Setter Property="Width" Value="36" /><Setter Property="Height" Value="36" />
@@ -40,7 +40,7 @@
         </Style>
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Height" Value="48" /><Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="#42BDEB" /><Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="#5368E8" /><Setter Property="BorderThickness" Value="0" />
             <Setter Property="FontSize" Value="15" /><Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
@@ -48,7 +48,7 @@
                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-2,0,0" />
                 </Border>
                 <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="ButtonBorder" Property="Background" Value="#65D5F3" />
+                    <Setter TargetName="ButtonBorder" Property="Background" Value="#687BF0" />
                 </Trigger></ControlTemplate.Triggers>
             </ControlTemplate></Setter.Value></Setter>
         </Style>
@@ -73,14 +73,14 @@
         </Style>
     </Window.Resources>
 
-    <Border CornerRadius="0" BorderBrush="#77C7F5FF" BorderThickness="1" ClipToBounds="True">
+    <Border CornerRadius="0" BorderBrush="#777E91E8" BorderThickness="1" ClipToBounds="True">
         <Grid ClipToBounds="True">
             <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#51A7F3" Offset="0" /><GradientStop Color="#3868DE" Offset="0.45" />
-                <GradientStop Color="#203A9B" Offset="1" />
+                <GradientStop Color="#2874DF" Offset="0" /><GradientStop Color="#3D5BCB" Offset="0.45" />
+                <GradientStop Color="#1B2B78" Offset="1" />
             </LinearGradientBrush></Grid.Background>
             <Border Height="34" VerticalAlignment="Top" Panel.ZIndex="20"
-                    Background="#2878DB" BorderBrush="#55C7F5FF" BorderThickness="0,0,0,1"
+                    Background="#245FC7" BorderBrush="#557E91E8" BorderThickness="0,0,0,1"
                     MouseLeftButtonDown="Header_MouseLeftButtonDown">
                 <Grid Margin="12,0,0,0">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition /><ColumnDefinition Width="46" /></Grid.ColumnDefinitions>
@@ -92,10 +92,10 @@
                             Click="CloseButton_Click" ToolTip="Close" />
                 </Grid>
             </Border>
-            <Path Fill="#1853C7" Opacity="0.34" Stretch="Fill"
+            <Path Fill="#263FA9" Opacity="0.38" Stretch="Fill"
                   Data="M 0,95 C 135,15 290,40 504,145 L 504,330 C 290,250 145,260 0,350 Z"
                   VerticalAlignment="Top" Height="350" />
-            <Path Fill="#152D87" Opacity="0.42" Stretch="Fill"
+            <Path Fill="#111F61" Opacity="0.48" Stretch="Fill"
                   Data="M 0,0 C 140,90 300,45 504,145 L 504,290 C 310,180 135,240 0,175 Z"
                   VerticalAlignment="Bottom" Height="290" />
 
@@ -113,11 +113,11 @@
                     </StackPanel>
                 </Grid>
 
-                <Border Background="#332044A8" BorderBrush="#55A9DCFF" BorderThickness="1"
-                        CornerRadius="18" Padding="18,15">
+                <Border Background="#381D2F82" BorderBrush="#5C8296E8" BorderThickness="1"
+                        CornerRadius="24" Padding="22">
                     <Grid>
                         <Grid.ColumnDefinitions><ColumnDefinition Width="48" /><ColumnDefinition /></Grid.ColumnDefinitions>
-                        <Border Width="40" Height="40" Background="#42BDEB" CornerRadius="20" VerticalAlignment="Top">
+                        <Border Width="40" Height="40" Background="#5368E8" CornerRadius="14" VerticalAlignment="Top">
                             <TextBlock Text="!" FontSize="22" FontWeight="Bold" Foreground="White"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
@@ -133,7 +133,7 @@
                     <StackPanel>
                         <TextBlock Text="Left-click the taskbar icon" FontSize="16" FontWeight="Bold" Foreground="White" />
                         <TextBlock Margin="0,4,0,0" TextWrapping="Wrap" FontSize="13" Foreground="#DCE8FF"
-                                   Text="Takes the snip mode of your choice—QuickSnip by default—and is ready to paste." />
+                                   Text="Takes the snip mode of your choice—Drag Snip by default—and is ready to paste." />
                     </StackPanel>
                 </Border>
 

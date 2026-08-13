@@ -2,6 +2,25 @@
 
 QuickSnip uses semantic build versions. Each tested feature build receives a new version before it is pushed and tagged.
 
+## 0.8.0 - 2026-08-13
+
+### Custom global hotkeys and interface refinement
+
+- Added configurable global shortcuts for Drag Snip, QuickSnip, and Window Snip, unassigned by default.
+- Added immediate Windows conflict detection that preserves the previously working shortcut when registration fails.
+- Added individual Clear controls and Reset All while persisting valid shortcuts in the existing settings file.
+- Added a lightweight invisible hotkey host that runs only while at least one shortcut is assigned.
+- Added per-user Windows sign-in startup registration while hotkeys are enabled; clearing all shortcuts removes it.
+- Added no-repeat registration so holding a shortcut does not repeatedly launch captures.
+- Made Drag Snip the first and default capture mode; trying to disable every mode restores Drag Snip.
+- Enabled the compact capture toast by default and retained lossless PNG plus High JPEG/WebP quality defaults.
+- Refined Settings and Information with a richer cobalt/indigo palette, rounded shortcut fields, and consistent controls.
+- Moved Hotkeys above capture modes and removed redundant capture buttons from the bottom of Settings.
+
+### Why
+
+Custom hotkeys make each existing capture mode available without reaching for the taskbar, while remaining opt-in and lightweight. The background host exists only when needed, preserves all existing capture/output behavior, and survives sign-out or upgrades through a per-user startup entry.
+
 ## 0.7.0 - 2026-08-13
 
 ### Output control, recovery, and distribution

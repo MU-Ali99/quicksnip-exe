@@ -4,7 +4,7 @@
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
         <Style x:Key="QuickSnipScrollThumb" TargetType="Thumb">
-            <Setter Property="Background" Value="#8062D7F4" />
+            <Setter Property="Background" Value="#805368E8" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
@@ -12,10 +12,10 @@
                                 CornerRadius="4" Background="{TemplateBinding Background}" />
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ThumbSurface" Property="Background" Value="#D962D7F4" />
+                                <Setter TargetName="ThumbSurface" Property="Background" Value="#D96F82F3" />
                             </Trigger>
                             <Trigger Property="IsDragging" Value="True">
-                                <Setter TargetName="ThumbSurface" Property="Background" Value="#FF8AE8FA" />
+                                <Setter TargetName="ThumbSurface" Property="Background" Value="#FFA0ABFF" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

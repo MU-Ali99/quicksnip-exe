@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using Microsoft.Win32;
 
 namespace QuickSnip;
@@ -11,6 +12,7 @@ public partial class OptionsWindow : Window
 {
     private QuickSnipSettings _settings;
     private bool _loading = true;
+    private IntPtr _windowHandle;
 
     public OptionsWindow()
     {
@@ -18,6 +20,7 @@ public partial class OptionsWindow : Window
         _settings = SettingsService.Load();
         WindowPlacementService.Restore(this, _settings.SettingsWindow, 504, 760);
         Closing += OptionsWindow_Closing;
+        SourceInitialized += OptionsWindow_SourceInitialized;
 
         var version = Assembly.GetExecutingAssembly().GetName().Version;
         VersionText.Text = $"Build {version?.Major}.{version?.Minor}.{version?.Build}";
@@ -31,6 +34,7 @@ public partial class OptionsWindow : Window
         SelectSaveChoices();
         SaveLocationText.Text = _settings.SaveFolder;
         UpdateSaveFormatState();
+        UpdateHotkeyBoxes();
 
         _loading = false;
         UpdateActionButtons();
@@ -76,9 +80,9 @@ public partial class OptionsWindow : Window
                      DragSnipToggle.IsChecked != true)
             {
                 _loading = true;
-                QuickSnipToggle.IsChecked = true;
+                DragSnipToggle.IsChecked = true;
                 _loading = false;
-                StatusText.Text = "QuickSnip is the default capture mode.";
+                StatusText.Text = "Drag Snip is the default capture mode.";
             }
         }
 
@@ -121,48 +125,7 @@ public partial class OptionsWindow : Window
 
     private void UpdateActionButtons()
     {
-        QuickSnipButton.Visibility = _settings.QuickSnipEnabled
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-
-        ActiveWindowButton.Visibility = _settings.ActiveWindowSnipEnabled
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-
-        DragSnipButton.Visibility = _settings.DragSnipEnabled
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-    }
-
-    private async void QuickSnipButton_Click(object sender, RoutedEventArgs e) =>
-        await CaptureAndCloseAsync(CaptureTarget.Display);
-
-    private async void ActiveWindowButton_Click(object sender, RoutedEventArgs e) =>
-        await CaptureAndCloseAsync(CaptureTarget.ActiveWindow);
-
-    private async void DragSnipButton_Click(object sender, RoutedEventArgs e) =>
-        await CaptureAndCloseAsync(CaptureTarget.Drag);
-
-    private async Task CaptureAndCloseAsync(CaptureTarget target)
-    {
-        try
-        {
-            Hide();
-            await Task.Delay(150);
-            await ScreenCaptureService.CaptureAsync(target, _settings);
-            Close();
-        }
-        catch (Exception exception) when (
-            exception is CaptureAlreadyRunningException or CaptureCooldownException)
-        {
-            Close();
-        }
-        catch (Exception exception)
-        {
-            AppLogger.Error("Options capture", exception);
-            Show();
-            StatusText.Text = "The snip could not complete. Details were saved to the diagnostic log.";
-        }
+        // Capture actions live on the taskbar and global hotkeys.
     }
 
     private void ChangeFolderButton_Click(object sender, RoutedEventArgs e)
@@ -227,6 +190,8 @@ public partial class OptionsWindow : Window
         _settings.RestoreDefaultsPreservingUserData();
         SettingsService.Save(_settings);
         LoadControlsFromSettings();
+        RebindAllHotkeys();
+        HotkeyService.UpdateStartup(_settings);
         JumpListService.Register(_settings);
         StatusText.Text = "Default preferences restored. Screenshots were preserved.";
     }
@@ -285,8 +250,123 @@ public partial class OptionsWindow : Window
 
     private void OptionsWindow_Closing(object? sender, CancelEventArgs e)
     {
+        UnregisterAllHotkeys();
         WindowPlacementService.Save(this, _settings.SettingsWindow);
         SettingsService.Save(_settings);
+        HotkeyService.UpdateStartup(_settings);
+    }
+
+    private void OptionsWindow_SourceInitialized(object? sender, EventArgs e)
+    {
+        _windowHandle = new WindowInteropHelper(this).Handle;
+        RebindAllHotkeys();
+    }
+
+    private void HotkeyBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (sender is TextBox box) box.Text = "Press shortcut…";
+    }
+
+    private void HotkeyBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        e.Handled = true;
+        if (sender is not TextBox box) return;
+        if (e.Key == Key.Escape)
+        {
+            UpdateHotkeyBoxes();
+            Keyboard.ClearFocus();
+            return;
+        }
+
+        var proposed = HotkeyService.FromKeyboard(e);
+        if (proposed is null)
+        {
+            StatusText.Text = "Use at least one modifier: Ctrl, Alt, Shift, or Windows.";
+            return;
+        }
+
+        var (id, current, assign) = GetHotkeyBinding(box);
+        HotkeyService.Unregister(_windowHandle, id);
+        if (!HotkeyService.TryRegister(_windowHandle, id, proposed))
+        {
+            HotkeyService.TryRegister(_windowHandle, id, current);
+            box.Text = HotkeyService.Display(current);
+            StatusText.Text = $"{HotkeyService.Display(proposed)} is already used. The previous shortcut was kept.";
+            Keyboard.ClearFocus();
+            return;
+        }
+
+        assign(proposed);
+        SettingsService.Save(_settings);
+        HotkeyService.UpdateStartup(_settings);
+        UpdateHotkeyBoxes();
+        StatusText.Text = $"{HotkeyService.Display(proposed)} registered immediately.";
+        Keyboard.ClearFocus();
+    }
+
+    private void ClearHotkeyButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: string name }) return;
+        var box = name switch
+        {
+            "QuickSnip" => QuickSnipHotkeyBox,
+            "WindowSnip" => WindowSnipHotkeyBox,
+            _ => DragSnipHotkeyBox
+        };
+        var (id, _, assign) = GetHotkeyBinding(box);
+        HotkeyService.Unregister(_windowHandle, id);
+        assign(new HotkeySetting());
+        SettingsService.Save(_settings);
+        HotkeyService.UpdateStartup(_settings);
+        UpdateHotkeyBoxes();
+        StatusText.Text = $"{name.Replace("Snip", " Snip").Trim()} hotkey cleared.";
+    }
+
+    private void ResetHotkeysButton_Click(object sender, RoutedEventArgs e)
+    {
+        UnregisterAllHotkeys();
+        _settings.QuickSnipHotkey = new HotkeySetting();
+        _settings.WindowSnipHotkey = new HotkeySetting();
+        _settings.DragSnipHotkey = new HotkeySetting();
+        SettingsService.Save(_settings);
+        HotkeyService.UpdateStartup(_settings);
+        UpdateHotkeyBoxes();
+        StatusText.Text = "All hotkeys reset and disabled.";
+    }
+
+    private (int Id, HotkeySetting Current, Action<HotkeySetting> Assign) GetHotkeyBinding(TextBox box)
+    {
+        if (ReferenceEquals(box, QuickSnipHotkeyBox))
+            return (HotkeyService.QuickSnipId, _settings.QuickSnipHotkey, value => _settings.QuickSnipHotkey = value);
+        if (ReferenceEquals(box, WindowSnipHotkeyBox))
+            return (HotkeyService.WindowSnipId, _settings.WindowSnipHotkey, value => _settings.WindowSnipHotkey = value);
+        return (HotkeyService.DragSnipId, _settings.DragSnipHotkey, value => _settings.DragSnipHotkey = value);
+    }
+
+    private void UpdateHotkeyBoxes()
+    {
+        QuickSnipHotkeyBox.Text = HotkeyService.Display(_settings.QuickSnipHotkey);
+        WindowSnipHotkeyBox.Text = HotkeyService.Display(_settings.WindowSnipHotkey);
+        DragSnipHotkeyBox.Text = HotkeyService.Display(_settings.DragSnipHotkey);
+    }
+
+    private void RebindAllHotkeys()
+    {
+        if (_windowHandle == IntPtr.Zero) return;
+        UnregisterAllHotkeys();
+        var registered = HotkeyService.RegisterAll(_windowHandle, _settings);
+        var expected = new[] { _settings.QuickSnipHotkey, _settings.WindowSnipHotkey, _settings.DragSnipHotkey }
+            .Count(value => value.IsAssigned);
+        if (registered.Count != expected)
+            StatusText.Text = "One or more saved hotkeys are currently used by another application.";
+    }
+
+    private void UnregisterAllHotkeys()
+    {
+        if (_windowHandle == IntPtr.Zero) return;
+        HotkeyService.Unregister(_windowHandle, HotkeyService.QuickSnipId);
+        HotkeyService.Unregister(_windowHandle, HotkeyService.WindowSnipId);
+        HotkeyService.Unregister(_windowHandle, HotkeyService.DragSnipId);
     }
 
     private void Header_MouseLeftButtonDown(
@@ -309,6 +389,7 @@ public partial class OptionsWindow : Window
         SavePngToggle.IsChecked = _settings.SavePng;
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
         ToastToggle.IsChecked = _settings.ShowCaptureToast;
+        UpdateHotkeyBoxes();
         SelectSaveChoices();
         SaveLocationText.Text = _settings.SaveFolder;
         _loading = false;

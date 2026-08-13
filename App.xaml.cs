@@ -13,6 +13,13 @@ public partial class App : System.Windows.Application
             var settings = SettingsService.Load();
             JumpListService.Register(settings);
 
+            if (HasArgument(e.Args, "--hotkey-host"))
+            {
+                HotkeyService.RunHost(settings);
+                Shutdown();
+                return;
+            }
+
             if (HasArgument(e.Args, "--register-jump-list"))
             {
                 Shutdown();
@@ -55,6 +62,7 @@ public partial class App : System.Windows.Application
 
             if (HasArgument(e.Args, "--menu"))
             {
+                HotkeyService.StopHost();
                 ShowOptionsWindow();
                 return;
             }
@@ -92,7 +100,9 @@ public partial class App : System.Windows.Application
         MainWindow = optionsWindow;
         optionsWindow.Closed += (_, _) =>
         {
-            JumpListService.Register(SettingsService.Load());
+            var settings = SettingsService.Load();
+            JumpListService.Register(settings);
+            HotkeyService.StartHostIfNeeded(settings);
             Shutdown();
         };
         optionsWindow.Show();

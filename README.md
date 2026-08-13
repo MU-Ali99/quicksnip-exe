@@ -4,7 +4,7 @@
 
 QuickSnip is a native Windows screenshot utility designed around direct taskbar capture.
 
-Current build: **0.7.0**
+Current build: **0.8.0**
 
 ## Capture modes
 
@@ -12,7 +12,7 @@ Current build: **0.7.0**
 - **Window Snip** captures only the focused application window.
 - **Drag Snip** dims the desktop and captures the area selected by dragging.
 
-Exactly one capture mode is the left-click default. Selecting one immediately turns the other modes off, and inactive modes remain available in the taskbar right-click Jump List. If the active mode is turned off without selecting another, QuickSnip is restored immediately.
+Exactly one capture mode is the left-click default. Drag Snip is the initial default. Selecting one immediately turns the other modes off, and inactive modes remain available in the taskbar right-click Jump List. If the active mode is turned off without selecting another, Drag Snip is restored immediately.
 
 Drag Snip uses left-drag to select. Press `Esc` or right-click to cancel without saving or changing the clipboard.
 
@@ -22,11 +22,21 @@ Drag Snip uses left-drag to select. Press `Esc` or right-click to cancel without
 - Choose Low, Medium, or High quality for JPEG and WebP.
 - Copy the image to the Windows clipboard.
 - Choose a custom save folder.
-- Optionally show a compact branded “Snip taken” toast, disabled by default.
+- Show a compact branded “Snip taken” toast, enabled by default and configurable.
 - Move QuickSnip images to the Windows Recycle Bin after confirmation.
 - Reset window placement or restore preferences without deleting screenshots.
 
 Save and clipboard output can be enabled independently, but at least one output must remain enabled. The default folder is `Pictures\QuickSnip`.
+
+## Global hotkeys
+
+QuickSnip supports separate custom global shortcuts for Drag Snip, QuickSnip, and Window Snip. They are unassigned by default. Click a field in Settings and press a combination containing Ctrl, Alt, Shift, or the Windows key.
+
+- Conflicting system-wide shortcuts are rejected without replacing the previous working shortcut.
+- Changes register immediately; no restart is required.
+- Individual shortcuts can be cleared, or all can be reset together.
+- When any shortcut is assigned, one lightweight invisible QuickSnip process runs in the background and starts automatically at Windows sign-in.
+- Clearing every shortcut removes the startup entry and stops the background host after Settings closes.
 
 ## Taskbar behavior
 
@@ -36,7 +46,7 @@ Save and clipboard output can be enabled independently, but at least one output 
 
 ## Progress so far
 
-QuickSnip has progressed through seven Windows builds:
+QuickSnip has progressed through eight Windows builds:
 
 - **0.1.0 — Native proof:** captured the display, copied an image to the Windows clipboard, saved a PNG, and exited silently.
 - **0.2.0 — Taskbar-ready:** added a self-contained executable, stable per-user installation, icon, Start Menu shortcut, and pinning workflow.
@@ -47,6 +57,8 @@ QuickSnip has progressed through seven Windows builds:
 - **0.6.0 — Drag and scalable windows:** added area selection plus resizable Settings and Information views that share the same remembered size and location.
 
 - **0.7.0 — Output and distribution:** adds image formats, quality choices, compact capture feedback, recovery controls, final Drag Snip polish, and a normal Windows installer.
+
+- **0.8.0 — Custom hotkeys and design:** adds opt-in global shortcuts, conflict handling, conditional background startup, Drag Snip defaults, and a unified richer-blue interface.
 
 The original Chrome-extension investigation established why a native app was needed: Chrome can capture protected pages such as `chrome://` through extension APIs, but browser clipboard restrictions can prevent the captured image from being copied. The Windows app performs capture, clipboard, and saving outside those browser restrictions.
 
@@ -72,8 +84,8 @@ Build the normal installer and portable ZIP with:
 
 Release outputs:
 
-- `QuickSnip-Setup-0.7.0-win-x64.exe`
-- `QuickSnip-Portable-0.7.0-win-x64.zip`
+- `QuickSnip-Setup-0.8.0-win-x64.exe`
+- `QuickSnip-Portable-0.8.0-win-x64.zip`
 
 The self-contained executable is installed at:
 

@@ -38,7 +38,7 @@
                                             <DoubleAnimation Storyboard.TargetName="ThumbTransform"
                                                              Storyboard.TargetProperty="X" To="0" Duration="0" />
                                             <ColorAnimation Storyboard.TargetName="TrackBrush"
-                                                            Storyboard.TargetProperty="Color" To="#7893DA" Duration="0" />
+                                                            Storyboard.TargetProperty="Color" To="#6879B8" Duration="0" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Checked">
@@ -46,7 +46,7 @@
                                             <DoubleAnimation Storyboard.TargetName="ThumbTransform"
                                                              Storyboard.TargetProperty="X" To="29" Duration="0" />
                                             <ColorAnimation Storyboard.TargetName="TrackBrush"
-                                                            Storyboard.TargetProperty="Color" To="#62D7F4" Duration="0" />
+                                                            Storyboard.TargetProperty="Color" To="#5368E8" Duration="0" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Indeterminate" />
@@ -54,7 +54,7 @@
                             </VisualStateManager.VisualStateGroups>
                             <Border x:Name="Track" CornerRadius="18">
                                 <Border.Background>
-                                    <SolidColorBrush x:Name="TrackBrush" Color="#7893DA" />
+                                    <SolidColorBrush x:Name="TrackBrush" Color="#6879B8" />
                                 </Border.Background>
                             </Border>
                             <Ellipse x:Name="Thumb" Width="27" Height="27" Fill="White"
@@ -73,8 +73,8 @@
         </Style>
 
         <Style x:Key="GlassCard" TargetType="Border">
-            <Setter Property="Background" Value="#2EFFFFFF" />
-            <Setter Property="BorderBrush" Value="#55FFFFFF" />
+            <Setter Property="Background" Value="#28233D99" />
+            <Setter Property="BorderBrush" Value="#5C8296E8" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="24" />
             <Setter Property="Padding" Value="22" />
@@ -91,7 +91,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder" CornerRadius="10"
+                        <Border x:Name="ButtonBorder" CornerRadius="14"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
@@ -100,6 +100,40 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#44FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="HotkeyBox" TargetType="TextBox">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#35203A9B" />
+            <Setter Property="BorderBrush" Value="#557CB8F4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="11,0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="HotkeySurface" CornerRadius="12"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="HotkeySurface" Property="Background" Value="#55354FB8" />
+                                <Setter TargetName="HotkeySurface" Property="BorderBrush" Value="#FFA0ABFF" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HotkeySurface" Property="BorderBrush" Value="#AA8999F0" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -116,7 +150,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="ChoiceSurface" Margin="3,0" CornerRadius="9"
+                        <Border x:Name="ChoiceSurface" Margin="3,0" CornerRadius="13"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
@@ -127,8 +161,8 @@
                                 <Setter TargetName="ChoiceSurface" Property="Background" Value="#504E8DE0" />
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="ChoiceSurface" Property="Background" Value="#FF42BDEB" />
-                                <Setter TargetName="ChoiceSurface" Property="BorderBrush" Value="#FF8AE8FA" />
+                                <Setter TargetName="ChoiceSurface" Property="Background" Value="#FF5368E8" />
+                                <Setter TargetName="ChoiceSurface" Property="BorderBrush" Value="#FFA0ABFF" />
                                 <Setter Property="Foreground" Value="White" />
                                 <Setter Property="FontWeight" Value="SemiBold" />
                             </Trigger>
@@ -190,18 +224,18 @@
         </Style>
     </Window.Resources>
 
-    <Border CornerRadius="0" BorderBrush="#77C7F5FF" BorderThickness="1" ClipToBounds="True">
+    <Border CornerRadius="0" BorderBrush="#777E91E8" BorderThickness="1" ClipToBounds="True">
     <Grid ClipToBounds="True">
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#51A7F3" Offset="0" />
-                <GradientStop Color="#3868DE" Offset="0.43" />
-                <GradientStop Color="#203A9B" Offset="1" />
+                <GradientStop Color="#2874DF" Offset="0" />
+                <GradientStop Color="#3D5BCB" Offset="0.43" />
+                <GradientStop Color="#1B2B78" Offset="1" />
             </LinearGradientBrush>
         </Grid.Background>
 
         <Border Height="34" VerticalAlignment="Top" Panel.ZIndex="20"
-                Background="#2878DB" BorderBrush="#55C7F5FF" BorderThickness="0,0,0,1"
+                Background="#245FC7" BorderBrush="#557E91E8" BorderThickness="0,0,0,1"
                 MouseLeftButtonDown="Header_MouseLeftButtonDown">
             <Grid Margin="12,0,0,0">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition /><ColumnDefinition Width="46" /></Grid.ColumnDefinitions>
@@ -215,10 +249,10 @@
         </Border>
 
         <!-- Layered waves inspired by the original browser extension. -->
-        <Path Fill="#1853C7" Opacity="0.34" Stretch="Fill"
+        <Path Fill="#263FA9" Opacity="0.38" Stretch="Fill"
               Data="M 0,95 C 135,15 290,40 504,145 L 504,330 C 290,250 145,260 0,350 Z"
               VerticalAlignment="Top" Height="350" />
-        <Path Fill="#152D87" Opacity="0.42" Stretch="Fill"
+        <Path Fill="#111F61" Opacity="0.48" Stretch="Fill"
               Data="M 0,0 C 140,90 300,45 504,145 L 504,290 C 310,180 135,240 0,175 Z"
               VerticalAlignment="Bottom" Height="330" />
 
@@ -236,15 +270,81 @@
                         <TextBlock Text="QuickSnip" FontSize="28" FontWeight="Bold" Foreground="White" />
                         <TextBlock Text="One click. One snip." FontSize="14" Foreground="#E2EEFF" Margin="0,2,0,0" />
                     </StackPanel>
-                    <Button Grid.Column="2" Style="{StaticResource InfoButton}" VerticalAlignment="Top"
+                    <Button Grid.Column="2" Style="{StaticResource InfoButton}" Width="29" Height="29"
+                            VerticalAlignment="Bottom" Margin="0,0,0,-5"
                             Click="InformationButton_Click" Content="i"
-                            FontFamily="Georgia" FontSize="18" FontWeight="Bold"
+                            FontFamily="Georgia" FontSize="15" FontWeight="Bold"
                             ToolTip="How QuickSnip works" />
                 </Grid>
 
-                <Border Style="{StaticResource GlassCard}">
+                <Border Style="{StaticResource GlassCard}" Background="#332044A8" BorderBrush="#5547C8FF">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Hotkeys" FontSize="17" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="Click a shortcut, then press new keys"
+                                           Foreground="#DCE8FF" FontSize="12" Margin="0,2,0,0" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="94" /><ColumnDefinition />
+                                <ColumnDefinition Width="52" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Drag Snip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBox x:Name="DragSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                     GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                            <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                    Tag="DragSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                        </Grid>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="94" /><ColumnDefinition />
+                                <ColumnDefinition Width="52" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="QuickSnip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBox x:Name="QuickSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                     GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                            <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                    Tag="QuickSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                        </Grid>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="94" /><ColumnDefinition />
+                                <ColumnDefinition Width="52" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Window Snip" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBox x:Name="WindowSnipHotkeyBox" Grid.Column="1" Style="{StaticResource HotkeyBox}"
+                                     GotKeyboardFocus="HotkeyBox_GotKeyboardFocus" PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                            <Button Grid.Column="2" Margin="7,0,0,0" Style="{StaticResource ActionButton}"
+                                    Tag="WindowSnip" Click="ClearHotkeyButton_Click" Content="Clear" FontSize="11" />
+                        </Grid>
+
+                        <Grid Margin="0,12,0,0">
+                            <TextBlock Text="Suggested: Alt + 1  •  Alt + 2  •  Alt + 3"
+                                       Foreground="#DCE8FF" FontSize="11" VerticalAlignment="Center" />
+                            <Button HorizontalAlignment="Right" Width="96" Height="32"
+                                    Style="{StaticResource ActionButton}" Click="ResetHotkeysButton_Click"
+                                    Content="Reset all" FontSize="11" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}">
                     <StackPanel>
                         <TextBlock Text="Choose your snip mode" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,18" />
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Drag Snip" FontSize="16" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="Drag to capture a selected area" FontSize="13" Foreground="#DCE8FF" />
+                            </StackPanel>
+                            <CheckBox x:Name="DragSnipToggle" Grid.Column="1" VerticalAlignment="Center"
+                                      Style="{StaticResource ToggleSwitch}"
+                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
+                        </Grid>
+                        <Border Height="1" Background="#44FFFFFF" Margin="0,16" />
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                             <StackPanel>
@@ -266,26 +366,15 @@
                                       Style="{StaticResource ToggleSwitch}"
                                       Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
                         </Grid>
-                        <Border Height="1" Background="#44FFFFFF" Margin="0,16" />
-                        <Grid>
-                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="Drag Snip" FontSize="16" FontWeight="Bold" Foreground="White" />
-                                <TextBlock Text="Drag to capture a selected area" FontSize="13" Foreground="#DCE8FF" />
-                            </StackPanel>
-                            <CheckBox x:Name="DragSnipToggle" Grid.Column="1" VerticalAlignment="Center"
-                                      Style="{StaticResource ToggleSwitch}"
-                                      Checked="SettingToggle_Changed" Unchecked="SettingToggle_Changed" />
-                        </Grid>
                     </StackPanel>
                 </Border>
 
-                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#332044A8" BorderBrush="#3347A6FF">
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#381D2F82" BorderBrush="#4A7186D8">
                     <StackPanel>
                         <TextBlock Text="Output" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,16" />
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                            <Border Width="40" Height="40" Background="#2EFFFFFF" CornerRadius="10">
+                            <Border Width="40" Height="40" Background="#2EFFFFFF" CornerRadius="14">
                                 <TextBlock Text="↓" FontSize="23" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
@@ -298,7 +387,7 @@
                         </Grid>
                         <Grid Margin="0,14,0,0">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                            <Border Width="40" Height="40" Background="#2EFFFFFF" CornerRadius="10">
+                            <Border Width="40" Height="40" Background="#2EFFFFFF" CornerRadius="14">
                                 <TextBlock Text="▣" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
@@ -320,7 +409,7 @@
                 <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}">
                     <StackPanel>
                         <TextBlock Text="Save format" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,14" />
-                        <TextBlock Text="Format" Foreground="#DCE8FF" Margin="3,0,0,7" />
+                        <TextBlock Text="Format" Foreground="#DCE8FF" FontWeight="Bold" Margin="3,0,0,7" />
                         <UniformGrid Columns="3">
                             <RadioButton x:Name="PngFormatChoice" GroupName="Format" Content="PNG"
                                          Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
@@ -330,9 +419,9 @@
                                          Style="{StaticResource ChoiceButton}" Checked="SaveChoice_Changed" />
                         </UniformGrid>
                         <Grid Margin="3,15,3,0">
-                            <TextBlock Text="Quality" Foreground="#DCE8FF" VerticalAlignment="Center" />
+                            <TextBlock Text="Quality" Foreground="#DCE8FF" FontWeight="Bold" VerticalAlignment="Center" />
                             <Border x:Name="LosslessBadge" HorizontalAlignment="Right" CornerRadius="10"
-                                    Background="#4042BDEB" BorderBrush="#8062D7F4" BorderThickness="1" Padding="10,3">
+                                    Background="#505368E8" BorderBrush="#808899F4" BorderThickness="1" Padding="10,3">
                                 <TextBlock Text="Lossless" Foreground="White" FontSize="12" FontWeight="SemiBold" />
                             </Border>
                         </Grid>
@@ -347,7 +436,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#332044A8" BorderBrush="#3347A6FF">
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}" Background="#381D2F82" BorderBrush="#4A7186D8">
                     <StackPanel>
                         <TextBlock Text="Feedback and recovery" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,0,0,14" />
                         <Grid>
@@ -369,21 +458,7 @@
                     </StackPanel>
                 </Border>
 
-                <Grid Margin="0,18,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition /><ColumnDefinition Width="8" />
-                        <ColumnDefinition /><ColumnDefinition Width="8" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="QuickSnipButton" Style="{StaticResource ActionButton}" Height="46"
-                            Click="QuickSnipButton_Click" Content="QuickSnip" Background="#42BDEB" BorderThickness="0" />
-                    <Button x:Name="ActiveWindowButton" Grid.Column="2" Style="{StaticResource ActionButton}" Height="46"
-                            Click="ActiveWindowButton_Click" Content="Window Snip" Background="#506CC8" />
-                    <Button x:Name="DragSnipButton" Grid.Column="4" Style="{StaticResource ActionButton}" Height="46"
-                            Click="DragSnipButton_Click" Content="Drag Snip" Background="#506CC8" />
-                </Grid>
-
-                <TextBlock x:Name="StatusText" Margin="2,10,0,0" TextWrapping="Wrap" FontSize="12" Foreground="#E2EEFF" />
+                <TextBlock x:Name="StatusText" Margin="2,18,0,0" TextWrapping="Wrap" FontSize="12" Foreground="#E2EEFF" />
                 <TextBlock x:Name="VersionText" TextAlignment="Center" Margin="0,12,0,0" FontSize="11" Foreground="#BFD5FF" />
             </StackPanel>
         </ScrollViewer>
