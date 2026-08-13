@@ -15,6 +15,9 @@ public partial class LockSnipWindow : Window
     private bool _capturing;
     private IntPtr _mouseHook;
     private readonly MouseHookCallback _mouseHookCallback;
+    private CancellationTokenSource? _scrollCaptureDebounce;
+    private bool _autoCaptureEnabled;
+    private bool _autoScrollEnabled;
 
     internal LockSnipWindow(QuickSnipSettings settings)
     {
@@ -24,6 +27,27 @@ public partial class LockSnipWindow : Window
         PreviousHotkeyText.Text = HotkeyService.Display(_settings.LockPreviousHotkey);
         NextHotkeyText.Text = HotkeyService.Display(_settings.LockNextHotkey);
         CaptureHotkeyText.Text = HotkeyService.Display(CaptureHotkey);
+        AutomationControls.Visibility = _settings.LockAutoCaptureAvailable || _settings.LockAutoScrollAvailable
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        AutoCaptureButton.Visibility = _settings.LockAutoCaptureAvailable
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        AutoScrollButton.Visibility = _settings.LockAutoScrollAvailable
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        if (_settings.LockAutoCaptureAvailable && !_settings.LockAutoScrollAvailable)
+        {
+            System.Windows.Controls.Grid.SetColumnSpan(AutoCaptureButton, 3);
+        }
+        else if (!_settings.LockAutoCaptureAvailable && _settings.LockAutoScrollAvailable)
+        {
+            System.Windows.Controls.Grid.SetColumn(AutoScrollButton, 0);
+            System.Windows.Controls.Grid.SetColumnSpan(AutoScrollButton, 3);
+        }
+        AutomationStatus.Visibility = AutomationControls.Visibility;
+        Height = AutomationControls.Visibility == Visibility.Visible ? 278 : 181;
+        UpdateAutomationButtons();
         SourceInitialized += Window_SourceInitialized;
         Loaded += Window_Loaded;
         Closed += (_, _) => Cleanup();
@@ -78,9 +102,9 @@ public partial class LockSnipWindow : Window
         return IntPtr.Zero;
     }
 
-    private async Task CaptureSectionAsync()
+    private async Task<bool> CaptureSectionAsync(bool automated = false)
     {
-        if (_target is null || _capturing) return;
+        if (_target is null || _capturing) return false;
         _capturing = true;
         Hide();
         await Task.Delay(100);
@@ -92,6 +116,21 @@ public partial class LockSnipWindow : Window
                 CaptureTarget.Lock,
                 _settings,
                 _target.IsWindow ? _target.Name : null);
+            if (_autoScrollEnabled)
+            {
+                NativeScreenCapture.ScrollLockedTarget(_target, true);
+                if (_autoCaptureEnabled)
+                {
+                    ScheduleCaptureAfterDownwardScroll();
+                }
+            }
+            return true;
+        }
+        catch (Exception exception)
+        {
+            AppLogger.Error("Lock Snip capture", exception);
+            if (automated) StopAutomation("Stopped after a capture error");
+            return false;
         }
         finally
         {
@@ -113,6 +152,81 @@ public partial class LockSnipWindow : Window
     private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
     private async void ResetWindowButton_Click(object sender, RoutedEventArgs e) =>
         await PickTargetAsync(closeWhenCancelled: false);
+
+    private void AutoScrollButton_Click(object sender, RoutedEventArgs e)
+    {
+        _autoScrollEnabled = !_autoScrollEnabled;
+        UpdateAutomationButtons();
+    }
+
+    private void AutoCaptureButton_Click(object sender, RoutedEventArgs e)
+    {
+        _autoCaptureEnabled = !_autoCaptureEnabled;
+        UpdateAutomationButtons();
+    }
+
+    private void ScheduleCaptureAfterDownwardScroll()
+    {
+        if (!_autoCaptureEnabled || _target is null) return;
+        _scrollCaptureDebounce?.Cancel();
+        _scrollCaptureDebounce?.Dispose();
+        _scrollCaptureDebounce = new CancellationTokenSource();
+        _ = CaptureAfterScrollAsync(_scrollCaptureDebounce.Token);
+    }
+
+    private async Task CaptureAfterScrollAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await Task.Delay(AutomationDelay(), cancellationToken);
+            if (!cancellationToken.IsCancellationRequested)
+                await CaptureSectionAsync(automated: true);
+        }
+        catch (OperationCanceledException)
+        {
+            // A newer downward scroll or Stop replaced this pending capture.
+        }
+    }
+
+    private TimeSpan AutomationDelay() => TimeSpan.FromMilliseconds(_settings.LockAutomationSpeed switch
+    {
+        "Fast" => 350,
+        "Slow" => 1400,
+        _ => 750
+    });
+
+    private void StopButton_Click(object sender, RoutedEventArgs e) => StopAutomation();
+
+    private void StopAutomation(string? status = null)
+    {
+        _scrollCaptureDebounce?.Cancel();
+        _scrollCaptureDebounce?.Dispose();
+        _scrollCaptureDebounce = null;
+        _autoCaptureEnabled = false;
+        _autoScrollEnabled = false;
+        UpdateAutomationButtons();
+        AutomationStatusText.Text = status ?? "Automation stopped";
+    }
+
+    private void UpdateAutomationButtons()
+    {
+        AutoCaptureButtonText.Text = _autoCaptureEnabled ? "Auto Capture On" : "Auto Capture";
+        AutoScrollButtonText.Text = _autoScrollEnabled ? "Auto Scroll On" : "Auto Scroll";
+        AutoCaptureButton.Background = AutomationBrush(_autoCaptureEnabled);
+        AutoScrollButton.Background = AutomationBrush(_autoScrollEnabled);
+        AutomationStatusText.Text = _autoCaptureEnabled && _autoScrollEnabled
+            ? "Capture after each downward scroll"
+            : _autoCaptureEnabled
+                ? "Waiting for a downward scroll"
+                : _autoScrollEnabled
+                    ? "Scroll after a successful capture"
+                    : "Automation is off";
+    }
+
+    private static System.Windows.Media.Brush AutomationBrush(bool enabled) =>
+        new System.Windows.Media.SolidColorBrush(enabled
+            ? System.Windows.Media.Color.FromRgb(83, 104, 232)
+            : System.Windows.Media.Color.FromArgb(0x55, 0x4F, 0x63, 0xC5));
 
     private async Task<bool> PickTargetAsync(bool closeWhenCancelled)
     {
@@ -144,6 +258,7 @@ public partial class LockSnipWindow : Window
 
     private void Cleanup()
     {
+        StopAutomation();
         HotkeyService.Unregister(_handle, HotkeyService.LockCaptureId);
         HotkeyService.Unregister(_handle, HotkeyService.LockPreviousId);
         HotkeyService.Unregister(_handle, HotkeyService.LockNextId);
@@ -166,7 +281,35 @@ public partial class LockSnipWindow : Window
             Dispatcher.BeginInvoke(Close);
             return new IntPtr(1);
         }
+        if (code >= 0 && wParam.ToInt32() == 0x020A && _autoCaptureEnabled && _target is not null)
+        {
+            var mouse = Marshal.PtrToStructure<LowLevelMouseData>(lParam);
+            var delta = unchecked((short)(mouse.MouseData >> 16));
+            if (delta < 0 && IsInsideLockedTarget(mouse.Point))
+                Dispatcher.BeginInvoke(ScheduleCaptureAfterDownwardScroll);
+        }
         return CallNextHookEx(_mouseHook, code, wParam, lParam);
+    }
+
+    private bool IsInsideLockedTarget(NativeMousePoint point)
+    {
+        if (_target is null) return false;
+        var bounds = _target.Bounds;
+        return point.X >= bounds.Left && point.X < bounds.Left + bounds.Width &&
+               point.Y >= bounds.Top && point.Y < bounds.Top + bounds.Height;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeMousePoint { public int X; public int Y; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct LowLevelMouseData
+    {
+        public NativeMousePoint Point;
+        public uint MouseData;
+        public uint Flags;
+        public uint Time;
+        public IntPtr ExtraInfo;
     }
 
     private delegate IntPtr MouseHookCallback(int code, IntPtr wParam, IntPtr lParam);

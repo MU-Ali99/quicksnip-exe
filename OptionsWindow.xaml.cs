@@ -32,6 +32,9 @@ public partial class OptionsWindow : Window
         LockSnipToggle.IsChecked = _settings.LockSnipEnabled;
         LockDisplayChoice.IsChecked = _settings.LockSnipTarget == "Display";
         LockWindowChoice.IsChecked = _settings.LockSnipTarget == "Window";
+        LockAutoCaptureToggle.IsChecked = _settings.LockAutoCaptureAvailable;
+        LockAutoScrollToggle.IsChecked = _settings.LockAutoScrollAvailable;
+        SelectLockSpeed();
         SavePngToggle.IsChecked = _settings.SavePng;
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
         ToastToggle.IsChecked = _settings.ShowCaptureToast;
@@ -65,6 +68,9 @@ public partial class OptionsWindow : Window
         var enabled = LockSnipToggle.IsChecked == true;
         LockSnipControls.IsEnabled = enabled;
         LockSnipControls.Opacity = enabled ? 1 : 0.55;
+        LockSpeedPanel.Visibility = LockAutoCaptureToggle.IsChecked == true || LockAutoScrollToggle.IsChecked == true
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void SettingToggle_Changed(object sender, RoutedEventArgs e)
@@ -103,6 +109,11 @@ public partial class OptionsWindow : Window
         _settings.ShowSnipModesInTaskbar = TaskbarModesToggle.IsChecked == true;
         _settings.LockSnipEnabled = LockSnipToggle.IsChecked == true;
         _settings.LockSnipTarget = LockWindowChoice.IsChecked == true ? "Window" : "Display";
+        _settings.LockAutoCaptureAvailable = LockAutoCaptureToggle.IsChecked == true;
+        _settings.LockAutoScrollAvailable = LockAutoScrollToggle.IsChecked == true;
+        _settings.LockAutomationSpeed = LockFastChoice.IsChecked == true
+            ? "Fast"
+            : LockSlowChoice.IsChecked == true ? "Slow" : "Normal";
         _settings.SavePng = SavePngToggle.IsChecked == true;
         _settings.CopyToClipboard = ClipboardToggle.IsChecked == true;
         _settings.ShowCaptureToast = ToastToggle.IsChecked == true;
@@ -179,11 +190,20 @@ public partial class OptionsWindow : Window
 
     private void CustomFilenameBox_TextChanged(object sender, TextChangedEventArgs e)
     {
+        UpdateCustomFilenamePlaceholder();
         if (_loading) return;
         _settings.CustomFilenamePrefix = CustomFilenameBox.Text;
         SettingsService.Save(_settings);
         UpdateFilenameState();
         StatusText.Text = "Filename preference updated.";
+    }
+
+    private void UpdateCustomFilenamePlaceholder()
+    {
+        if (CustomFilenamePlaceholder is null) return;
+        CustomFilenamePlaceholder.Visibility = string.IsNullOrEmpty(CustomFilenameBox.Text)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void ResetWindowButton_Click(object sender, RoutedEventArgs e)
@@ -451,6 +471,9 @@ public partial class OptionsWindow : Window
         LockSnipToggle.IsChecked = _settings.LockSnipEnabled;
         LockDisplayChoice.IsChecked = _settings.LockSnipTarget == "Display";
         LockWindowChoice.IsChecked = _settings.LockSnipTarget == "Window";
+        LockAutoCaptureToggle.IsChecked = _settings.LockAutoCaptureAvailable;
+        LockAutoScrollToggle.IsChecked = _settings.LockAutoScrollAvailable;
+        SelectLockSpeed();
         SavePngToggle.IsChecked = _settings.SavePng;
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
         ToastToggle.IsChecked = _settings.ShowCaptureToast;
@@ -492,11 +515,20 @@ public partial class OptionsWindow : Window
         CustomFilenameChoice.IsChecked = _settings.FilenameStyle == "Custom";
     }
 
+    private void SelectLockSpeed()
+    {
+        LockSlowChoice.IsChecked = _settings.LockAutomationSpeed == "Slow";
+        LockNormalChoice.IsChecked = _settings.LockAutomationSpeed == "Normal";
+        LockFastChoice.IsChecked = _settings.LockAutomationSpeed == "Fast";
+    }
+
     private void UpdateFilenameState()
     {
         var custom = CustomFilenameChoice.IsChecked == true;
         CustomFilenameBox.IsEnabled = custom;
         CustomFilenameBox.Opacity = custom ? 1 : 0.55;
+        CustomFilenamePlaceholder.Opacity = custom ? 1 : 0.55;
+        UpdateCustomFilenamePlaceholder();
         FilenamePreviewText.Text = ScreenshotFileService.Preview(_settings);
     }
 }

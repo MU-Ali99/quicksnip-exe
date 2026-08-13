@@ -442,6 +442,37 @@
                             </Grid>
                             <Button Margin="0,13,0,0" Height="36" Style="{StaticResource ActionButton}"
                                     Click="ResetLockSnipHotkeysButton_Click" Content="Reset Lock Snip Hotkeys" />
+                            <Border Height="1" Background="#44FFFFFF" Margin="0,16,0,14" />
+                            <TextBlock Text="Automation controls" Foreground="White" FontWeight="Bold" Margin="2,0,0,10" />
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Auto Capture" Foreground="White" FontWeight="Bold" />
+                                    <TextBlock Text="Show repeated capture control in Lock Snip" Foreground="#DCE8FF" FontSize="11" />
+                                </StackPanel>
+                                <CheckBox x:Name="LockAutoCaptureToggle" Grid.Column="1" Style="{StaticResource ToggleSwitch}"
+                                          Checked="LockSnipSetting_Changed" Unchecked="LockSnipSetting_Changed" />
+                            </Grid>
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Auto Scroll" Foreground="White" FontWeight="Bold" />
+                                    <TextBlock Text="Scroll once after every successful capture" Foreground="#DCE8FF" FontSize="11" />
+                                </StackPanel>
+                                <CheckBox x:Name="LockAutoScrollToggle" Grid.Column="1" Style="{StaticResource ToggleSwitch}"
+                                          Checked="LockSnipSetting_Changed" Unchecked="LockSnipSetting_Changed" />
+                            </Grid>
+                            <StackPanel x:Name="LockSpeedPanel" Margin="0,13,0,0">
+                                <TextBlock Text="Automation speed" Foreground="#DCE8FF" FontWeight="Bold" Margin="3,0,0,7" />
+                                <UniformGrid Columns="3">
+                                    <RadioButton x:Name="LockSlowChoice" GroupName="LockSpeed" Content="Slow"
+                                                 Style="{StaticResource ChoiceButton}" Checked="LockSnipSetting_Changed" />
+                                    <RadioButton x:Name="LockNormalChoice" GroupName="LockSpeed" Content="Normal"
+                                                 Style="{StaticResource ChoiceButton}" Checked="LockSnipSetting_Changed" />
+                                    <RadioButton x:Name="LockFastChoice" GroupName="LockSpeed" Content="Fast"
+                                                 Style="{StaticResource ChoiceButton}" Checked="LockSnipSetting_Changed" />
+                                </UniformGrid>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -471,8 +502,15 @@
                                          Content="Custom" Style="{StaticResource ChoiceButton}"
                                          Width="92"
                                          Checked="FilenameChoice_Changed" />
-                            <TextBox x:Name="CustomFilenameBox" Grid.Column="2" Style="{StaticResource FilenameBox}"
-                                     TextChanged="CustomFilenameBox_TextChanged" />
+                            <Grid Grid.Column="2">
+                                <TextBox x:Name="CustomFilenameBox" Style="{StaticResource FilenameBox}"
+                                         TextChanged="CustomFilenameBox_TextChanged" />
+                                <TextBlock x:Name="CustomFilenamePlaceholder"
+                                           Text="Type a custom filename…"
+                                           Foreground="#9FB5E8" FontSize="12"
+                                           Margin="13,0,8,0" VerticalAlignment="Center"
+                                           IsHitTestVisible="False" />
+                            </Grid>
                         </Grid>
                         <TextBlock Text="Preview" Foreground="#DCE8FF" FontWeight="Bold" Margin="3,14,0,5" />
                         <Border Background="#35203A9B" BorderBrush="#557CB8F4" BorderThickness="1"

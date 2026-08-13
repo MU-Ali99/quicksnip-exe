@@ -10,6 +10,9 @@ internal sealed class QuickSnipSettings
     public bool ShowSnipModesInTaskbar { get; set; } = true;
     public bool LockSnipEnabled { get; set; }
     public string LockSnipTarget { get; set; } = "Display";
+    public bool LockAutoCaptureAvailable { get; set; }
+    public bool LockAutoScrollAvailable { get; set; }
+    public string LockAutomationSpeed { get; set; } = "Normal";
     public bool SavePng { get; set; } = true;
     public bool CopyToClipboard { get; set; } = true;
     public bool ShowCaptureToast { get; set; } = true;
@@ -72,6 +75,11 @@ internal sealed class QuickSnipSettings
             LockSnipTarget = "Display";
         }
 
+        if (LockAutomationSpeed is not ("Slow" or "Normal" or "Fast"))
+        {
+            LockAutomationSpeed = "Normal";
+        }
+
 
 
         SettingsWindow ??= new WindowPlacementSettings();
@@ -95,6 +103,9 @@ internal sealed class QuickSnipSettings
         ShowSnipModesInTaskbar = defaults.ShowSnipModesInTaskbar;
         LockSnipEnabled = defaults.LockSnipEnabled;
         LockSnipTarget = defaults.LockSnipTarget;
+        LockAutoCaptureAvailable = defaults.LockAutoCaptureAvailable;
+        LockAutoScrollAvailable = defaults.LockAutoScrollAvailable;
+        LockAutomationSpeed = defaults.LockAutomationSpeed;
         SavePng = defaults.SavePng;
         CopyToClipboard = defaults.CopyToClipboard;
         ShowCaptureToast = defaults.ShowCaptureToast;
