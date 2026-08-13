@@ -10,7 +10,8 @@ internal static class ScreenshotFileService
     public static string Save(
         Bitmap bitmap,
         CaptureTarget target,
-        QuickSnipSettings settings)
+        QuickSnipSettings settings,
+        string? applicationName = null)
     {
         var now = DateTime.Now;
         var folder = settings.SaveFolder;
@@ -30,7 +31,7 @@ internal static class ScreenshotFileService
             "WebP" => ".webp",
             _ => ".png"
         };
-        var filename = $"quicksnip-{mode}-{now:yyyy-MM-dd-HH-mm-ss-fff}{extension}";
+        var filename = BuildFilename(mode, now, extension, settings, applicationName);
         var path = GetUniquePath(folder, filename);
 
         using var source = new MemoryStream();
@@ -51,6 +52,46 @@ internal static class ScreenshotFileService
         encoded.SaveTo(output);
 
         return path;
+    }
+
+    public static string Preview(QuickSnipSettings settings) =>
+        BuildFilename("drag", DateTime.Now, Extension(settings), settings,
+            settings.FilenameStyle == "WindowDateTime" ? "Google Chrome" : null);
+
+    private static string BuildFilename(
+        string mode,
+        DateTime timestamp,
+        string extension,
+        QuickSnipSettings settings,
+        string? applicationName)
+    {
+        var dateTime = timestamp.ToString("yyyy-MM-dd-HH-mm-ss-fff");
+        return settings.FilenameStyle switch
+        {
+            "DateTime" => $"{dateTime}{extension}",
+            "WindowDateTime" => $"{SanitizePrefix(applicationName)}-{dateTime}{extension}",
+            "Custom" => $"{SanitizePrefix(settings.CustomFilenamePrefix)}{extension}",
+            _ => $"quicksnip-{mode}-{dateTime}{extension}"
+        };
+    }
+
+    private static string Extension(QuickSnipSettings settings) => settings.ImageFormat switch
+    {
+        "JPEG" => ".jpg",
+        "WebP" => ".webp",
+        _ => ".png"
+    };
+
+    private static string SanitizePrefix(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return "quicksnip";
+        var invalid = Path.GetInvalidFileNameChars();
+        var cleaned = new string(value.Trim().Select(character =>
+            invalid.Contains(character) ? '-' : character).ToArray());
+        while (cleaned.Contains("--", StringComparison.Ordinal))
+            cleaned = cleaned.Replace("--", "-", StringComparison.Ordinal);
+        cleaned = cleaned.Trim(' ', '-', '.');
+        return string.IsNullOrWhiteSpace(cleaned) ? "quicksnip" : cleaned;
     }
 
     private static string GetUniquePath(string folder, string filename)

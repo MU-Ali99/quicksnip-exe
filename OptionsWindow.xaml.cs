@@ -36,6 +36,8 @@ public partial class OptionsWindow : Window
         ClipboardToggle.IsChecked = _settings.CopyToClipboard;
         ToastToggle.IsChecked = _settings.ShowCaptureToast;
         SelectSaveChoices();
+        SelectFilenameChoices();
+        CustomFilenameBox.Text = _settings.CustomFilenamePrefix;
         SaveLocationText.Text = _settings.SaveFolder;
         UpdateSaveFormatState();
         UpdateHotkeyBoxes();
@@ -43,6 +45,7 @@ public partial class OptionsWindow : Window
 
         _loading = false;
         UpdateActionButtons();
+        UpdateFilenameState();
     }
 
     private void LockSnipSetting_Changed(object sender, RoutedEventArgs e)
@@ -109,9 +112,16 @@ public partial class OptionsWindow : Window
         _settings.ImageQuality = LowQualityChoice.IsChecked == true
             ? "Low"
             : MediumQualityChoice.IsChecked == true ? "Medium" : "High";
+        _settings.FilenameStyle = CustomFilenameChoice.IsChecked == true
+            ? "Custom"
+            : WindowDateFilenameChoice.IsChecked == true
+                ? "WindowDateTime"
+                : DateFilenameChoice.IsChecked == true ? "DateTime" : "ModeDateTime";
+        _settings.CustomFilenamePrefix = CustomFilenameBox.Text;
         SettingsService.Save(_settings);
         JumpListService.Register(_settings);
         UpdateSaveFormatState();
+        UpdateFilenameState();
     }
 
     private void UpdateActionButtons()
@@ -157,6 +167,23 @@ public partial class OptionsWindow : Window
         if (_loading) return;
         SaveSettingsFromControls();
         StatusText.Text = "Save preferences updated.";
+    }
+
+    private void FilenameChoice_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        SaveSettingsFromControls();
+        UpdateFilenameState();
+        StatusText.Text = "Filename preference updated.";
+    }
+
+    private void CustomFilenameBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_loading) return;
+        _settings.CustomFilenamePrefix = CustomFilenameBox.Text;
+        SettingsService.Save(_settings);
+        UpdateFilenameState();
+        StatusText.Text = "Filename preference updated.";
     }
 
     private void ResetWindowButton_Click(object sender, RoutedEventArgs e)
@@ -429,11 +456,14 @@ public partial class OptionsWindow : Window
         ToastToggle.IsChecked = _settings.ShowCaptureToast;
         UpdateHotkeyBoxes();
         SelectSaveChoices();
+        SelectFilenameChoices();
+        CustomFilenameBox.Text = _settings.CustomFilenamePrefix;
         SaveLocationText.Text = _settings.SaveFolder;
         _loading = false;
         UpdateActionButtons();
         UpdateSaveFormatState();
         UpdateLockSnipState();
+        UpdateFilenameState();
     }
 
     private void UpdateSaveFormatState()
@@ -452,5 +482,21 @@ public partial class OptionsWindow : Window
         LowQualityChoice.IsChecked = _settings.ImageQuality == "Low";
         MediumQualityChoice.IsChecked = _settings.ImageQuality == "Medium";
         HighQualityChoice.IsChecked = _settings.ImageQuality == "High";
+    }
+
+    private void SelectFilenameChoices()
+    {
+        ModeDateFilenameChoice.IsChecked = _settings.FilenameStyle == "ModeDateTime";
+        DateFilenameChoice.IsChecked = _settings.FilenameStyle == "DateTime";
+        WindowDateFilenameChoice.IsChecked = _settings.FilenameStyle == "WindowDateTime";
+        CustomFilenameChoice.IsChecked = _settings.FilenameStyle == "Custom";
+    }
+
+    private void UpdateFilenameState()
+    {
+        var custom = CustomFilenameChoice.IsChecked == true;
+        CustomFilenameBox.IsEnabled = custom;
+        CustomFilenameBox.Opacity = custom ? 1 : 0.55;
+        FilenamePreviewText.Text = ScreenshotFileService.Preview(_settings);
     }
 }

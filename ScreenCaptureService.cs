@@ -39,6 +39,7 @@ internal static class ScreenCaptureService
         settings.Normalize();
 
         Bitmap bitmap;
+        string? applicationName = null;
 
         if (target == CaptureTarget.Drag)
         {
@@ -56,6 +57,8 @@ internal static class ScreenCaptureService
         }
         else
         {
+            if (target == CaptureTarget.ActiveWindow)
+                applicationName = NativeScreenCapture.GetActiveWindowApplicationName();
             bitmap = target == CaptureTarget.ActiveWindow
                 ? NativeScreenCapture.CaptureActiveWindow()
                 : NativeScreenCapture.CaptureDisplayContainingPointer();
@@ -63,20 +66,21 @@ internal static class ScreenCaptureService
 
         using (bitmap)
         {
-            return await OutputBitmapAsync(bitmap, target, settings);
+            return await OutputBitmapAsync(bitmap, target, settings, applicationName);
         }
     }
 
     internal static async Task<string?> OutputBitmapAsync(
         Bitmap bitmap,
         CaptureTarget target,
-        QuickSnipSettings settings)
+        QuickSnipSettings settings,
+        string? applicationName = null)
     {
         string? savedPath = null;
 
         if (settings.SavePng)
         {
-            savedPath = ScreenshotFileService.Save(bitmap, target, settings);
+            savedPath = ScreenshotFileService.Save(bitmap, target, settings, applicationName);
         }
 
         var clipboardCopied = false;

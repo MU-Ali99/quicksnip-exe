@@ -221,6 +221,17 @@ internal static class NativeScreenCapture
         return CaptureRectangle(bounds);
     }
 
+    public static string? GetActiveWindowApplicationName()
+    {
+        var window = GetForegroundWindow();
+        if (!IsCapturableWindow(window)) window = FindTopCapturableWindow();
+        if (window == IntPtr.Zero) return null;
+        GetWindowThreadProcessId(window, out var processId);
+        var title = new StringBuilder(512);
+        GetWindowText(window, title, title.Capacity);
+        return GetApplicationName(processId, title.ToString());
+    }
+
     public static Bitmap CaptureRegion(PhysicalCaptureRectangle region) =>
         CaptureRectangle(new NativeRectangle
         {

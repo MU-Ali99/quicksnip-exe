@@ -15,6 +15,8 @@ internal sealed class QuickSnipSettings
     public bool ShowCaptureToast { get; set; } = true;
     public string ImageFormat { get; set; } = "PNG";
     public string ImageQuality { get; set; } = "High";
+    public string FilenameStyle { get; set; } = "ModeDateTime";
+    public string CustomFilenamePrefix { get; set; } = "quicksnip";
     public string SaveFolder { get; set; } = SnipFolderService.DefaultPath;
     public WindowPlacementSettings SettingsWindow { get; set; } = new();
     public HotkeySetting QuickSnipHotkey { get; set; } = new();
@@ -58,6 +60,13 @@ internal sealed class QuickSnipSettings
             ImageQuality = "High";
         }
 
+        if (FilenameStyle is not ("ModeDateTime" or "WindowDateTime" or "DateTime" or "Custom"))
+        {
+            FilenameStyle = "ModeDateTime";
+        }
+
+        CustomFilenamePrefix ??= "quicksnip";
+
         if (LockSnipTarget is not ("Display" or "Window"))
         {
             LockSnipTarget = "Display";
@@ -91,6 +100,8 @@ internal sealed class QuickSnipSettings
         ShowCaptureToast = defaults.ShowCaptureToast;
         ImageFormat = defaults.ImageFormat;
         ImageQuality = defaults.ImageQuality;
+        FilenameStyle = defaults.FilenameStyle;
+        CustomFilenamePrefix = defaults.CustomFilenamePrefix;
         SaveFolder = saveFolder;
         SettingsWindow = placement;
         QuickSnipHotkey = new HotkeySetting();

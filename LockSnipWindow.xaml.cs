@@ -87,7 +87,11 @@ public partial class LockSnipWindow : Window
         try
         {
             using var bitmap = NativeScreenCapture.CaptureLockedTarget(_target);
-            await ScreenCaptureService.OutputBitmapAsync(bitmap, CaptureTarget.Lock, _settings);
+            await ScreenCaptureService.OutputBitmapAsync(
+                bitmap,
+                CaptureTarget.Lock,
+                _settings,
+                _target.IsWindow ? _target.Name : null);
         }
         finally
         {

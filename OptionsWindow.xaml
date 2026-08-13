@@ -140,6 +140,11 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="FilenameBox" TargetType="TextBox" BasedOn="{StaticResource HotkeyBox}">
+            <Setter Property="IsReadOnly" Value="False" />
+            <Setter Property="Cursor" Value="IBeam" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
         <Style x:Key="ChoiceButton" TargetType="RadioButton">
             <Setter Property="Height" Value="38" />
             <Setter Property="Foreground" Value="#DCE8FF" />
@@ -438,6 +443,43 @@
                             <Button Margin="0,13,0,0" Height="36" Style="{StaticResource ActionButton}"
                                     Click="ResetLockSnipHotkeysButton_Click" Content="Reset Lock Snip Hotkeys" />
                         </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,18,0,0" Style="{StaticResource GlassCard}">
+                    <StackPanel>
+                        <TextBlock Text="Filename" Style="{StaticResource TypeHeading2}"
+                                   Foreground="White" Margin="0,0,0,14" />
+                        <UniformGrid Columns="3">
+                            <RadioButton x:Name="ModeDateFilenameChoice" GroupName="FilenameStyle"
+                                         Content="Mode + date" Style="{StaticResource ChoiceButton}"
+                                         Checked="FilenameChoice_Changed" />
+                            <RadioButton x:Name="DateFilenameChoice" GroupName="FilenameStyle"
+                                         Content="Date only" Style="{StaticResource ChoiceButton}"
+                                         Checked="FilenameChoice_Changed" />
+                            <RadioButton x:Name="WindowDateFilenameChoice" GroupName="FilenameStyle"
+                                         Content="Window + date" Style="{StaticResource ChoiceButton}"
+                                         Checked="FilenameChoice_Changed" />
+                        </UniformGrid>
+                        <Grid Margin="3,10,3,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <RadioButton x:Name="CustomFilenameChoice" GroupName="FilenameStyle"
+                                         Content="Custom" Style="{StaticResource ChoiceButton}"
+                                         Width="92"
+                                         Checked="FilenameChoice_Changed" />
+                            <TextBox x:Name="CustomFilenameBox" Grid.Column="2" Style="{StaticResource FilenameBox}"
+                                     TextChanged="CustomFilenameBox_TextChanged" />
+                        </Grid>
+                        <TextBlock Text="Preview" Foreground="#DCE8FF" FontWeight="Bold" Margin="3,14,0,5" />
+                        <Border Background="#35203A9B" BorderBrush="#557CB8F4" BorderThickness="1"
+                                CornerRadius="12" Padding="12,9" Margin="3,0,3,0">
+                            <TextBlock x:Name="FilenamePreviewText" Foreground="White" FontSize="12"
+                                       FontWeight="SemiBold" TextWrapping="Wrap" />
+                        </Border>
                     </StackPanel>
                 </Border>
 
