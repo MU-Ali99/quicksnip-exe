@@ -1,10 +1,37 @@
-# QuickSnip for Windows
+<p align="center">
+  <img src="docs/assets/quicksnip-icon.png" alt="QuickSnip icon" width="170">
+</p>
 
-**One click. One snip.**
+<h1 align="center">QuickSnip for Windows</h1>
 
-QuickSnip is a native Windows screenshot utility designed around direct taskbar capture.
+<p align="center"><strong>One click. One QuickSnip.</strong></p>
+
+<p align="center">
+  <img src="docs/assets/quicksnip-cover.png" alt="QuickSnip — flexible capture, custom hotkeys, and a configurable workflow" width="100%">
+</p>
+
+QuickSnip is a lightweight native Windows screenshot utility built for fast-paced work. Capture, copy, and save without interrupting your workflow.
 
 Current build: **0.10.0**
+
+## Focus features
+
+### Flexible Capture
+
+Capture with one hand and one click. Choose **Drag Snip**, **Screen Snip**, or **Window Snip**, then decide which mode launches from the taskbar. Alternate modes remain available from the right-click Jump List when enabled.
+
+### Custom Hotkeys
+
+Assign your preferred global shortcuts for instant access to each capture mode. QuickSnip registers changes immediately, detects conflicts, and keeps the previous working shortcut when a combination is unavailable.
+
+### Your Workflow, Your Way
+
+Use **Lock Snip** to keep one application window targeted while you work elsewhere. Combine manual capture, Auto Capture, and Auto Scroll; choose custom filenames and save locations; and independently control saving, clipboard output, taskbar modes, and capture feedback.
+
+**Capture. Copy. Save.**<br>
+Built for fast-paced work in a fast-paced world.
+
+**Fast. Flexible. Reliable.**
 
 ## Capture modes
 
