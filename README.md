@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="docs/assets/quicksnip-icon.png" alt="QuickSnip icon" width="72" align="center"> QuickSnip
+  <img src="docs/assets/quicksnip-icon.png" alt="QuickSnip icon" width="108" align="absmiddle"> QuickSnip
 </h1>
 
 <br>
