@@ -2,10 +2,6 @@
   <img src="docs/assets/quicksnip-icon.png" alt="QuickSnip icon" width="170">
 </p>
 
-<h1 align="center">QuickSnip for Windows</h1>
-
-<p align="center"><strong>One click. One QuickSnip.</strong></p>
-
 <p align="center">
   <img src="docs/assets/quicksnip-cover.png" alt="QuickSnip — flexible capture, custom hotkeys, and a configurable workflow" width="100%">
 </p>
